@@ -11,9 +11,6 @@ Database: MySQL
 Map Integration: Google Maps API (to be implemented later)
 
 Features (Walking Skeleton):
-Basic Spring Boot backend that serves a simple "Hello, World!" message.
-React frontend displaying a hardcoded list of campus locations.
-MySQL database setup with a simple `locations` table and basic CRUD functionality (create and read).
-A simple API that connects the backend to the frontend.
+For this project’s walking skeleton, users should be able to view a list of campus locations along with their associated rating. Additionally, users should be able to leave their own rating and have it updated in the location’s overall score. 
 
 This serves as a foundation to build on while ensuring that each part of the system is connected and working together.
