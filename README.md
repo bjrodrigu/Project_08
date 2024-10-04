@@ -68,66 +68,14 @@ class User {
 
 #### Technology Stack
 
-Here are some sample technology stacks that you can use for inspiration:
-
-```mermaid
-flowchart RL
-subgraph Front End
-	A(Javascript: React)
-end
-	
-subgraph Back End
-	B(Python: Django with \nDjango Rest Framework)
-end
-	
-subgraph Database
-	C[(MySQL)]
-end
+Mapping will be handled via OpenStreetMaps using Leaflet.
 
 A <-->|"REST API"| B
-B <-->|Django ORM| C
-```
 
 ```mermaid
 flowchart RL
 subgraph Front End
-	A(Javascript: Vue)
-end
-	
-subgraph Back End
-	B(Python: Flask)
-end
-	
-subgraph Database
-	C[(MySQL)]
-end
-
-A <-->|"REST API"| B
-B <-->|SQLAlchemy| C
-```
-
-```mermaid
-flowchart RL
-subgraph Front End
-	A(Javascript: Vue)
-end
-	
-subgraph Back End
-	B(Javascript: Express)
-end
-	
-subgraph Database
-	C[(MySQL)]
-end
-
-A <-->|"REST API"| B
-B <--> C
-```
-
-```mermaid
-flowchart RL
-subgraph Front End
-	A(Static JS, CSS, HTML)
+	A(React)
 end
 	
 subgraph Back End
@@ -138,29 +86,9 @@ subgraph Database
 	C[(MySQL)]
 end
 
-A <-->|HTTP| B
+A <-->|REST API| B
 B <--> C
 ```
-
-```mermaid
-flowchart RL
-subgraph Front End
-	A(Mobile App)
-end
-	
-subgraph Back End
-	B(Python: Django)
-end
-	
-subgraph Database
-	C[(MySQL)]
-end
-
-A <-->|REST API| B
-B <-->|Django ORM| C
-```
-
-
 
 #### Database
 
