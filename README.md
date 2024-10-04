@@ -28,6 +28,44 @@ Please view this file's source to see `<!--comments-->` with guidance on how you
 
 <!--Included below are some sample diagrams, including some example tech stack diagrams.-->
 
+```mermaid
+---
+title: Class Diagram for Campus Rating Program
+---
+classDiagram
+class User {
+        + private Long id;
+		+ private String email;
+		+ private String password; 
+    }
+	class UserRepository extends 
+	class UserService {
+		+ loginAttempt(String email, String password)
+		+ createNewUser(String email, String passwrd)
+	}
+    class Location {
+        + private String place
+		+ private String description
+		+ private Float rating
+    }
+	class LocationService {
+		+ getPlace(String place)
+		
+	}
+    class Cat {
+        + Cat(String name)
+        + void makeSound()
+    }
+    class Bird {
+        + Bird(String name)
+        + void makeSound()
+    }
+    Animal <|-- Dog
+    Animal <|-- Cat
+    Animal <|-- Bird
+```
+
+
 #### Technology Stack
 
 Here are some sample technology stacks that you can use for inspiration:
