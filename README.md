@@ -56,40 +56,66 @@ B <--> C
 
 ```mermaid
 ---
-title: Sample Database ERD for an Order System
+title: Database ERD
 ---
 erDiagram
-    Customer ||--o{ Order : "placed by"
-    Order ||--o{ OrderItem : "contains"
-    Product ||--o{ OrderItem : "included in"
 
-    Customer {
-        int customer_id PK
-        string name
-        string email
-        string phone
-    }
+Table User {
+  user_id INT [pk]
+  google_id VARCHAR [unique]
+  name VARCHAR
+  email VARCHAR
+  created_at DATETIME
+  updated_at DATETIME
+}
 
-    Order {
-        int order_id PK
-        int customer_id FK
-        string order_date
-        string status
-    }
+Table Location {
+  location_id INT [pk]
+  name VARCHAR
+  description TEXT
+  category VARCHAR
+  latitude FLOAT
+  longitude FLOAT
+  address VARCHAR
+  created_at DATETIME
+  updated_at DATETIME
+}
 
-    Product {
-        int product_id PK
-        string name
-        string description
-        decimal price
-    }
+Table Review {
+  review_id INT [pk]
+  user_id INT [ref: > User.user_id]
+  location_id INT [ref: > Location.location_id]
+  rating INT
+  comment TEXT
+  created_at DATETIME
+  updated_at DATETIME
+}
 
-    OrderItem {
-        int order_item_id PK
-        int order_id FK
-        int product_id FK
-        int quantity
-    }
+Table Task {
+  task_id INT [pk]
+  name VARCHAR
+  description TEXT
+}
+
+Table Location_Task {
+  location_task_id INT [pk]
+  location_id INT [ref: > Location.location_id]
+  task_id INT [ref: > Task.task_id]
+  suitability_rating INT
+}
+
+Table Favorite {
+  favorite_id INT [pk]
+  user_id INT [ref: > User.user_id]
+  location_id INT [ref: > Location.location_id]
+}
+
+Table Image {
+  image_id INT [pk]
+  location_id INT [ref: > Location.location_id]
+  image_url VARCHAR
+  uploaded_at DATETIME
+}
 ```
 
 #### Class Diagram
