@@ -55,6 +55,9 @@ B <--> C
 #### Database
 
 ```mermaid
+---
+title: Our Database ERD
+---
 erDiagram
     User {
       INT user_id PK
@@ -120,6 +123,7 @@ erDiagram
     User ||--o{ Favorite : favorites
     Location ||--o{ Favorite : is_favorited
     Location ||--o{ Image : has
+```
 
 
 #### Class Diagram
