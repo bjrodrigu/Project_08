@@ -55,68 +55,72 @@ B <--> C
 #### Database
 
 ```mermaid
----
-title: Database ERD
----
 erDiagram
+    User {
+      INT user_id PK
+      VARCHAR google_id
+      VARCHAR name
+      VARCHAR email
+      DATETIME created_at
+      DATETIME updated_at
+    }
 
-Table User {
-  user_id INT [pk]
-  google_id VARCHAR [unique]
-  name VARCHAR
-  email VARCHAR
-  created_at DATETIME
-  updated_at DATETIME
-}
+    Location {
+      INT location_id PK
+      VARCHAR name
+      TEXT description
+      VARCHAR category
+      FLOAT latitude
+      FLOAT longitude
+      VARCHAR address
+      DATETIME created_at
+      DATETIME updated_at
+    }
 
-Table Location {
-  location_id INT [pk]
-  name VARCHAR
-  description TEXT
-  category VARCHAR
-  latitude FLOAT
-  longitude FLOAT
-  address VARCHAR
-  created_at DATETIME
-  updated_at DATETIME
-}
+    Review {
+      INT review_id PK
+      INT user_id FK
+      INT location_id FK
+      INT rating
+      TEXT comment
+      DATETIME created_at
+      DATETIME updated_at
+    }
 
-Table Review {
-  review_id INT [pk]
-  user_id INT [ref: > User.user_id]
-  location_id INT [ref: > Location.location_id]
-  rating INT
-  comment TEXT
-  created_at DATETIME
-  updated_at DATETIME
-}
+    Task {
+      INT task_id PK
+      VARCHAR name
+      TEXT description
+    }
 
-Table Task {
-  task_id INT [pk]
-  name VARCHAR
-  description TEXT
-}
+    Location_Task {
+      INT location_task_id PK
+      INT location_id FK
+      INT task_id FK
+      INT suitability_rating
+    }
 
-Table Location_Task {
-  location_task_id INT [pk]
-  location_id INT [ref: > Location.location_id]
-  task_id INT [ref: > Task.task_id]
-  suitability_rating INT
-}
+    Favorite {
+      INT favorite_id PK
+      INT user_id FK
+      INT location_id FK
+    }
 
-Table Favorite {
-  favorite_id INT [pk]
-  user_id INT [ref: > User.user_id]
-  location_id INT [ref: > Location.location_id]
-}
+    Image {
+      INT image_id PK
+      INT location_id FK
+      VARCHAR image_url
+      DATETIME uploaded_at
+    }
 
-Table Image {
-  image_id INT [pk]
-  location_id INT [ref: > Location.location_id]
-  image_url VARCHAR
-  uploaded_at DATETIME
-}
-```
+    User ||--o{ Review : writes
+    Location ||--o{ Review : receives
+    Location ||--o{ Location_Task : has
+    Task ||--o{ Location_Task : rated_for
+    User ||--o{ Favorite : favorites
+    Location ||--o{ Favorite : is_favorited
+    Location ||--o{ Image : has
+
 
 #### Class Diagram
 
