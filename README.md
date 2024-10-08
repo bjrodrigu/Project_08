@@ -68,41 +68,75 @@ B <--> C
 
 ```mermaid
 ---
-title: Sample Database ERD for an Order System
+title: Our Database ERD
 ---
 erDiagram
-    Customer ||--o{ Order : "placed by"
-    Order ||--o{ OrderItem : "contains"
-    Product ||--o{ OrderItem : "included in"
-
-    Customer {
-        int customer_id PK
-        string name
-        string email
-        string phone
+    User {
+      INT user_id PK
+      VARCHAR google_id
+      VARCHAR name
+      VARCHAR email
+      DATETIME created_at
+      DATETIME updated_at
     }
 
-    Order {
-        int order_id PK
-        int customer_id FK
-        string order_date
-        string status
+    Location {
+      INT location_id PK
+      VARCHAR name
+      TEXT description
+      VARCHAR category
+      FLOAT latitude
+      FLOAT longitude
+      VARCHAR address
+      DATETIME created_at
+      DATETIME updated_at
     }
 
-    Product {
-        int product_id PK
-        string name
-        string description
-        decimal price
+    Review {
+      INT review_id PK
+      INT user_id FK
+      INT location_id FK
+      INT rating
+      TEXT comment
+      DATETIME created_at
+      DATETIME updated_at
     }
 
-    OrderItem {
-        int order_item_id PK
-        int order_id FK
-        int product_id FK
-        int quantity
+    Task {
+      INT task_id PK
+      VARCHAR name
+      TEXT description
     }
+
+    Location_Task {
+      INT location_task_id PK
+      INT location_id FK
+      INT task_id FK
+      INT suitability_rating
+    }
+
+    Favorite {
+      INT favorite_id PK
+      INT user_id FK
+      INT location_id FK
+    }
+
+    Image {
+      INT image_id PK
+      INT location_id FK
+      VARCHAR image_url
+      DATETIME uploaded_at
+    }
+
+    User ||--o{ Review : writes
+    Location ||--o{ Review : receives
+    Location ||--o{ Location_Task : has
+    Task ||--o{ Location_Task : rated_for
+    User ||--o{ Favorite : favorites
+    Location ||--o{ Favorite : is_favorited
+    Location ||--o{ Image : has
 ```
+
 
 #### Class Diagram
 
