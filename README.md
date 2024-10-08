@@ -19,6 +19,18 @@ Please view this file's source to see `<!--comments-->` with guidance on how you
 ### Customer
 
 <!--A brief description of the customer for this software, both in general (the population who might eventually use such a system) and specifically for this document (the customer(s) who informed this document). Every project will have a customer from the CS506 instructional staff. Requirements should not be derived simply from discussion among team members. Ideally your customer should not only talk to you about requirements but also be excited later in the semester to use the system.-->
+The primary target audience for this software consists of UW-Madison students seeking convenient and suitable spaces on campus for various activities, including studying, napping, socializing, or engaging in other leisure pursuits. These students range from freshmen to graduate students across all disciplines, each with unique needs and preferences for campus spaces.
+Secondary users may include UW-Madison faculty and staff who are looking for quiet areas to work, hold informal meetings, or take short breaks between classes or appointments.
+Specific customers informing this document include:
+
+1.A representative from the CS506 instructional staff, who will provide guidance and evaluate the project's alignment with course objectives.
+2.A diverse group of UW-Madison students, including:
+
+- An undergraduate student living off-campus who needs quiet study spots between classes
+- A graduate student seeking comfortable areas for group project meetings
+- An international student looking for welcoming spaces to socialize and meet new people
+- A student athlete searching for convenient nap locations between practice sessions and classes
+3.A faculty member interested in finding alternative workspaces outside their office
 
 ### Specification
 
