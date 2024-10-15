@@ -142,31 +142,88 @@ erDiagram
 
 ```mermaid
 ---
-title: Sample Class Diagram for Animal Program
+title: Class Diagram for Campus Rating Program
 ---
 classDiagram
-    class Animal {
-        - String name
-        + Animal(String name)
-        + void setName(String name)
-        + String getName()
-        + void makeSound()
+    class User {
+        - private int user_id;
+        - private CHAR google_id;
+        - private String name;
+        - private String email;
+        - private String password;
+        - private String created_at;
+        - private String updated_at
+        
+        + get all variables()
+        + set all variables()
     }
-    class Dog {
-        + Dog(String name)
-        + void makeSound()
+    class Location {
+        - private int location_id
+        - private String place
+        - private CHAR category
+        - FLOAT latitude
+        - FLOAT longitude
+        - private CHAR address
+        - private String created_at
+        - private String updated_at
+        
+        + get all variables()
+        + set all variables()
     }
-    class Cat {
-        + Cat(String name)
-        + void makeSound()
+    class Favorites{
+        - private int favorite_id
+        - private int user_id
+        - private int location_id
+        
+        + get all variables()
+        + set all variables()
     }
-    class Bird {
-        + Bird(String name)
-        + void makeSound()
+    class Image{
+        - private int image_id
+        - private int location_id
+        - private CHAR image_url
+        - private String uploaded_at
+        
+        + get all variables()
+        + set all variables()
     }
-    Animal <|-- Dog
-    Animal <|-- Cat
-    Animal <|-- Bird
+    class Task{
+        - private int task_id
+        - private CHAR name
+        - private String description
+        
+        + get all variables()
+        + set all variables()
+    }
+    class Location_Task{
+        - private int location_task_id
+        - private int location_id
+        - private int task_id
+        - private int suitability_rating
+        
+        + get all variables()
+        + set all variables()
+    }
+    class MainController {
+        @POST
+        + String addNewUser(String username, String email)
+        @GET
+        + Boolean loginAttempt(String email, String password)
+        @GET
+        + List<String> placeInfo(String placeName)
+        @POST
+        + String recommendPlace(String place, String typeOfPlace)
+        @POST
+        + Boolean addReview(String username, String, placeName, int rating)
+        @POST
+        + Boolean addFavoritePlace(String username, String placeName)
+    }
+    MainController <|-- User
+    MainController <|-- Location
+    MainController <|-- Favorites
+    MainController <|-- Image
+    MainController <|-- Task
+    MainController <|-- Location_Task
 ```
 
 #### Flowchart
