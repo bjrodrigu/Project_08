@@ -160,7 +160,7 @@ graph TD;
 ---
 title: State Diagram For UW Campus Reviewer
 ---
-stateDiagram
+stateDiagram;
     [*] --> Landing Page
     Landing Page --> Login : Clicks login
     Login --> Logged in : Entered correct user & password
@@ -168,6 +168,8 @@ stateDiagram
     Login --> Login : Enters incorrect user or password
     Register --> Logged in : Creates account
     Logged in --> : Study Spot : Selects Study Spot
+    Study Spot --> Filtered Spots : Filters by rating
+    Filtered Spots --> Study Spot : Selects Study Spot
     Study Spot --> : Review Page : Adds Review
     Review Page --> : Logged in : Submits Review
 ```
