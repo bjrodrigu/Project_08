@@ -12,9 +12,7 @@ Also, be sure to check out the Wiki for information on how to maintain your team
 
 <!--A one paragraph summary of what the software will do.-->
 
-This is an example paragraph written in markdown. You can use *italics*, **bold**, and other formatting options. You can also <u>use inline html</u> to format your text. The example sections included in this document are not necessarily all the sections you will want, and it is possible that you won't use all the one's provided. It is your responsibility to create a document that adequately conveys all the information about your project specifications and requirements.
-
-Please view this file's source to see `<!--comments-->` with guidance on how you might use the different sections of this document. 
+The Campus Rating System is a mobile application designed to enhance the student experience by providing a platform for discovering, rating, and sharing various locations on campus. This innovative tool aims to help students find ideal spots for studying, relaxing, or engaging in specific activities. 
 
 ### Customer
 
@@ -257,38 +255,47 @@ graph TD;
 
 ```mermaid
 ---
-title: Sample State Diagram For Coffee Application
+title: State Diagram For UW Campus Reviewer
 ---
 stateDiagram
-    [*] --> Ready
-    Ready --> Brewing : Start Brewing
-    Brewing --> Ready : Brew Complete
-    Brewing --> WaterLowError : Water Low
-    WaterLowError --> Ready : Refill Water
-    Brewing --> BeansLowError : Beans Low
-    BeansLowError --> Ready : Refill Beans
+    [*] --> LandingPage
+    LandingPage --> Login : Clicks login
+    Login --> LoggedIn : Entered correct user & password
+    Login --> Register : Clicks sign up
+    Login --> Login : Enters incorrect user or password
+    Register --> LoggedIn : Creates account
+    LoggedIn --> StudySpot : Selects Study Spot
+    StudySpot --> FilteredSpots : Filters by rating
+    FilteredSpots --> StudySpot : Selects Study Spot
+    StudySpot --> ReviewPage : Adds Review
+    ReviewPage --> LoggedIn : Submits Review
 ```
 
 #### Sequence Diagram
 
 ```mermaid
 sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Database
 
-participant ReactFrontend
-participant DjangoBackend
-participant MySQLDatabase
+    User ->> Frontend: Clicks on location name or map pin
+    Frontend ->> Backend: Send location details request (location ID)
+    Backend ->> Database: Query for location information
+    Database -->> Backend: Return location information
+    Backend ->> Database: Query for reviews and ratings
+    Database -->> Backend: Return reviews and ratings data
+    Backend -->> Frontend: Send location info and review data
+    Frontend -->> User: Display location details, comments, and rating
 
-ReactFrontend ->> DjangoBackend: HTTP Request (e.g., GET /api/data)
-activate DjangoBackend
+    User ->> Frontend: Submit new comment and rating
+    Frontend ->> Backend: Send new comment and rating
+    Backend ->> Database: Update comment and rating
+    Database -->> Backend: Confirm update
+    Backend -->> Frontend: Confirm successful update
+    Frontend -->> User: Display new comment and rating
 
-DjangoBackend ->> MySQLDatabase: Query (e.g., SELECT * FROM data_table)
-activate MySQLDatabase
-
-MySQLDatabase -->> DjangoBackend: Result Set
-deactivate MySQLDatabase
-
-DjangoBackend -->> ReactFrontend: JSON Response
-deactivate DjangoBackend
 ```
 
 ### Standards & Conventions
