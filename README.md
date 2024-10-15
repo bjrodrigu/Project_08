@@ -190,16 +190,20 @@ graph TD;
 
 ```mermaid
 ---
-title: Sample State Diagram For Coffee Application
+title: State Diagram For UW Campus Reviewer
 ---
 stateDiagram
-    [*] --> Ready
-    Ready --> Brewing : Start Brewing
-    Brewing --> Ready : Brew Complete
-    Brewing --> WaterLowError : Water Low
-    WaterLowError --> Ready : Refill Water
-    Brewing --> BeansLowError : Beans Low
-    BeansLowError --> Ready : Refill Beans
+    [*] --> LandingPage
+    LandingPage --> Login : Clicks login
+    Login --> LoggedIn : Entered correct user & password
+    Login --> Register : Clicks sign up
+    Login --> Login : Enters incorrect user or password
+    Register --> LoggedIn : Creates account
+    LoggedIn --> StudySpot : Selects Study Spot
+    StudySpot --> FilteredSpots : Filters by rating
+    FilteredSpots --> StudySpot : Selects Study Spot
+    StudySpot --> ReviewPage : Adds Review
+    ReviewPage --> LoggedIn : Submits Review
 ```
 
 #### Sequence Diagram
