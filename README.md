@@ -160,18 +160,18 @@ graph TD;
 ---
 title: State Diagram For UW Campus Reviewer
 ---
-stateDiagram;
-    [*] --> Landing Page
-    Landing Page --> Login : Clicks login
-    Login --> Logged in : Entered correct user & password
+stateDiagram
+    [*] --> LandingPage
+    LandingPage --> Login : Clicks login
+    Login --> LoggedIn : Entered correct user & password
     Login --> Register : Clicks sign up
     Login --> Login : Enters incorrect user or password
-    Register --> Logged in : Creates account
-    Logged in --> : Study Spot : Selects Study Spot
-    Study Spot --> Filtered Spots : Filters by rating
-    Filtered Spots --> Study Spot : Selects Study Spot
-    Study Spot --> : Review Page : Adds Review
-    Review Page --> : Logged in : Submits Review
+    Register --> LoggedIn : Creates account
+    LoggedIn --> StudySpot : Selects Study Spot
+    StudySpot --> FilteredSpots : Filters by rating
+    FilteredSpots --> StudySpot : Selects Study Spot
+    StudySpot --> ReviewPage : Adds Review
+    ReviewPage --> LoggedIn : Submits Review
 ```
 
 #### Sequence Diagram
