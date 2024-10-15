@@ -206,22 +206,27 @@ stateDiagram
 
 ```mermaid
 sequenceDiagram
+    participant User
+    participant Frontend
+    participant Backend
+    participant Database
 
-participant ReactFrontend
-participant DjangoBackend
-participant MySQLDatabase
+    User ->> Frontend: Clicks on location name or map pin
+    Frontend ->> Backend: Send location details request (location ID)
+    Backend ->> Database: Query for location information
+    Database -->> Backend: Return location information
+    Backend ->> Database: Query for reviews and ratings
+    Database -->> Backend: Return reviews and ratings data
+    Backend -->> Frontend: Send location info and review data
+    Frontend -->> User: Display location details, comments, and rating
 
-ReactFrontend ->> DjangoBackend: HTTP Request (e.g., GET /api/data)
-activate DjangoBackend
+    User ->> Frontend: Submit new comment and rating
+    Frontend ->> Backend: Send new comment and rating
+    Backend ->> Database: Update comment and rating
+    Database -->> Backend: Confirm update
+    Backend -->> Frontend: Confirm successful update
+    Frontend -->> User: Display new comment and rating
 
-DjangoBackend ->> MySQLDatabase: Query (e.g., SELECT * FROM data_table)
-activate MySQLDatabase
-
-MySQLDatabase -->> DjangoBackend: Result Set
-deactivate MySQLDatabase
-
-DjangoBackend -->> ReactFrontend: JSON Response
-deactivate DjangoBackend
 ```
 
 ### Standards & Conventions
