@@ -206,17 +206,25 @@ classDiagram
     }
     class MainController {
         @POST
-        + String addNewUser(String username, String email)
+        + Boolean addNewUser(String username, String email)
         @GET
         + Boolean loginAttempt(String email, String password)
         @GET
-        + List<String> placeInfo(String placeName)
+        + Location placeInfo(String placeName)
         @POST
-        + String recommendPlace(String place, String typeOfPlace)
+        + Boolean recommendPlace(String place, String typeOfPlace)
         @POST
-        + Boolean addReview(String username, String, placeName, int rating)
+        + Boolean addReview(String username, String, placeName, int rating, String review)
         @POST
         + Boolean addFavoritePlace(String username, String placeName)
+        @GET
+        + List<Location> getFavoritePlaces(String username)
+        @GET
+        + List<Location> filterByRating(int rating)
+        @GET
+        + List<Location> filterByTask(String task)
+        @GET
+        +List<Location> filterBySearch(String place)
     }
     MainController <|-- User
     MainController <|-- Location
