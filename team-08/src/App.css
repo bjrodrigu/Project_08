@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.map {
+  height: 70vh;
+  width: 55%;
+  float: right;
+  margin-top: 70px;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
