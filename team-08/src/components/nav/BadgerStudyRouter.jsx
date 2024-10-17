@@ -16,7 +16,8 @@ export default function BadgerStudyRouter() {
             <Router>
                   <Routes>
                         <Route path='/' element={<BadgerStudy />}>
-                              <Route index path='home' element={<BadgerStudySearch />} />
+                              <Route index element={<BadgerStudySearch />} />
+                              <Route path='home' element={<BadgerStudySearch />} />
                               <Route path='location' element={<BadgerStudySpot />}/>
                               <Route path='register' />
                               <Route path='login' element={<BadgerLogin />}/>
