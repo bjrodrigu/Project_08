@@ -1,6 +1,9 @@
 import { Button } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
 
 export default function ReactLoginButton() {
+      const navigate = useNavigate();
+
       return(
             <Button variant="outline-secondary"
                   style={{left: '91vw', 
@@ -9,7 +12,8 @@ export default function ReactLoginButton() {
                   height: '4vw', 
                   borderRadius: '50%',
                   alignItems: 'center',
-                  justifyContent: 'center'}}>
+                  justifyContent: 'center'}} 
+                  onClick={() => navigate('/login')}>
             Sign
             <br />
             Up
