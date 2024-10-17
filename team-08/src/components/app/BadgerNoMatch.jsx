@@ -2,10 +2,11 @@ import { Card} from "react-bootstrap";
 import { Button } from 'react-bootstrap';
 import { useNavigate } from "react-router";
 
+// 404 redirect page
 export default function() {
       let navigate = useNavigate();
       const routeChange = () => {
-            let path ='home';
+            let path ='../';
             navigate(path);
       }
 
