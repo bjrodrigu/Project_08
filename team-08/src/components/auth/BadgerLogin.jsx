@@ -1,7 +1,8 @@
 import {useRef,useContext} from 'react';
 import { Form, Button} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext.jsx';
+
 export default function BadgerLogin() {
 
     // TODO Create the login component.
@@ -10,7 +11,7 @@ export default function BadgerLogin() {
 
     const navigate = useNavigate();
     const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
-    const link = "Backend-Api";
+    //const link = "Backend-Api";
 
     function handleLogin(e) {
         e?.preventDefault();
@@ -20,35 +21,40 @@ export default function BadgerLogin() {
             alert("You must provide both a username and password!");
             return;
         }
-       
-        fetch(link,{
-            method: "POST",
-            credentials: "include",
-            headers:{
-                // assumed we are going to use JSON to transfer data. 
-                "Content-Type": "application/json"
-            },
-            // assumed we are going to use JSON to transfer data. 
-            body: JSON.stringify({
-                username: usernameInput.current.value,
-                password: passwordInput.current.value
-            })
-        })
-        .then(res => {
-            if(res.status === 401){
-                alert("Error: Incorrect login, please try again.");
-            }
+        // Used for test
+        else {
+            setLoginStatus(true);
+            sessionStorage.setItem("isLoggedIn",usernameInput.current.value);
+            navigate('/');
+        }
+        // fetch(link,{
+        //     method: "POST",
+        //     credentials: "include",
+        //     headers:{
+        //         // assumed we are going to use JSON to transfer data. 
+        //         "Content-Type": "application/json"
+        //     },
+        //     // assumed we are going to use JSON to transfer data. 
+        //     body: JSON.stringify({
+        //         username: usernameInput.current.value,
+        //         password: passwordInput.current.value
+        //     })
+        // })
+        // .then(res => {
+        //     if(res.status === 401){
+        //         alert("Error: Incorrect login, please try again.");
+        //     }
             
-            if(res.status === 200){
-                alert("Your login is successfull");
-                const data = { username: usernameInput.current.value, loginStatus: 200 };
-                // we are going to use session storage to store if user is logged in 
-                sessionStorage.setItem("isLoggedIn",JSON.stringify(data));
-                setLoginStatus(200);
-                navigate('/');
-            }
+        //     if(res.status === 200){
+        //         alert("Your login is successfull");
+        //         const data = { username: usernameInput.current.value, loginStatus: 200 };
+        //         // we are going to use session storage to store if user is logged in 
+        //         sessionStorage.setItem("isLoggedIn",JSON.stringify(data));
+        //         setLoginStatus(200);
+        //         navigate('/');
+        //     }
             
-        })
+        // })
     }
     return <>
         <h1>Login</h1>
