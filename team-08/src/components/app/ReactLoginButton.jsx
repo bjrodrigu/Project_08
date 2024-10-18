@@ -1,6 +1,8 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 
+// Login/Signup Button Component
+// TODO Needs to detect login status and change redirection from sign up to login
 export default function ReactLoginButton() {
       const navigate = useNavigate();
 

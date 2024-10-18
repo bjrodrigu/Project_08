@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 
+// Component for individual locations in the search result page
 export default function BadgerSearchResult(location) {
+      // navigate to a particular location, saves location data which is served in the `state` variable
       let navigate = useNavigate();
-            const routeChange = () => {
-                  let path ='../location';
-                  navigate(path, {state: location});
-            }
+      const routeChange = () => {
+            let path ='../location';
+            navigate(path, {state: location});
+      }
       
       let [color, setColor] = useState('Light');
       

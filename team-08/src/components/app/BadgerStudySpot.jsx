@@ -4,15 +4,21 @@ import {useHolderjs} from 'use-holderjs';
 import BadgerReview from '../app/BadgerReview';
 import {ArrowLeft} from 'react-bootstrap-icons';
 
+// Component to display details, images and reviews for a particular location
+// TODO: create review button
 export default function BadgerStudySpot() {
+      // retrieve the currently selected location via useLocation and save to a state object
       const {state} = useLocation();
 
+      // create a navigate object
       let navigate = useNavigate();
-            const routeChange = () => {
-                  let path ='../home';
-                  navigate(path);
-            }
+      // create routeChange function to redirect to home
+      const routeChange = () => {
+            let path ='../';
+            navigate(path);
+      }
       
+      // dummy data for reviews
       const reviews = [
             {name: 'lorem', rating: 1.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim'},
             {name: 'ipsum', rating: 3.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim'},

@@ -12,6 +12,8 @@ const testData = [
       {name: 'amet', distance: 2.4, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2},
 ]
 
+// Primary Component of homepage. Has search, and shows results
+// TODO: Implement advanced filtered components, and filtering on updating form state
 export default function BadgerStudySearch() {
       const [query, setQuery] = useState('');
 

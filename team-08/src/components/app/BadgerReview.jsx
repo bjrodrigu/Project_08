@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 
+// Component to display details for a review. Has Title, description and rating
+// TODO: Needs to show user profile/name
 export default function BadgerSearchResult(review) {
       
       let [color, setColor] = useState('Light');
