@@ -8,7 +8,6 @@ import BadgerMap from './app/BadgerMap'
 export default function BadgerStudy() {
       return <>
             <BadgerMap />
-
             <ReactLoginButton />
             <div style={{ margin: '5vh 5vw 5vh 5vw' }}>
                   <Outlet />

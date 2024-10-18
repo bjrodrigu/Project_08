@@ -21,7 +21,7 @@ export default function BadgerStudySearch() {
       }, [query]);
 
       return <>      
-            <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem'}}>
+            <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '13vh'}}>
                   <Card.Header style={{padding: '2rem'}}>
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
