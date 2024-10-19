@@ -1,10 +1,10 @@
 import { Button } from "react-bootstrap";
 
-// Login/Signup Button Component
-// TODO Needs to detect login status and change redirection from sign up to login
-export default function ReactLoginButton() {
-      return(
-            <Button variant="outline-secondary"
+
+// Login Button Component
+// TODO: redirect to login page onClick
+export default function LoginButton() {
+      return (<Button variant="outline-secondary"
                   style={{left: '91vw', 
                   position: 'fixed', 
                   width: '4vw', 
@@ -12,9 +12,7 @@ export default function ReactLoginButton() {
                   borderRadius: '50%',
                   alignItems: 'center',
                   justifyContent: 'center'}}>
-            Sign
-            <br />
-            Up
+            Login
             </Button>
       );
 }
