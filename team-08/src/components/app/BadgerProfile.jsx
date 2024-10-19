@@ -2,14 +2,29 @@
 // In this component, user will be able to check their own comments and ratings, and they are able to edit them or remove them.
 // User could also click logout. 
 // Use Pagination
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Pagination } from 'react-bootstrap';
+import React, { useState, useEffect, useContext, useRef} from 'react';
+import { Card, Button, Pagination, Form } from 'react-bootstrap';
+import { useNavigate } from 'react-router';
+import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
 //style
 const containerStyle = {
     maxWidth: '600px',
     margin: '0 auto'
 };
+
+const userInfoStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '20px',
+    textAlign: 'center'
+}
 //example
+const user = {
+    email: 'user@example.com'
+};
+
 const reviews = [
     {
         location: 'Library - Studyspot 1',
@@ -78,7 +93,9 @@ export default function UserComments() {
     const [currentPage, setCurrentPage] = useState(1);
     //test
     const reviewsPerPage = 2;
+    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
 
+    const passwordInput = useRef();
     //const reviewsPerPage = 5;
 
     // // get current user's all reviews
@@ -95,7 +112,7 @@ export default function UserComments() {
     const indexOfLastReviews = currentPage * reviewsPerPage;
     const indexOfFirstReviews = indexOfLastReviews - reviewsPerPage;
     const currentReviews = reviews.slice(indexOfFirstReviews, indexOfLastReviews);
-
+    const navigate = useNavigate();
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -106,10 +123,60 @@ export default function UserComments() {
     const handleNextPage = (page) => {
         setCurrentPage(currentPage => currentPage + 1)
     };
+    // change password, user will be logged out.
+    const handlePasswordChange = (e) => {
+        e?.preventDefault();
+
+        if(passwordInput.current.value === ""){
+            alert("Password invalid!");
+            return;
+        }
+        //     fetch('/api/change-password', {
+        //         method: 'POST',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+
+        //         },
+        //         body: JSON.stringify({
+        //             currentPassword: currentPassword,
+        //             newPassword: newPassword
+        //         })
+        //     })
+        //     .then(response => {
+        //         if (!response.ok) {
+        //             return response.json().then(err => { throw new Error(err.message); });
+        //         }
+        //         return response.json();  
+        //     })
+        //     .then(result => {    
+        //         sessionStorage.removeItem('isLoggedIn');
+        //         setLoginStatus(undefined);
+        //         alert('Password changed successfully');
+        //         navigate('/');
+        //     })
+        //     .catch(error => {
+        //         console.error('Error changing password:', error);
+        //         alert(`Error: ${error.message}`);  
+        //     });
+
+        //test
+        sessionStorage.removeItem('isLoggedIn');
+        setLoginStatus(undefined);
+        alert('Password changed successfully');
+        navigate('/');
+    }
     return (
         <div>
-            <h2>Your Comments</h2>
+            <div style={userInfoStyle}>
+                <p>Email: {user.email}</p>
+                <Form>
+                    <Form.Label htmlFor='password' >password</Form.Label>
+                    <Form.Control id='password' type="password" ref={passwordInput}></Form.Control>
+                </Form>
+                <Button variant="primary" onClick={handlePasswordChange}>Change Password</Button>
+            </div>
             <div style={containerStyle}>
+            <h2>Your Comments</h2>
                 {currentReviews.map((review, index) => (
                     <Card key={index}>
                         <Card.Body>
