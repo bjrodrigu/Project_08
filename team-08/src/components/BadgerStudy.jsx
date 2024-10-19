@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom';
 // Primary class for router. Hosts login Button, and hosts outlet for redirects.
 export default function BadgerStudy() {
       const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
-      const hiddenPaths = ['/login', '/userprofile', '/register'];
+      const hiddenPaths = ['/login', '/userProfile', '/register'];
       const location = useLocation();
       return <>
             {!hiddenPaths.includes(location.pathname) && (
