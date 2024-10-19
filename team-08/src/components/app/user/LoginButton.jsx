@@ -1,10 +1,12 @@
 import { Button } from "react-bootstrap";
-
+import { useNavigate } from 'react-router-dom';
 
 // Login Button Component
-// TODO: redirect to login page onClick
 export default function LoginButton() {
-      return (<Button variant="outline-secondary"
+      const navigate = useNavigate();
+
+      return(
+            <Button variant="outline-secondary"
                   style={{left: '91vw', 
                   position: 'fixed', 
                   width: '4vw', 
@@ -12,6 +14,7 @@ export default function LoginButton() {
                   borderRadius: '50%',
                   alignItems: 'center',
                   justifyContent: 'center'}}>
+                  onClick={() => navigate('/login')}>
             Login
             </Button>
       );
