@@ -17,6 +17,7 @@ export default function BadgerStudyRouter() {
             <Router>
                   <Routes>
                         <Route path='/' element={<BadgerStudy />}>
+<<<<<<< HEAD
                               <Route index element={<BadgerStudySearch />} /> {/** home page */}
                               <Route path='location' element={<BadgerStudySpot />}/> {/** location page */}
                               <Route path='register' /> {/** sign up page */}
@@ -24,6 +25,14 @@ export default function BadgerStudyRouter() {
                               <Route path='userProfile' element={<BadgerUser />}/> {/** profile page */}
                               <Route path='review' /> {/** review page */}
                               <Route path='*'  element={<BadgerNoMatch />}/> {/** 404 page */}
+=======
+                              <Route index element={<BadgerStudySearch />} />
+                              <Route path='location' element={<BadgerStudySpot />}/>
+                              <Route path='register' />
+                              <Route path='login' element={<BadgerLogin />}/>
+                              <Route path='userProfile' element={<BadgerUser />} /> 
+                              <Route path='*'  element={<BadgerNoMatch />}/>
+>>>>>>> d970ad2 (added comments)
                         </Route>
                   </Routes>
             </Router>
