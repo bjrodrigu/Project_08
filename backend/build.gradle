@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.hibernate:hibernate-tools:5.6.15.Final'
+    }
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.4'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    implementation 'org.hibernate:hibernate-core:6.6.1.Final'
+    implementation 'org.hibernate.orm:hibernate-jpamodelgen:6.6.1.Final'
+	implementation 'org.hibernate:hibernate-tools:5.6.15.Final'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+task hibernateToolsTask {
+    doLast {
+        ant.taskdef(name: 'hibernatetool', classname: 'org.hibernate.tool.ant.HibernateToolTask', 
+                    classpath: configurations.runtimeClasspath.asPath)
+
+        ant.hibernatetool(destdir: 'src/main/java') {
+            configuration(configurationfile: 'src/main/resources/hibernate.cfg.xml') // Use the Hibernate config file for connection details
+            
+            hbm2java {
+                javatype(package: 'com.campus_rating_system.generated.entities') // The package where entities will be generated
+            }
+        }
+    }
+}
+
+
