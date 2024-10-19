@@ -2,7 +2,7 @@
 // In this component, user will be able to check their own comments and ratings, and they are able to edit them or remove them.
 // User could also click logout. 
 // Use Pagination
-import React, { useState, useEffect, useContext, useRef} from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
@@ -127,7 +127,7 @@ export default function UserComments() {
     const handlePasswordChange = (e) => {
         e?.preventDefault();
 
-        if(passwordInput.current.value === ""){
+        if (passwordInput.current.value === "") {
             alert("Password invalid!");
             return;
         }
@@ -170,13 +170,18 @@ export default function UserComments() {
             <div style={userInfoStyle}>
                 <p>Email: {user.email}</p>
                 <Form>
-                    <Form.Label htmlFor='password' >password</Form.Label>
-                    <Form.Control id='password' type="password" ref={passwordInput}></Form.Control>
+                    <Form.Control
+                        id='password'
+                        type="password"
+                        ref={passwordInput}
+                        placeholder="Enter your password"
+                    />
                 </Form>
+                <br></br>
                 <Button variant="primary" onClick={handlePasswordChange}>Change Password</Button>
             </div>
             <div style={containerStyle}>
-            <h2>Your Comments</h2>
+                <h2>Your Comments</h2>
                 {currentReviews.map((review, index) => (
                     <Card key={index}>
                         <Card.Body>
