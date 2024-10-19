@@ -8,6 +8,8 @@ import BadgerStudy from "../BadgerStudy";
 import BadgerNoMatch from '../app/BadgerNoMatch';
 import BadgerStudySearch from "../app/BadgerStudySearch";
 import BadgerStudySpot from '../app/BadgerStudySpot';
+import BadgerLogin from "../auth/BadgerLogin";
+import BadgerUser from "../app/BadgerUser";
 
 // Router Component
 export default function BadgerStudyRouter() {
@@ -16,9 +18,10 @@ export default function BadgerStudyRouter() {
                   <Routes>
                         <Route path='/' element={<BadgerStudy />}>
                               <Route index element={<BadgerStudySearch />} />
-                              <Route path='location' element={<BadgerStudySpot />}/> {/**Location page */}
                               <Route path='register' /> {/** sign up page */}
-                              <Route path='login' /> {/** login page */}
+                              <Route path='login' element={<BadgerLogin />}/> {/** login page */}
+                              <Route path='userProfile' element={<BadgerUser />}/> {/** profile page */}
+                              <Route path='location' element={<BadgerStudySpot />}/> {/**Location page */}
                               <Route path='review' /> {/** review page */}
                               <Route path='*'  element={<BadgerNoMatch />}/> {/** 404 page */}
                         </Route>
