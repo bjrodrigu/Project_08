@@ -1,9 +1,10 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 
-// Login/Signup Button Component
-// TODO Needs to detect login status and change redirection from sign up to login
-export default function ReactLoginButton() {
+// UserPage Button Component
+// TODO Needs to detect login status and change redirection from main page to user profile
+//TODO Needs to find current user name
+export default function UserPageButton() {
       const navigate = useNavigate();
 
       return(
@@ -15,10 +16,10 @@ export default function ReactLoginButton() {
                   borderRadius: '50%',
                   alignItems: 'center',
                   justifyContent: 'center'}} 
-                  onClick={() => navigate('/login')}>
-            Sign
+                  onClick={() => navigate('/userProfile')}>
+            User 
             <br />
-            Up
+            Name
             </Button>
       );
 }
