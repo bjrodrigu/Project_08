@@ -1,6 +1,7 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 
+
 // Login Button Component
 export default function LoginButton() {
       const navigate = useNavigate();
@@ -13,7 +14,7 @@ export default function LoginButton() {
                   height: '4vw', 
                   borderRadius: '50%',
                   alignItems: 'center',
-                  justifyContent: 'center'}}>
+                  justifyContent: 'center'}}
                   onClick={() => navigate('/login')}>
             Login
             </Button>
