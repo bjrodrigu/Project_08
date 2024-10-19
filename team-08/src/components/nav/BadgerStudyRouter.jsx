@@ -22,7 +22,6 @@ export default function BadgerStudyRouter() {
                               <Route path='register' /> {/** sign up page */}
                               <Route path='login' element={<BadgerLogin />}/> {/** login page */}
                               <Route path='userProfile' element={<BadgerUser />}/> {/** profile page */}
-                              <Route path='location' element={<BadgerStudySpot />}/> {/**Location page */}
                               <Route path='review' /> {/** review page */}
                               <Route path='*'  element={<BadgerNoMatch />}/> {/** 404 page */}
                         </Route>
