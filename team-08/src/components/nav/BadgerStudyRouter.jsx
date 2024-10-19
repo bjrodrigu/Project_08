@@ -18,11 +18,11 @@ export default function BadgerStudyRouter() {
                   <Routes>
                         <Route path='/' element={<BadgerStudy />}>
                               <Route index element={<BadgerStudySearch />} />
-                              <Route path='location' element={<BadgerStudySpot />}/> {/**Location page */}
                               <Route path='register' /> {/** sign up page */}
                               <Route path='login' element={<BadgerLogin />}/> {/** login page */}
+                              <Route path='userProfile' element={<BadgerUser />}/> {/** profile page */}
+                              <Route path='location' element={<BadgerStudySpot />}/> {/**Location page */}
                               <Route path='review' /> {/** review page */}
-                              <Route path='userProfile' element={<BadgerUser />}/>
                               <Route path='*'  element={<BadgerNoMatch />}/> {/** 404 page */}
                         </Route>
                   </Routes>
