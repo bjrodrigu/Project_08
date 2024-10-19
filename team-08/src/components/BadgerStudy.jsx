@@ -3,10 +3,6 @@ import { Outlet } from 'react-router-dom';
 import UserOverlay from './app/user/UserOverlay';
 import { LoginContext, LoginContextProvider } from './contexts/LoginContext';
 
-<<<<<<< HEAD
-
-=======
->>>>>>> d970ad2 (added comments)
 // Primary class for router. Hosts login Button, and hosts outlet for redirects.
 export default function BadgerStudy() {
 
