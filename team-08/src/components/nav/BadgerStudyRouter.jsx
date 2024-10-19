@@ -43,5 +43,7 @@ export default function BadgerStudyRouter() {
                   </Router>
             </BadgerLoginStatusContext.Provider>
             </div>
+
+
       )
 }
