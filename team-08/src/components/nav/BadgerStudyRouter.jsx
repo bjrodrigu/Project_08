@@ -10,7 +10,8 @@ import BadgerStudySearch from "../app/BadgerStudySearch";
 import BadgerStudySpot from '../app/BadgerStudySpot';
 import BadgerLogin from "../auth/BadgerLogin";
 import BadgerUser from "../app/BadgerUser";
-import BadgerLoginStatusContext from "../contexts/BadgerLoginStatusContext";
+import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+
 import { useEffect, useState } from "react";
 // Router Component
 export default function BadgerStudyRouter() {
@@ -26,6 +27,7 @@ export default function BadgerStudyRouter() {
       }, []);
 
       return (
+            <div>
             <BadgerLoginStatusContext.Provider value={[loginStatus, setLoginStatus]}>
                   <Router>
                         <Routes>
@@ -40,5 +42,6 @@ export default function BadgerStudyRouter() {
                         </Routes>
                   </Router>
             </BadgerLoginStatusContext.Provider>
+            </div>
       )
 }

@@ -3,7 +3,9 @@ import BadgerStudySearch from "./app/BadgerStudySearch"
 import ReactLoginButton from './app/ReactLoginButton'
 import BadgerUserButton from './app/BadgerUserButton';
 import { useContext } from 'react';
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import BadgerLoginStatusContext from './contexts/BadgerLoginStatusContext';
+
+
 
 // Primary class for router. Hosts login Button, and hosts outlet for redirects.
 export default function BadgerStudy() {
