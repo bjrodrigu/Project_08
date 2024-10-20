@@ -6,6 +6,8 @@ import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import './BadgerProfileStyle.css';
+import BadgerLogoutButton from '../auth/BadgerLogoutButton';
 //style
 const containerStyle = {
     maxWidth: '600px',
@@ -167,6 +169,9 @@ export default function UserComments() {
     }
     return (
         <div>
+            <Button className="button-top-left" variant="primary" onClick={() => { navigate('/') }}>
+                Back
+            </Button>
             <div style={userInfoStyle}>
                 <p>Email: {user.email}</p>
                 <Form>
@@ -207,6 +212,8 @@ export default function UserComments() {
                     </Pagination>
                 </div>
             </div>
+            <BadgerLogoutButton />
+            
         </div >
     );
 }

@@ -35,7 +35,7 @@ export default function BadgerLogoutButton() {
     };
 
     return (
-        <Button variant="danger" onClick={handleLogout}>  
+        <Button style={{ display: 'block', margin: '0 auto' }}  variant="danger" onClick={handleLogout}>  
             Logout
         </Button>
     );
