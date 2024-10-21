@@ -12,12 +12,28 @@ const testData = [
       {name: 'amet', distance: 2.4, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2},
 ]
 
+// TODO: fetch data from api
+
 // Primary Component of homepage. Has search, and shows results
 // TODO: Implement advanced filtered components, and filtering on updating form state
 export default function BadgerStudySearch() {
       const [query, setQuery] = useState('');
+      const [filterData, setFilterData] = useState([]);
+      const params = ['name', 'distance', 'description', 'rating']
 
       useEffect(() => {
+            if (query == '') {
+                  setFilterData(testData);
+            } else {
+                  let temp = testData.filter(entry => {
+                        return params.some(param => {
+                              // console.log(entry[param].toString().includes(query));
+                              return entry[param].toString().includes(query);
+                        })
+                  })
+                  console.log(temp);
+                  setFilterData(temp);
+            }
       }, [query]);
 
       return <>      
@@ -30,11 +46,11 @@ export default function BadgerStudySearch() {
                         </Form>
                   </Card.Header>
                   <Card.Body style={{paddingLeft: '2rem', paddingRight: '2rem'}}>
-                        {query == '' && testData.map((location) => {
+                        {filterData.map((location) => {
                                     return <BadgerSearchResult key={location.name} {...location}/>
                               })
                         }
-                        {!query == '' && <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', height: '72vh', margin: '2vh 1.5vw 2vh 1.5vw'}}>
+                        {filterData == '' && <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', height: '72vh', margin: '2vh 1.5vw 2vh 1.5vw'}}>
                               <div style={{
                                     display: 'flex',
                                     alignItems: 'center',
