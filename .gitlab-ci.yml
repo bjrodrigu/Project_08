@@ -12,18 +12,15 @@
 
 image: gradle:jdk17
 
-variables:
-  PROJECT_DIR: campus_rating_system
-
 before_script:
-  - echo "Current directory: $(pwd)"
+  - cd campus_rating_system
   - GRADLE_USER_HOME="$(pwd)/.gradle"
   - export GRADLE_USER_HOME
 
 build:
   stage: build
   script:
-    - cd $PROJECT_DIR
+    - cd campus_rating_system
     - gradle --build-cache assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
@@ -35,7 +32,7 @@ build:
 test:
   stage: test
   script:
-    - cd $PROJECT_DIR
+    - cd campus_rating_system
     - gradle check
   cache:
     key: "$CI_COMMIT_REF_NAME"
