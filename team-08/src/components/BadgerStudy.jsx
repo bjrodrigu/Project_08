@@ -1,6 +1,5 @@
 import { Outlet } from 'react-router-dom'
 import BadgerStudySearch from "./app/BadgerStudySearch"
-import ReactLoginButton from './app/ReactLoginButton'
 import BadgerMap from './app/BadgerMap'
 import LoginButton from './app/LoginButton'
 import { useContext } from 'react'
