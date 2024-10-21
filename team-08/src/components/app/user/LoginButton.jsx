@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 
 // Login Button Component
-export default function LoginButton() {
+export default function ReactLoginButton() {
       const navigate = useNavigate();
-
       return(
             <Button variant="outline-secondary"
                   style={{left: '91vw', 
@@ -14,9 +13,11 @@ export default function LoginButton() {
                   height: '4vw', 
                   borderRadius: '50%',
                   alignItems: 'center',
-                  justifyContent: 'center'}}
+                  justifyContent: 'center'}} 
                   onClick={() => navigate('/login')}>
-            Login
+            Sign
+            <br />
+            Up
             </Button>
       );
 }
