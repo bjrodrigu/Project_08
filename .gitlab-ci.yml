@@ -13,10 +13,16 @@
 image: gradle:jdk17
 
 variables:
-  PROJECT_DIR: ./campus_rating_system
+  PROJECT_DIR: campus_rating_system
 
 before_script:
+  - echo "Current directory: $(pwd)"
+  - echo "Listing files in current directory:"
+  - ls -la
   - cd $PROJECT_DIR
+  - echo "Changed directory to $(pwd)"
+  - echo "Listing files in $PROJECT_DIR:"
+  - ls -la
   - GRADLE_USER_HOME="$(pwd)/.gradle"
   - export GRADLE_USER_HOME
 
