@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import UserOverlay from './app/user/UserOverlay';
 import { LoginContext, LoginContextProvider } from './contexts/LoginContext';

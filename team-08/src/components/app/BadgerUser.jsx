@@ -1,7 +1,7 @@
 // this component can only be shown after user clicks login 
 // In this component, user will be able to check their own comments and ratings, and they are able to edit them or remove them.
 // User could also click logout. 
-import BadgerLogoutButton from "../auth/BadgerLogoutButton"
+import BadgerLogoutButton from "../auth/useLogout"
 import { Card, Button, Row, Col } from 'react-bootstrap';
 const reviews = [
     { name: '1', imageUrl: 'path-to-image-1', question: '123' },
