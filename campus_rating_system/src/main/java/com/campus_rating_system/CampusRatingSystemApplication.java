@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CampusRatingSystemApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CampusRatingSystemApplication.class, args);
-	}
+        SpringApplication.run(CampusRatingSystemApplication.class, args);
+    }
 
 }
