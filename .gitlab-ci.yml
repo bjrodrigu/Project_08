@@ -13,7 +13,7 @@
 image: gradle:jdk17
 
 variables:
-  PROJECT_DIR: campus_rating_system
+  PROJECT_DIR: ./campus_rating_system
 
 before_script:
   - cd $PROJECT_DIR
