@@ -13,6 +13,7 @@
 image: gradle:jdk17
 
 before_script:
+  - ls la
   - cd campus_rating_system
   - GRADLE_USER_HOME="$(pwd)/.gradle"
   - export GRADLE_USER_HOME
