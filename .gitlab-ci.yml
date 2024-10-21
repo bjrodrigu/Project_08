@@ -21,7 +21,6 @@ before_script:
 build:
   stage: build
   script:
-    - cd campus_rating_system
     - gradle --build-cache assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
@@ -33,7 +32,6 @@ build:
 test:
   stage: test
   script:
-    - cd campus_rating_system
     - gradle check
   cache:
     key: "$CI_COMMIT_REF_NAME"
