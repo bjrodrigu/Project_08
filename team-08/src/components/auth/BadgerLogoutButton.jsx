@@ -1,0 +1,42 @@
+import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from 'react-bootstrap';  
+import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+
+export default function BadgerLogoutButton() {
+    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
+    const navigate = useNavigate();
+    //const link = "Backend-Api";
+
+    const handleLogout = () => {
+        // fetch(link, {
+        //     method: 'POST',
+        //     headers: {
+        //         // Authorization
+        //     },
+        //     credentials: "include"
+        // })
+        // .then(res => res.json())
+        // .then(json => {
+        //     if (json.msg === "You have been logged out! Goodbye.") {
+        //         sessionStorage.removeItem('isLoggedIn');
+        //         setLoginStatus(undefined);
+        //         alert("You have been logged out!");
+        //         navigate('/'); 
+        //     }
+        // })
+        // .catch(err => {
+        //     console.error("Logout failed: ", err);
+        // });
+        sessionStorage.removeItem('isLoggedIn');
+        setLoginStatus(undefined);
+        alert("You have been logged out!");
+        navigate('/'); 
+    };
+
+    return (
+        <Button variant="danger" onClick={handleLogout}>  
+            Logout
+        </Button>
+    );
+}
