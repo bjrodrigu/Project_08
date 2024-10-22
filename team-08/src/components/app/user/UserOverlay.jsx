@@ -53,7 +53,7 @@ export default function ReactRegisterButton() {
             </>);
       }
       // show register on login page
-      else if (location.pathname == 'login') {
+      else if(location.pathname == '/login') {
             return <RegisterButton />;
       }
       else if (location.pathname == '/userProfile') {
