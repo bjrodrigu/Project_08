@@ -21,5 +21,5 @@ export default function BadgerSearchResult(review) {
                   </Card.Body>
             </Card>
       </>
-     
+
 }

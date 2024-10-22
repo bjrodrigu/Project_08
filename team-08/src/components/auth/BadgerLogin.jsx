@@ -1,7 +1,7 @@
 import {useRef,useContext} from 'react';
 import { Form, Button, Row, Col} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
 
 
