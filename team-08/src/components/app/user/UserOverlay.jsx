@@ -10,7 +10,7 @@ export default function ReactRegisterButton() {
       // consume current outlet
       let location = useLocation();
       // const {login, setLogin, user, setUser} = useLoginState();
-      const login = false; //Test Snippet
+      const login = true; //Test Snippet
 
       // show user if logged in
       if(login) {
