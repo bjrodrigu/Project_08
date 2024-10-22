@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';  
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import { useLoginState } from '../contexts/LoginContext';
 
-export default function BadgerLogoutButton() {
-    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
+export default function useLogout() {
     const navigate = useNavigate();
     //const link = "Backend-Api";
-
+    const {user, setUser, login, setLogin} = useLoginState();
+    
     const handleLogout = () => {
         // fetch(link, {
         //     method: 'POST',
@@ -29,14 +29,12 @@ export default function BadgerLogoutButton() {
         //     console.error("Logout failed: ", err);
         // });
         sessionStorage.removeItem('isLoggedIn');
-        setLoginStatus(undefined);
+        setLogin(false);
+        setUser(null);
         alert("You have been logged out!");
         navigate('/'); 
     };
 
-    return (
-        <Button variant="danger" onClick={handleLogout}>  
-            Logout
-        </Button>
-    );
+    return handleLogout;
+        
 }

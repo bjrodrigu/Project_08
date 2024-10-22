@@ -1,15 +1,15 @@
 import {useRef,useContext} from 'react';
 import { Form, Button} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import { useLoginState } from '../contexts/LoginContext';
 export default function BadgerLogin() {
 
     // TODO Create the login component.
+    const {user, setUser, login, setLogin} = useLoginState();
     const usernameInput = useRef();
     const passwordInput = useRef();
 
     const navigate = useNavigate();
-    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
     //const link = "Backend-Api";
 
     function handleLogin(e) {
@@ -21,7 +21,8 @@ export default function BadgerLogin() {
             return;
             //used to test. 
         } else {
-            setLoginStatus(200);
+            setLogin(true);
+            setUser(usernameInput.current.value)
             sessionStorage.setItem("isLoggedIn",usernameInput.current.value);
             navigate('/');
         }
