@@ -5,8 +5,10 @@ import { Button } from "react-bootstrap";
 // TODO: redirect to register page onClick
 export default function RegisterButton() {
       return (<Button variant="outline-secondary"
-            style={{width: '4vw',
-            height: '4vw',
+            style={{left: '91vw', 
+            position: 'fixed', 
+            width: '5vw',
+            height: '5vw',
             borderRadius: '50%',
             alignItems: 'center',
             justifyContent: 'center'}}>

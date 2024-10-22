@@ -9,9 +9,8 @@ import RegisterButton from "./RegisterButton";
 export default function ReactRegisterButton() {
       // consume current outlet
       let location = useLocation();
-
       // const {login, setLogin, user, setUser} = useLoginState();
-      const login = true; //Test Snippet
+      const login = false; //Test Snippet
 
       // show user if logged in
       if(login) {
@@ -42,7 +41,7 @@ export default function ReactRegisterButton() {
             </>);
       } 
       // show register on login page
-      else if(location.pathname == 'login') {
+      else if(location.pathname == '/login') {
             return <RegisterButton />;
       } 
       // default case, return login

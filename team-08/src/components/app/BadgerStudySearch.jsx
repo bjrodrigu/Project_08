@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {Form, Card} from 'react-bootstrap';
+import {Form, Card, ListGroup, ListGroupItem} from 'react-bootstrap';
 import BadgerSearchResult from './BadgerSearchResult';
+import { Filter, ArrowDown, ArrowUp} from 'react-bootstrap-icons';
 
 // dummy values for testing
 const testData = [
@@ -19,8 +20,10 @@ const testData = [
 export default function BadgerStudySearch() {
       const [query, setQuery] = useState('');
       const [filterData, setFilterData] = useState([]);
+      const [sort, setSort] = useState(1);
       const params = ['name', 'distance', 'description', 'rating']
 
+      // Filter data
       useEffect(() => {
             if (query == '') {
                   setFilterData(testData);
@@ -28,21 +31,48 @@ export default function BadgerStudySearch() {
                   let temp = testData.filter(entry => {
                         return params.some(param => {
                               // console.log(entry[param].toString().includes(query));
-                              return entry[param].toString().includes(query);
+                              return entry[param].toString().toLowerCase().includes(query.toLowerCase());
                         })
                   })
-                  console.log(temp);
+                  // console.log(temp);
                   setFilterData(temp);
             }
       }, [query]);
 
+      // sort ascending or descending
+      useEffect(() => {
+            if(sort == 1) {
+                  filterData.sort((a, b) => {
+                        if (a['distance'] > b['distance']) {
+                              return -1;
+                        } else if (a['distsnace'] < b['distance']) {
+                              return 1;
+                        } return 0;
+                  });
+            } else {
+                  filterData.sort((a, b) => {
+                        if (a['distance'] < b['distance']) {
+                              return -1;
+                        } else if (a['distance'] > b['distance']) {
+                              return 1;
+                        } return 0;
+                  })
+            }
+      }, [sort]);
+
       return <>      
             <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem'}}>
-                  <Card.Header style={{padding: '2rem'}}>
+                  <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
                                     <Form.Control onInput={e=> setQuery(e.target.value)} type="text" placeholder="Search for a Location" style={{height: '3rem', }}/>
                               </Form.Group>
+                              <br />
+                              <Form.Select size='sm' style={{width: '5rem'}} onChange={e => setSort(e.target.value)} defaultValue={1}>
+                                    <option disabled={true}><Filter style={{backgroundSize: '10px'}} />Sort</option>
+                                    <option value={1}>Distance Ascending<ArrowUp /></option>
+                                    <option value={2}>Distance Descending<ArrowDown /></option>
+                              </Form.Select>
                         </Form>
                   </Card.Header>
                   <Card.Body style={{paddingLeft: '2rem', paddingRight: '2rem'}}>
