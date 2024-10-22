@@ -7,7 +7,7 @@ import RegisterButton from "./RegisterButton";
 import useLogout from "../../auth/useLogout";
 import BadgerUser from "../BadgerUser";
 
-//
+
 // Component displays user profile dropdown on hover
 export default function ReactRegisterButton() {
       // consume current outlet
