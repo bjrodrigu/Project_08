@@ -32,7 +32,8 @@ build:
 test:
   stage: test
   script:
-    - gradle check
+    - gradle checkstyleMain
+    - gradle checkstyleTest
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
