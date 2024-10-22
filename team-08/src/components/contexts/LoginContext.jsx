@@ -20,7 +20,7 @@ const LoginContextProvider = ({children}) => {
 const useLoginState = () => {
       // retrieve context
       const context = useContext(LoginContext);
-
+      
       // throw error if retrieval fails
       if (context === undefined) {
             throw new Error('useLoginState was used outside its Provider');

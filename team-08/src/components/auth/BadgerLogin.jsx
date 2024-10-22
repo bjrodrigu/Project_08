@@ -8,11 +8,11 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 export default function BadgerLogin() {
 
     // TODO Create the login component.
+    const {user, setUser, login, setLogin} = useLoginState();
     const usernameInput = useRef();
     const passwordInput = useRef();
 
     const navigate = useNavigate();
-    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
     //const link = "Backend-Api";
 
     // create routeChange function to redirect to home
@@ -30,7 +30,8 @@ export default function BadgerLogin() {
             return;
             //used to test. 
         } else {
-            setLoginStatus(200);
+            setLogin(true);
+            setUser(usernameInput.current.value)
             sessionStorage.setItem("isLoggedIn",usernameInput.current.value);
             navigate('/');
         }
