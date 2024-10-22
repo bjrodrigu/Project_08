@@ -1,16 +1,25 @@
 import {useRef,useContext} from 'react';
-import { Form, Button} from 'react-bootstrap';
+import { Form, Button, Row, Col} from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext';
+import { useLoginState } from '../contexts/LoginContext';
+import { ArrowLeft } from 'react-bootstrap-icons';
+
+
 export default function BadgerLogin() {
 
     // TODO Create the login component.
+    const {user, setUser, login, setLogin} = useLoginState();
     const usernameInput = useRef();
     const passwordInput = useRef();
 
     const navigate = useNavigate();
-    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
     //const link = "Backend-Api";
+
+    // create routeChange function to redirect to home
+    const routeChange = () => {
+        let path ='../';
+        navigate(path);
+    }
 
     function handleLogin(e) {
         e?.preventDefault();
@@ -21,7 +30,8 @@ export default function BadgerLogin() {
             return;
             //used to test. 
         } else {
-            setLoginStatus(200);
+            setLogin(true);
+            setUser(usernameInput.current.value)
             sessionStorage.setItem("isLoggedIn",usernameInput.current.value);
             navigate('/');
         }
@@ -56,15 +66,36 @@ export default function BadgerLogin() {
         // })
     }
     return <>
-        <h1>Login</h1>
+        <Row style={{width: '85vw'}}>
+            <Col sm='1'>
+                <Button variant='outline-info' onClick={routeChange} style={{borderRadius: '50%', height: '3rem', width: '3rem'}}><ArrowLeft /></Button>
+            </Col>
+            <Col sm='11'>
+                <h1>Login</h1>
+            </Col>
+        </Row>
         <Form>
-            <Form.Label htmlFor='userName' >username</Form.Label>
-            <Form.Control id='userName' ref={usernameInput}></Form.Control>
-            <Form.Label htmlFor='password' >password</Form.Label>
-            <Form.Control id='password' type="password" ref={passwordInput}></Form.Control>
-            
-            <br />
-            <Button type="submit" variant="primary" onClick={handleLogin} >Login</Button>
+            <Row style={{width: '85vw'}}>
+                <Col sm='1'></Col>
+                <Col sm='11'>
+                    <Form.Label htmlFor='userName' >username</Form.Label>
+                    <Form.Control id='userName' ref={usernameInput}></Form.Control>
+                </Col>
+            </Row>
+            <Row style={{width: '85vw'}}>
+                <Col sm='1'></Col>
+                <Col sm='11'>
+                    <Form.Label htmlFor='password' >password</Form.Label>
+                    <Form.Control id='password' type="password" ref={passwordInput}></Form.Control>
+                </Col>
+            </Row>
+            <Row style={{width: '85vw'}}>
+                <Col sm='1'></Col>
+                <Col sm='11'>
+                    <br />
+                    <Button type="submit" variant="primary" onClick={handleLogin} >Login</Button>
+                </Col>
+            </Row>
         </Form>
     </>
 }
