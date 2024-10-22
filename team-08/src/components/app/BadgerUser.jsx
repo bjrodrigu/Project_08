@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
-import BadgerLoginStatusContext from '../contexts/BadgerLoginStatusContext'
+import { LoginContext } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
 //style
 const backButtonStyle = {
@@ -97,7 +97,7 @@ export default function UserComments() {
     const [currentPage, setCurrentPage] = useState(1);
     //test
     const reviewsPerPage = 2;
-    const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
+    const [user, setUser, login, setLogin] = useContext(LoginContext);
 
     const passwordInput = useRef();
     //const reviewsPerPage = 5;
