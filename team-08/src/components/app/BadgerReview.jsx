@@ -8,7 +8,7 @@ import { useEffect, useState, useContext } from 'react';
 export default function BadgerSearchResult(review) {
       let [color, setColor] = useState('Light');
 
-      return
+      return <>
             <Card border={color.toLowerCase()} onMouseEnter={() => { setColor('Info'); }} onMouseLeave={() => { setColor('Light'); }} style={{ height: 'auto', borderRadius: '1.5rem', marginTop: '2rem' }}>
                   <Card.Header style={{ paddingLeft: '1rem', paddingTop: '1rem' }}>
                         <Card.Title >{review.name}</Card.Title>
@@ -20,5 +20,6 @@ export default function BadgerSearchResult(review) {
                         <Card.Text >{review.review}</Card.Text>
                   </Card.Body>
             </Card>
-     
+      </>
+
 }

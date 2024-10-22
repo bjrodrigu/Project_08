@@ -1,31 +1,24 @@
 import { Outlet } from 'react-router-dom'
-import BadgerStudySearch from "./app/BadgerStudySearch"
 import BadgerMap from './app/BadgerMap'
-import LoginButton from './app/LoginButton'
 import { useContext } from 'react'
 import BadgerLoginStatusContext from './contexts/BadgerLoginStatusContext'
-import UserPageButton from './app/UserPageButton'
 import { useLocation } from 'react-router-dom';
-
-
-// use location hook from reach router to determine the current path and conditionally render map depending on path
+import { useContext, useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import UserOverlay from './app/user/UserOverlay';
+import { LoginContext, LoginContextProvider } from './contexts/LoginContext';
 
 // Primary class for router. Hosts login Button, and hosts outlet for redirects.
 export default function BadgerStudy() {
-      const [loginStatus, setLoginStatus] = useContext(BadgerLoginStatusContext);
-      const hiddenPaths = ['/login', '/userprofile', '/register'];
       const location = useLocation();
-      return (
-            <>
-                  {!hiddenPaths.includes(location.pathname) && (
-                        <>
-                              {location.pathname !== '/login' && <BadgerMap />}
-                              {loginStatus ? <UserPageButton /> : <LoginButton />}
-                        </>
-                  )}
-                  <div style={{ margin: '5vh 5vw 5vh 5vw' }}>
+
+      return <>
+            <LoginContextProvider>
+                  location.pathname !== '/login' && <BadgerMap />
+                  <UserOverlay />
+                  <div style={{margin:'5vh 5vw 5vh 5vw'}}>
                         <Outlet />
                   </div>
-            </>
-      );
+            </LoginContextProvider>
+      </>
 }

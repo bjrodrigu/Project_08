@@ -54,6 +54,7 @@ export default function BadgerStudySpot() {
                               </Carousel.Item>
                         </Carousel>
                   </Card.Header>
+                  {/* show reviews */}
                   <Card.Body>
                         {reviews.map((review) => {
                               return <BadgerReview key={review.name} {...review} />
