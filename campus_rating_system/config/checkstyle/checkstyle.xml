@@ -30,7 +30,9 @@
             <property name="tokens" value="COMMA"/>
         </module>
 
-        <module name="Indentation"/>
+        <module name="Indentation">
+            <property name="lineWrappingIndentation" value="6"/>
+        </module>
 
         <!-- Ensure JavaDoc comments are present for classes -->
         <module name="JavadocType"/>
