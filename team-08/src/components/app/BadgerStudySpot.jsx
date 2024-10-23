@@ -28,7 +28,7 @@ export default function BadgerStudySpot() {
       ]
 
       return <>
-            <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem', position: "absolute", top: '13vh'}}>
+            <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem', position: "absolute", top: '9vh', left: '2vw'}}>
                   <Card.Header style={{paddingLeft: '2rem', paddingTop: '2rem', paddingBottom: '2rem'}}>
                         <Row>
                               <Col sm="2">

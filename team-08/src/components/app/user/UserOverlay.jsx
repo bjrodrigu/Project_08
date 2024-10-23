@@ -1,11 +1,10 @@
 import { DropdownButton, ButtonGroup, Dropdown } from "react-bootstrap";
 import { useLoginState } from "../../contexts/LoginContext";
-import { useLocation} from "react-router";
+import { useLocation } from "react-router";
 import { useNavigate } from 'react-router-dom';
 import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
 import useLogout from "../../auth/useLogout";
-import BadgerUser from "../BadgerUser";
 
 
 // Component displays user profile dropdown on hover
@@ -22,6 +21,7 @@ export default function ReactRegisterButton() {
             return (<>
                   <Dropdown title='User' className='rounded-pill'
                         style={{
+                              top: '2vh',
                               left: '91vw',
                               position: 'fixed',
                               alignItems: 'center',
@@ -36,8 +36,8 @@ export default function ReactRegisterButton() {
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                               <Dropdown.Item
-                                    variant="outline-secondary" 
-                                    onClick={() => {navigate("/userProfile")}}>
+                                    variant="outline-secondary"
+                                    onClick={() => { navigate("/userProfile") }}>
                                     Your Profile
                               </Dropdown.Item>
                               <Dropdown.Item variant="outline-secondary" >
@@ -53,7 +53,7 @@ export default function ReactRegisterButton() {
             </>);
       }
       // show register on login page
-      else if(location.pathname == '/login') {
+      else if (location.pathname == '/login') {
             return <RegisterButton />;
       }
       else if (location.pathname == '/userProfile') {
