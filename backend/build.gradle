@@ -48,20 +48,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-task hibernateToolsTask {
-    doLast {
-        ant.taskdef(name: 'hibernatetool', classname: 'org.hibernate.tool.ant.HibernateToolTask', 
-                    classpath: configurations.runtimeClasspath.asPath)
-
-        ant.hibernatetool(destdir: 'src/main/java') {
-            configuration(configurationfile: 'src/main/resources/hibernate.cfg.xml') // Use the Hibernate config file for connection details
-            
-            hbm2java {
-                javatype(package: 'com.campus_rating_system.generated.entities') // The package where entities will be generated
-            }
-        }
-    }
-}
-
-
