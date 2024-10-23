@@ -48,7 +48,7 @@ const studySpots = [
 const BadgerMap = () => {
     return (
         <div>
-            <APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+            <APIProvider apiKey={"AIzaSyDGD9XcxSP_o0ihFPWNnoiWPRYkYH0ZYvQ"}>
                 <div className="map">
                     <Map
                         defaultZoom={16}

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
-import { LoginContext } from '../contexts/LoginContext'
+import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
 //style
 const backButtonStyle = {
@@ -97,7 +97,7 @@ export default function UserComments() {
     const [currentPage, setCurrentPage] = useState(1);
     //test
     const reviewsPerPage = 2;
-    const [user, setUser, login, setLogin] = useContext(LoginContext);
+    // const { user, setUser, login, setLogin } = useLoginState();
 
     const passwordInput = useRef();
     //const reviewsPerPage = 5;
@@ -128,6 +128,8 @@ export default function UserComments() {
         setCurrentPage(currentPage => currentPage + 1)
     };
     const logout = useLogout();
+
+    
     // change password, user will be logged out.
     const handlePasswordChange = (e) => {
         e?.preventDefault();

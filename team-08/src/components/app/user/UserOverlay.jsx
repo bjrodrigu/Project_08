@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import LoginButton from "./LoginButton";
 import RegisterButton from "./RegisterButton";
 import useLogout from "../../auth/useLogout";
-import BadgerUser from "../BadgerUser";
 
 
 // Component displays user profile dropdown on hover

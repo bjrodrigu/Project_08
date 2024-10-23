@@ -13,7 +13,7 @@ export default function BadgerStudy() {
             <LoginContextProvider>
                   {location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/userProfile' && <BadgerMap />}
                   <UserOverlay />
-                  <div style={{}}>
+                  <div>
                         <Outlet />
                   </div>
             </LoginContextProvider>
