@@ -68,16 +68,16 @@ export default function BadgerLogin() {
     return (
         <>
           <Row style={{ width: '85vw', marginBottom: '2rem' }}>
-            <Col sm='1'>
+            <Col sm='2'>
               <Button
                 variant='outline-info'
                 onClick={routeChange}
-                style={{ top: '2vh', left: '2vh', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
+                style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
               >
                 <ArrowLeft />
               </Button>
             </Col>
-            <Col sm='11' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}>
+            <Col sm='10' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}>
               <h1>Login</h1>
             </Col>
           </Row>
