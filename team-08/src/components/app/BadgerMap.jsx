@@ -9,7 +9,6 @@ const studySpots = [
     {
         id: '1',
         field_address: {
-            locality: 'Madison',
             postal_code: '53703',
             latitude: 43.0729,
             longitude: -89.4012, // Business School
@@ -18,7 +17,6 @@ const studySpots = [
     {
         id: '2',
         field_address: {
-            locality: 'Madison',
             postal_code: '53706',
             latitude: 43.0762,
             longitude: -89.4000, // Memorial Union
@@ -27,7 +25,6 @@ const studySpots = [
     {
         id: '3',
         field_address: {
-            locality: 'Madison',
             postal_code: '53706',
             latitude: 43.0757,
             longitude: -89.4040, // Bascom Hall Lounge
@@ -36,7 +33,6 @@ const studySpots = [
     {
         id: '4',
         field_address: {
-            locality: 'Madison',
             postal_code: '53706',
             latitude: 43.0767,
             longitude: -89.4013, // College Library
