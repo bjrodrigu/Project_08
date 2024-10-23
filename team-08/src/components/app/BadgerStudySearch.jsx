@@ -61,7 +61,7 @@ export default function BadgerStudySearch() {
       }, [sort]);
 
       return <>      
-            <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '13vh'}}>
+            <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '9vh', left: '2vw'}}>
                   <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
 
                         <Form>

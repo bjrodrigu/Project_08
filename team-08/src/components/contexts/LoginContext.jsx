@@ -1,14 +1,14 @@
-import React, { useContext, createContext, useState, useEffect} from "react";
+import React, { useContext, createContext, useState, useEffect } from "react";
 
 const LoginContext = createContext();
-const LoginContextProvider = ({children}) => {
+const LoginContextProvider = ({ children }) => {
       const [user, setUser] = useState(null);
-      const [login, setLogin] = useState(false);
+      const [login, setLogin] = useState(true);
 
       // TODO: fetch user & set login state via useEffect
 
-      return(
-            <LoginContext.Provider value={{user, setUser, login, setLogin}}>
+      return (
+            <LoginContext.Provider value={{ user, setUser, login, setLogin }}>
                   {children}
             </LoginContext.Provider>
       );
@@ -20,7 +20,7 @@ const LoginContextProvider = ({children}) => {
 const useLoginState = () => {
       // retrieve context
       const context = useContext(LoginContext);
-      
+
       // throw error if retrieval fails
       if (context === undefined) {
             throw new Error('useLoginState was used outside its Provider');
@@ -29,4 +29,4 @@ const useLoginState = () => {
       return context;
 };
 
-export {LoginContext, LoginContextProvider, useLoginState};
+export { LoginContext, LoginContextProvider, useLoginState };

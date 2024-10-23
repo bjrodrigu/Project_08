@@ -1,5 +1,5 @@
-import {useRef,useContext} from 'react';
-import { Form, Button, Row, Col} from 'react-bootstrap';
+import { useRef, useContext } from 'react';
+import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
@@ -8,7 +8,7 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 export default function BadgerLogin() {
 
     // TODO Create the login component.
-    const {user, setUser, login, setLogin} = useLoginState();
+    const { user, setUser, login, setLogin } = useLoginState();
     const usernameInput = useRef();
     const passwordInput = useRef();
 
@@ -17,7 +17,7 @@ export default function BadgerLogin() {
 
     // create routeChange function to redirect to home
     const routeChange = () => {
-        let path ='../';
+        let path = '../';
         navigate(path);
     }
 
@@ -32,10 +32,10 @@ export default function BadgerLogin() {
         } else {
             setLogin(true);
             setUser(usernameInput.current.value)
-            sessionStorage.setItem("isLoggedIn",usernameInput.current.value);
+            sessionStorage.setItem("isLoggedIn", usernameInput.current.value);
             navigate('/');
         }
-       
+
         // fetch(link,{
         //     method: "POST",
         //     credentials: "include",
@@ -53,7 +53,7 @@ export default function BadgerLogin() {
         //     if(res.status === 401){
         //         alert("Error: Incorrect login, please try again.");
         //     }
-            
+
         //     if(res.status === 200){
         //         alert("Your login is successfull");
         //         const data = { username: usernameInput.current.value, loginStatus: 200 };
@@ -62,41 +62,65 @@ export default function BadgerLogin() {
         //         setLoginStatus(200);
         //         navigate('/');
         //     }
-            
+
         // })
     }
-    return <>
-        <Row style={{width: '85vw'}}>
+    return (
+        <>
+          <Row style={{ width: '85vw', marginBottom: '2rem' }}>
             <Col sm='1'>
-                <Button variant='outline-info' onClick={routeChange} style={{borderRadius: '50%', height: '3rem', width: '3rem'}}><ArrowLeft /></Button>
+              <Button
+                variant='outline-info'
+                onClick={routeChange}
+                style={{ top: '2vh', left: '2vh', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
+              >
+                <ArrowLeft />
+              </Button>
             </Col>
-            <Col sm='11'>
-                <h1>Login</h1>
+            <Col sm='11' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}>
+              <h1>Login</h1>
             </Col>
-        </Row>
-        <Form>
-            <Row style={{width: '85vw'}}>
-                <Col sm='1'></Col>
-                <Col sm='11'>
-                    <Form.Label htmlFor='userName' >username</Form.Label>
-                    <Form.Control id='userName' ref={usernameInput}></Form.Control>
-                </Col>
-            </Row>
-            <Row style={{width: '85vw'}}>
-                <Col sm='1'></Col>
-                <Col sm='11'>
-                    <Form.Label htmlFor='password' >password</Form.Label>
-                    <Form.Control id='password' type="password" ref={passwordInput}></Form.Control>
-                </Col>
-            </Row>
-            <Row style={{width: '85vw'}}>
-                <Col sm='1'></Col>
-                <Col sm='11'>
-                    <br />
-                    <Button type="submit" variant="primary" onClick={handleLogin} >Login</Button>
-                </Col>
-            </Row>
-        </Form>
-    </>
-}
-   
+          </Row>
+    
+          <Card
+            style={{
+              maxWidth: '400px',
+              margin: 'auto', 
+              padding: '20px',
+              borderRadius: '10px',
+              boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Form onSubmit={handleLogin}>
+              <Form.Group controlId="userName" style={{ marginBottom: '15px' }}>
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  ref={usernameInput}
+                  style={{ padding: '10px', borderRadius: '5px' }}
+                  placeholder="Enter your username"
+                />
+              </Form.Group>
+    
+              <Form.Group controlId="password" style={{ marginBottom: '20px' }}>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  type="password"
+                  ref={passwordInput}
+                  style={{ padding: '10px', borderRadius: '5px' }}
+                  placeholder="Enter your password"
+                />
+              </Form.Group>
+    
+              <Button
+                type="submit"
+                variant="primary"
+                className="w-100 mt-3"
+                style={{ padding: '10px', borderRadius: '5px' }}
+              >
+                Login
+              </Button>
+            </Form>
+          </Card>
+        </>
+      );
+    }
