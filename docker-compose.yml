@@ -1,19 +1,19 @@
 services:
   backend:
     build:
-      context: ./backend  # Path to your backend Dockerfile directory
+      context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"  # Expose backend on port 8080
+      - "8080:8080"
     networks:
       - app-network
 
   frontend:
     build:
-      context: ./frontend  # Path to your frontend Dockerfile directory
+      context: ./frontend 
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"  # Expose frontend on port 3000
+      - "3000:3000"
     networks:
       - app-network
 
