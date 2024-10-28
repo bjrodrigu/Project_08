@@ -212,13 +212,13 @@ classDiagram
         @GetMapping("/locationInformation")
         + Location getLocationInformation(String placeName)
         @PostMapping("/addReview") return review id in someway 
-        + Boolean addReview(String username, String placeName, int rating, String review)
+        + Boolean addReview(String placeName, int rating, String review)
         @PostMapping("/removeReview")
-        + Boolean removeReview(String reviewID, String userName)
+        + Boolean removeReview(String reviewID)
         @PostMapping("/addFavorite")
-        + Boolean addFavoritePlace(String userName, String placeName)
+        + Boolean addFavoritePlace(String placeName)
          @GetMapping("/favoriteLocations")
-        + List<Location> getFavoriteLocations(String userName)
+        + List<Location> getFavoriteLocations()
     }
     MainController <|-- User
     MainController <|-- Location
