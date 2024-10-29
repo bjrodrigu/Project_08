@@ -1,4 +1,3 @@
-//TODO: remove or edit user reviews.
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
@@ -107,6 +106,7 @@ export default function UserComments() {
 
     const [editIndex, setEditIndex] = useState(null); // current review in edition mode
     const [reviews, setReviews] = useState(test_reviews); // all reviews
+    const [editedRating, setEditedRating] = useState('');
     const [editedComment, setEditedComment] = useState(''); // edited single review
     const [currentPage, setCurrentPage] = useState(1);
     //test
@@ -186,10 +186,11 @@ export default function UserComments() {
     }
 
     // start edition mode
-    const handleEditReview = (key,comment) => {
+    const handleEditReview = (key,comment,rating) => {
         setEditIndex(key);
-        //store info before editing
+        //store info before editing, so that original comment can be shown while editing
         setEditedComment(comment);
+        setEditedRating(rating);
     };
 
     // store saved edition
@@ -219,7 +220,7 @@ export default function UserComments() {
         //const actualIndex = index + (currentPage - 1) * reviewsPerPage;
 
         const updatedReviews = reviews.map(review =>
-            review.id === key ? { ...review, comment: editedComment } : review
+            review.id === key ? { ...review, comment: editedComment, userRating: editedRating } : review
         );
         setReviews(updatedReviews); // update review.
         setEditIndex(null); // exit edition mode.
@@ -255,6 +256,8 @@ export default function UserComments() {
                         handleSaveEdit={handleSaveEdit}
                         editedComment={editedComment}
                         setEditedComment={setEditedComment}
+                        editedRating={editedRating}
+                        setEditedRating = {setEditedRating}
                         handleRemove={handleRemove}
                         />
                 ))}
