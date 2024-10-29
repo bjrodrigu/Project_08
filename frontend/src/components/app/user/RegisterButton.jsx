@@ -1,9 +1,12 @@
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router";
 
 
 // Login/Signup Button Component
 // TODO: redirect to register page onClick
 export default function RegisterButton() {
+      const navigate = useNavigate();
+      
       return (<Button variant="outline-secondary"
             style={{
                   top: '2vh',
@@ -14,7 +17,8 @@ export default function RegisterButton() {
                   borderRadius: '50%',
                   alignItems: 'center',
                   justifyContent: 'center'
-            }}>
+            }}
+            onClick={() => navigate('/register')}>
             Sign
             <br />
             Up
