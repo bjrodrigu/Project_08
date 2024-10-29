@@ -29,7 +29,7 @@ const user = {
     email: 'user@example.com'
 };
 
-const test_reviews = [
+let test_reviews = [
     {
         id: 1,
         location: 'Library - Studyspot 1',
@@ -122,12 +122,12 @@ export default function UserComments() {
     //         .then((data) => setReviews(data));
     // }, []);
 
-    const totalPages = Math.ceil(test_reviews.length / reviewsPerPage);
+    const totalPages = Math.ceil(reviews.length / reviewsPerPage);
 
 
     const indexOfLastReviews = currentPage * reviewsPerPage;
     const indexOfFirstReviews = indexOfLastReviews - reviewsPerPage;
-    const currentReviews = test_reviews.slice(indexOfFirstReviews, indexOfLastReviews);
+    const currentReviews = reviews.slice(indexOfFirstReviews, indexOfLastReviews);
     const navigate = useNavigate();
 
     const handlePageChange = (page) => {
@@ -187,6 +187,7 @@ export default function UserComments() {
     // start edition mode
     const handleEditReview = (index, review) => {
         setEditIndex(index);
+        //store info before editing
         setEditedComment(review.comment);
     };
 
@@ -214,7 +215,7 @@ export default function UserComments() {
         //     });
 
         //template
-        const updatedReviews = currentReviews.map((review, i) =>
+        const updatedReviews = reviews.map((review, i) =>
             i === index ? { ...review, comment: editedComment } : review
         );
         setReviews(updatedReviews); // update review.
