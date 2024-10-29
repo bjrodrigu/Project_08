@@ -1,6 +1,6 @@
 package com.campus_rating_system.entities;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Location_Task")
