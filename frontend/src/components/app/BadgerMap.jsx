@@ -3,7 +3,7 @@ import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
 import '../../App.css';
 
 /**
- * Placeholder data for study spots, which are used to generate markers on the map.
+ * Placeholder data for study spots, which are used to generate markers on the map. This data should be obtained using an API GET request of the locations database.
  */
 const studySpots = [
     {
