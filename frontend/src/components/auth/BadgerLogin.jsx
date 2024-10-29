@@ -32,7 +32,7 @@ export default function BadgerLogin() {
     } else {
       setLogin(true);
       setUser(usernameInput.current.value)
-      sessionStorage.setItem("isLoggedIn", usernameInput.current.value);
+      sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
       navigate('/');
     }
 
