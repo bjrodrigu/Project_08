@@ -215,8 +215,10 @@ export default function UserComments() {
         //     });
 
         //template
+        const actualIndex = index + (currentPage - 1) * reviewsPerPage;
+
         const updatedReviews = reviews.map((review, i) =>
-            i === index ? { ...review, comment: editedComment } : review
+            i === actualIndex ? { ...review, comment: editedComment } : review
         );
         setReviews(updatedReviews); // update review.
         setEditIndex(null); // exit edition mode.
