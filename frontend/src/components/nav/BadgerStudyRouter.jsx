@@ -12,6 +12,7 @@ import BadgerLogin from "../auth/BadgerLogin";
 import BadgerUser from "../app/BadgerUser";
 import { useState, useEffect } from "react"
 import { LoginContext } from "../contexts/LoginContext";
+import BadgerSignup from "../auth/BadgerSignup";
 // Router Component
 export default function BadgerStudyRouter() {
       const [loginStatus, setLoginStatus] = useState(undefined)
@@ -29,7 +30,7 @@ export default function BadgerStudyRouter() {
                         <Routes>
                               <Route path='/' element={<BadgerStudy />}>
                                     <Route index element={<BadgerStudySearch />} />
-                                    <Route path='register' /> {/** sign up page */}
+                                    <Route path='register' element={<BadgerSignup />}/> {/** sign up page */}
                                     <Route path='login' element={<BadgerLogin />} /> {/** login page */}
                                     <Route path='userProfile' element={<BadgerUser />} /> {/** profile page */}
                                     <Route path='location' element={<BadgerStudySpot />} /> {/**Location page */}
