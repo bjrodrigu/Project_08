@@ -186,7 +186,7 @@ export default function UserComments() {
     }
 
     // start edition mode
-    const handleEditReview = (key,comment,rating) => {
+    const handleEditReview = (key, comment, rating) => {
         setEditIndex(key);
         //store info before editing, so that original comment can be shown while editing
         setEditedComment(comment);
@@ -226,8 +226,13 @@ export default function UserComments() {
         setEditIndex(null); // exit edition mode.
     };
 
-    const handleRemove = () => {
+    const handleRemove = (key) => {
+        //template
+        const isConfirmed = window.confirm("Are you sure you want to delete this review?");
+        if (!isConfirmed) return; 
 
+        const updatedReviews = reviews.filter(review => review.id !== key);
+        setReviews(updatedReviews);
     }
 
     return (
@@ -250,16 +255,16 @@ export default function UserComments() {
                 {currentReviews.map(review => (
                     <BadgerMessage
                         {...review}
-                        editIndex = {editIndex}
-                        setEditIndex = {setEditIndex}
+                        editIndex={editIndex}
+                        setEditIndex={setEditIndex}
                         handleEditReview={handleEditReview}
                         handleSaveEdit={handleSaveEdit}
                         editedComment={editedComment}
                         setEditedComment={setEditedComment}
                         editedRating={editedRating}
-                        setEditedRating = {setEditedRating}
+                        setEditedRating={setEditedRating}
                         handleRemove={handleRemove}
-                        />
+                    />
                 ))}
                 <div className="d-flex justify-content-center mt-4">
                     <Pagination>
