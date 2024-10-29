@@ -73,90 +73,96 @@ export default function BadgerSignup() {
         }
     }
     return (
-        <div style={styles.container}>
-            <h2>Badger Signup</h2>
-            <Form onSubmit={handleRegister}>
+        <div style={styles.pageContainer}>
+            <Card style={styles.card}>
+                <Card.Body>
+                    <h2 className="text-center mb-4">Badger Signup</h2>
+                    <Form onSubmit={handleRegister}>
 
-                <Form.Group controlId="userName: " style={{ marginBottom: '15px' }}>
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control
-                        ref={usernameInput}
-                        style={{ padding: '10px', borderRadius: '5px' }}
-                        placeholder="Enter your username"
-                    />
-                </Form.Group>
+                        <Form.Group controlId="userName" style={styles.formGroup}>
+                            <Form.Label>Username</Form.Label>
+                            <Form.Control
+                                ref={usernameInput}
+                                style={styles.input}
+                                placeholder="Enter your username"
+                            />
+                        </Form.Group>
 
-                <Form.Group controlId="Password: " style={{ marginBottom: '15px' }}>
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        ref={passwordInput}
-                        style={{ padding: '10px', borderRadius: '5px' }}
-                        placeholder="Enter your password"
-                    />
-                </Form.Group>
+                        <Form.Group controlId="Password" style={styles.formGroup}>
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control
+                                ref={passwordInput}
+                                style={styles.input}
+                                type="password"
+                                placeholder="Enter your password"
+                            />
+                        </Form.Group>
 
-                <Form.Group controlId="Cofirm Password: " style={{ marginBottom: '15px' }}>
-                    <Form.Label>Cofirm Password: </Form.Label>
-                    <Form.Control
-                        ref={confirmPasswordInput}
-                        style={{ padding: '10px', borderRadius: '5px' }}
-                        placeholder="Confirm your password"
-                    />
-                </Form.Group>
+                        <Form.Group controlId="ConfirmPassword" style={styles.formGroup}>
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control
+                                ref={confirmPasswordInput}
+                                style={styles.input}
+                                type="password"
+                                placeholder="Confirm your password"
+                            />
+                        </Form.Group>
 
-                <Form.Group controlId="Email: " style={{ marginBottom: '15px' }}>
-                    <Form.Label>Email: </Form.Label>
-                    <Form.Control
-                        ref={usrEmail}
-                        style={{ padding: '10px', borderRadius: '5px' }}
-                        placeholder="Please enter your email"
-                    />
-                </Form.Group>
+                        <Form.Group controlId="Email" style={styles.formGroup}>
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                ref={usrEmail}
+                                style={styles.input}
+                                type="email"
+                                placeholder="Please enter your email"
+                            />
+                        </Form.Group>
 
-            </Form>
-            
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            className="w-100 mt-3"
+                            style={styles.button}
+                        >
+                            Register
+                        </Button>
+                    </Form>
+                </Card.Body>
+            </Card>
         </div>
-    )
+    );
 }
 
-
 const styles = {
-    container: {
-        padding: '20px',
-        maxWidth: '400px',
-        margin: '0 auto',
-        textAlign: 'center',
-        backgroundColor: '#f4f4f9',
-        borderRadius: '8px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-    },
-    form: {
+    pageContainer: {
         display: 'flex',
-        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f0f2f5',
+        padding: '20px',
+    },
+    card: {
+        width: '100%',
+        maxWidth: '500px',
+        padding: '20px',
+        borderRadius: '10px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    },
+    formGroup: {
+        marginBottom: '15px',
     },
     input: {
         padding: '10px',
-        margin: '10px 0',
         borderRadius: '5px',
         border: '1px solid #ccc',
         fontSize: '16px',
     },
     button: {
-        padding: '10px',
+        padding: '12px',
         fontSize: '16px',
-        backgroundColor: '#4CAF50',
-        color: 'white',
+        backgroundColor: '#007bff',
         border: 'none',
         borderRadius: '5px',
-        cursor: 'pointer',
-    },
-    message: {
-        color: '#4CAF50',
-        fontWeight: 'bold',
-        marginTop: '10px',
-    },
-    error: {
-        color: 'red',
-        fontSize: '14px',
     },
 };
