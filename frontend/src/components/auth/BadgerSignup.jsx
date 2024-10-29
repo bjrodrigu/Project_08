@@ -33,7 +33,7 @@ export default function BadgerSignup() {
         } else if (passwordInput.current.value === "") {
             alert("You must provide a password!");
             return;
-        } else if (confirmPasswordInput != passwordInput.current.value) {
+        } else if (confirmPasswordInput.current.value !== passwordInput.current.value) {
             alert("Your passwords do not match!");
             return;
         } else if (!validateEmail(usrEmail.current.value)) {
@@ -73,63 +73,80 @@ export default function BadgerSignup() {
         }
     }
     return (
-        <div style={styles.pageContainer}>
-            <Card style={styles.card}>
-                <Card.Body>
-                    <h2 className="text-center mb-4">Badger Signup</h2>
-                    <Form onSubmit={handleRegister}>
+        <>
+            <Row style={{ width: '85vw', marginBottom: '2rem' }}>
+                <Col sm='2'>
+                    <Button
+                        variant='outline-info'
+                        onClick={routeChange}
+                        style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
+                    >
+                        <ArrowLeft />
+                    </Button>
+                </Col>
+                <Col sm='10' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}>
 
-                        <Form.Group controlId="userName" style={styles.formGroup}>
-                            <Form.Label>Username</Form.Label>
-                            <Form.Control
-                                ref={usernameInput}
-                                style={styles.input}
-                                placeholder="Enter your username"
-                            />
-                        </Form.Group>
+                </Col>
+            </Row>
 
-                        <Form.Group controlId="Password" style={styles.formGroup}>
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control
-                                ref={passwordInput}
-                                style={styles.input}
-                                type="password"
-                                placeholder="Enter your password"
-                            />
-                        </Form.Group>
+            <div style={styles.pageContainer}>
+                <Card style={styles.card}>
+                    <Card.Body>
+                        <h2 className="text-center mb-4">Sign up</h2>
+                        <Form onSubmit={handleRegister}>
 
-                        <Form.Group controlId="ConfirmPassword" style={styles.formGroup}>
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control
-                                ref={confirmPasswordInput}
-                                style={styles.input}
-                                type="password"
-                                placeholder="Confirm your password"
-                            />
-                        </Form.Group>
+                            <Form.Group controlId="userName" style={styles.formGroup}>
+                                <Form.Label>Username</Form.Label>
+                                <Form.Control
+                                    ref={usernameInput}
+                                    style={styles.input}
+                                    placeholder="Enter your username"
+                                />
+                            </Form.Group>
 
-                        <Form.Group controlId="Email" style={styles.formGroup}>
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control
-                                ref={usrEmail}
-                                style={styles.input}
-                                type="email"
-                                placeholder="Please enter your email"
-                            />
-                        </Form.Group>
+                            <Form.Group controlId="Password" style={styles.formGroup}>
+                                <Form.Label>Password</Form.Label>
+                                <Form.Control
+                                    ref={passwordInput}
+                                    style={styles.input}
+                                    type="password"
+                                    placeholder="Enter your password"
+                                />
+                            </Form.Group>
 
-                        <Button
-                            type="submit"
-                            variant="primary"
-                            className="w-100 mt-3"
-                            style={styles.button}
-                        >
-                            Register
-                        </Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-        </div>
+                            <Form.Group controlId="ConfirmPassword" style={styles.formGroup}>
+                                <Form.Label>Confirm Password</Form.Label>
+                                <Form.Control
+                                    ref={confirmPasswordInput}
+                                    style={styles.input}
+                                    type="password"
+                                    placeholder="Confirm your password"
+                                />
+                            </Form.Group>
+
+                            <Form.Group controlId="Email" style={styles.formGroup}>
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control
+                                    ref={usrEmail}
+                                    style={styles.input}
+                                    type="email"
+                                    placeholder="Please enter your email"
+                                />
+                            </Form.Group>
+
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                className="w-100 mt-3"
+                                style={styles.button}
+                            >
+                                Register
+                            </Button>
+                        </Form>
+                    </Card.Body>
+                </Card>
+            </div>
+        </>
     );
 }
 
