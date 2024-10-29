@@ -17,6 +17,8 @@ export default function ReactRegisterButton() {
       const handleLogout = useLogout();
       // show user if logged in
       if (login) {
+            // get current user username
+            const username = sessionStorage.getItem("isLoggedIn") || "User";
             // TODO: button href handling for dropdown
             return (<>
                   <Dropdown title='User' className='rounded-pill'
@@ -32,7 +34,7 @@ export default function ReactRegisterButton() {
                               height: '5vw',
                               borderRadius: '50%'
                         }}>
-                              User
+                              {username}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                               <Dropdown.Item
