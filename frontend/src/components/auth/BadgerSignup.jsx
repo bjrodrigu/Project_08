@@ -68,7 +68,7 @@ export default function BadgerSignup() {
             // after registered, system will automatically login the registered account.
             setLogin(true);
             setUser(usernameInput.current.value)
-            sessionStorage.setItem("isLoggedIn", usernameInput.current.value);
+            sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
             navigate('/');
         }
     }
