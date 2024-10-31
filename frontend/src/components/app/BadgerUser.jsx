@@ -1,9 +1,9 @@
-//TODO: remove or edit user reviews.
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
+import BadgerMessage from './BadgerMessage';
 //style
 const backButtonStyle = {
     display: 'flex',
@@ -106,6 +106,7 @@ export default function UserComments() {
 
     const [editIndex, setEditIndex] = useState(null); // current review in edition mode
     const [reviews, setReviews] = useState(test_reviews); // all reviews
+    const [editedRating, setEditedRating] = useState('');
     const [editedComment, setEditedComment] = useState(''); // edited single review
     const [currentPage, setCurrentPage] = useState(1);
     //test
@@ -185,14 +186,15 @@ export default function UserComments() {
     }
 
     // start edition mode
-    const handleEditReview = (index, review) => {
-        setEditIndex(index);
-        //store info before editing
-        setEditedComment(review.comment);
+    const handleEditReview = (key, comment, rating) => {
+        setEditIndex(key);
+        //store info before editing, so that original comment can be shown while editing
+        setEditedComment(comment);
+        setEditedRating(rating);
     };
 
     // store saved edition
-    const handleSaveEdit = (index, review) => {
+    const handleSaveEdit = (key) => {
         // fetch(`/api/reviews/${review.id}`, {
         //     method: 'PUT',
         //     headers: {
@@ -215,14 +217,24 @@ export default function UserComments() {
         //     });
 
         //template
-        const actualIndex = index + (currentPage - 1) * reviewsPerPage;
+        //const actualIndex = index + (currentPage - 1) * reviewsPerPage;
 
-        const updatedReviews = reviews.map((review, i) =>
-            i === actualIndex ? { ...review, comment: editedComment } : review
+        const updatedReviews = reviews.map(review =>
+            review.id === key ? { ...review, comment: editedComment, userRating: editedRating } : review
         );
         setReviews(updatedReviews); // update review.
         setEditIndex(null); // exit edition mode.
     };
+
+    const handleRemove = (key) => {
+        //template
+        const isConfirmed = window.confirm("Are you sure you want to delete this review?");
+        if (!isConfirmed) return; 
+
+        const updatedReviews = reviews.filter(review => review.id !== key);
+        setReviews(updatedReviews);
+    }
+
     return (
         <div>
             <div style={userInfoStyle}>
@@ -240,31 +252,19 @@ export default function UserComments() {
             </div>
             <div style={containerStyle}>
                 <h2>Your Comments</h2>
-                {currentReviews.map((review, index) => (
-                    <Card key={index}>
-                        <Card.Body>
-                            <Card.Title>{review.location}</Card.Title>
-                            <Card.Text>Rating: {review.userRating} / 5</Card.Text>
-                            {editIndex === index ? (
-                                // edition mode
-                                <>
-                                    <Form.Control
-                                        as="textarea"
-                                        value={editedComment}
-                                        onChange={(e) => setEditedComment(e.target.value)}
-                                    />
-                                    <Button variant="success" onClick={() => handleSaveEdit(index, review)}>Save</Button>
-                                    <Button variant="secondary" onClick={() => setEditIndex(null)}>Cancel</Button>
-                                </>
-                            ) : (
-
-                                <>
-                                    <Card.Text>{review.comment}</Card.Text>
-                                    <Button variant="secondary" onClick={() => handleEditReview(index, review)}>Edit</Button>
-                                </>
-                            )}
-                        </Card.Body>
-                    </Card>
+                {currentReviews.map(review => (
+                    <BadgerMessage
+                        {...review}
+                        editIndex={editIndex}
+                        setEditIndex={setEditIndex}
+                        handleEditReview={handleEditReview}
+                        handleSaveEdit={handleSaveEdit}
+                        editedComment={editedComment}
+                        setEditedComment={setEditedComment}
+                        editedRating={editedRating}
+                        setEditedRating={setEditedRating}
+                        handleRemove={handleRemove}
+                    />
                 ))}
                 <div className="d-flex justify-content-center mt-4">
                     <Pagination>
