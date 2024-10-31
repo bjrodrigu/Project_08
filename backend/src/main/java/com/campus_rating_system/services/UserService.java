@@ -21,7 +21,7 @@ public class UserService {
 
     public User addNewUser(String username, String email) {
         User user = new User();
-        user.setName(username);
+        user.setUser(username);
         user.setEmail(email);
         user.setGoogleId(UUID.randomUUID().toString()); // replace with proper authentication
         user.setCreatedAt(new Date());
