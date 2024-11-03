@@ -6,6 +6,6 @@ import com.campus_rating_system.entities.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-
-    Optional<Object> findByUserName(String username);
+    
+    Optional<User> findByEmail(String email);
 }

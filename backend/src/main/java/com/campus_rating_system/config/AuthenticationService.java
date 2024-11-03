@@ -28,10 +28,10 @@ public class AuthenticationService {
     }
 
     public User signup(RegisterUserDto input) {
-        User user = new User()
-                .setFullName(input.getFullName())
-                .setEmail(input.getEmail())
-                .setPassword(passwordEncoder.encode(input.getPassword()));
+        User user = new User();
+        user.setUser(input.getFullName());
+        user.setGoogleId(input.getEmail());
+        user.setPassword(passwordEncoder.encode(input.getPassword()));
 
         return userRepository.save(user);
     }
