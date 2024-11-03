@@ -5,11 +5,11 @@ public class LoginResponse {
 
     private long expiresIn;
 
+    // Getters and setters...
+
     public String getToken() {
         return token;
     }
-
-    // Getters and setters...
 
     public LoginResponse setToken(String token) {
         this.token = token;
