@@ -5,8 +5,7 @@ import com.campus_rating_system.dtos.LoginResponse;
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
 import com.campus_rating_system.services.JwtService;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.campus_rating_system.services.UserService;
 
@@ -15,13 +14,11 @@ import com.campus_rating_system.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class CampusRatingSystemController {
     
-    @Autowired
+    //@Autowired
     private final UserService userService;
 
     private final JwtService jwtService;
@@ -59,5 +56,10 @@ public class CampusRatingSystemController {
         LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    @GetMapping("/hello")
+    public String hello(){
+        return "hello world";
     }
 }
