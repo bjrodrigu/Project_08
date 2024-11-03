@@ -60,6 +60,11 @@ public class CampusRatingSystemController {
 
     @GetMapping("/hello")
     public String hello(){
-        return "hello world";
+        return("hey");
+    }
+
+    @GetMapping("/helloo")
+    public String amongus(){
+        return("amongus");
     }
 }
