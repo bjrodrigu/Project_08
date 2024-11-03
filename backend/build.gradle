@@ -45,16 +45,16 @@ dependencies {
     implementation 'org.hibernate.orm:hibernate-jpamodelgen:6.6.1.Final'
 	implementation 'org.hibernate:hibernate-tools:5.6.15.Final'
 
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	//  Temporary explicit version to fix Thymeleaf bug
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.2.RELEASE'
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+
+	testImplementation 'org.springframework.security:spring-security-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 }
 
