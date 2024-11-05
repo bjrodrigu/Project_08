@@ -1,8 +1,16 @@
 # Specification Document
 
-Please fill out this document to reflect your team's project. This is a living document and will need to be updated regularly. You may also remove any section to its own document (e.g. a separate standards and conventions document), however you must keep the header and provide a link to that other document under the header.
+## How to start up containers
 
-Also, be sure to check out the Wiki for information on how to maintain your team's requirements.
+To set up port forwarding:
+
+`ssh -f -N -L 3306:localhost:53396 YOUR_USERNAME@cs506x08.cs.wisc.edu`
+
+To start the container itself:
+
+`docker compose up --build`
+
+When finished, you can kill the forwarded port with : `lsof -i tcp:30360`
 
 ## TeamName
 
