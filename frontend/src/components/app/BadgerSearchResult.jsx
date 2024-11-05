@@ -22,6 +22,7 @@ export default function BadgerSearchResult(location) {
             <Card.Body as={Row}>
                   <Col>
                         <StarRatings rating={location.rating} numberOfStars={5} starRatedColor='black' starDimension='1.5rem' />
+                        <p style={{display: 'inline-block', height: '1.5rem', textAlign: 'center', justifyContent: 'center', lineHeight: '1.5rem'}}>({location.reviews})</p>
                   </Col>
                   <Col>
                         <Card.Text style={{ textAlign: 'right' }}>{location.distance}mi</Card.Text>
