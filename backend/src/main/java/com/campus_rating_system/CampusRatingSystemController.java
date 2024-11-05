@@ -2,8 +2,8 @@ package com.campus_rating_system;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.campus_rating_system.services.UserService;
-import com.campus_rating_system.services.LocationService;
+import com.campus_rating_system.services.*;
+
 
 import com.campus_rating_system.entities.*;
 
@@ -19,10 +19,12 @@ public class CampusRatingSystemController {
     @Autowired
     private final UserService userService;
     private final LocationService locationService;
+    private final ReviewService reviewService;
 
-    public CampusRatingSystemController(UserService userService, LocationService locationService) {
+    public CampusRatingSystemController(UserService userService, LocationService locationService, ReviewService reviewService) {
         this.userService = userService;
         this.locationService = locationService;
+        this.reviewService = reviewService;
     }
 
     @PostMapping("/user/addUser")
@@ -40,9 +42,21 @@ public class CampusRatingSystemController {
             @RequestParam String description,
             @RequestParam float latitude,
             @RequestParam float longitude,
-            @RequestParam String address) {
+            @RequestParam String address,
+            @RequestParam String category) {
 
-        Location newLocation = locationService.addNewLocation(name, description, latitude, longitude, address);
+        Location newLocation = locationService.addNewLocation(name, description, latitude, longitude, address, category);
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/review/addReview")
+    public ResponseEntity<Review> addReview(
+        @RequestParam String email,
+        @RequestParam String locationName, 
+        @RequestParam int rating,
+        @RequestParam String comment) {
+
+        Review newReview = reviewService.addNewReview(email, locationName, rating, comment);
+        return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
 }
