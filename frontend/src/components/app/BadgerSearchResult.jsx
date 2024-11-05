@@ -1,4 +1,4 @@
-import { Card, Row, Col } from 'react-bootstrap';
+import { Card, Row, Col, Badge } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,9 @@ export default function BadgerSearchResult(location) {
             navigate(path, { state: location });
       }
       
+      // variations for tags.
+      const variations = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark']
+
       // hook to re-render on hover
       let [color, setColor] = useState('Light');
 
@@ -19,14 +22,19 @@ export default function BadgerSearchResult(location) {
             <Card.Header style={{ paddingLeft: '1rem', paddingTop: '1rem' }}>
                   <Card.Title >{location.name}</Card.Title>
             </Card.Header>
-            <Card.Body as={Row}>
-                  <Col>
-                        <StarRatings rating={location.rating} numberOfStars={5} starRatedColor='black' starDimension='1.5rem' />
-                        <p style={{display: 'inline-block', height: '1.5rem', textAlign: 'center', justifyContent: 'center', lineHeight: '1.5rem'}}>({location.reviews})</p>
-                  </Col>
-                  <Col>
-                        <Card.Text style={{ textAlign: 'right' }}>{location.distance}mi</Card.Text>
-                  </Col>
+            <Card.Body>
+                  <Row>
+                        <Col>
+                              <StarRatings rating={location.rating} numberOfStars={5} starRatedColor='black' starDimension='1.5rem' />
+                              <p style={{display: 'inline-block', height: '1.5rem', textAlign: 'center', justifyContent: 'center', lineHeight: '1.5rem'}}>({location.reviews})</p>
+                        </Col>
+                        <Col>
+                              <Card.Text style={{ textAlign: 'right' }}>{location.distance}mi</Card.Text>
+                        </Col>
+                  </Row>
+                  {location.tags.map((tag, index) => {
+                        return <Badge pill bg={variations[index%variations.length]} style={{marginRight: '10px'}}>{tag}</Badge>
+                  })}
                   <br />
                   <br />
                   <Card.Text >{location.description}</Card.Text>
