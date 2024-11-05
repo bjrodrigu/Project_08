@@ -18,7 +18,7 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public Location addNewLocation(String name, String description, float latitude, float longitude, String address) {
+    public Location addNewLocation(String name, String description, float latitude, float longitude, String address, String category) {
         Location location = new Location();
         location.setName(name);
         location.setDescription(description);
@@ -27,6 +27,7 @@ public class LocationService {
         location.setAddress(address);
         location.setCreatedAt(new Date());
         location.setUpdatedAt(new Date());
+        location.setCategory(category);
 
         return locationRepository.save(location);
     }
