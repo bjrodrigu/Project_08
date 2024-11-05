@@ -33,7 +33,7 @@ export default function BadgerSearchResult(location) {
                         </Col>
                   </Row>
                   {location.tags.map((tag, index) => {
-                        return <Badge pill bg={variations[index%variations.length]} style={{marginRight: '10px'}}>{tag}</Badge>
+                        return <Badge pill key={tag} bg={variations[index%variations.length]} style={{marginRight: '10px'}}>{tag}</Badge>
                   })}
                   <br />
                   <br />
