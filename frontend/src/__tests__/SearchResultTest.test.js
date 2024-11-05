@@ -1,6 +1,7 @@
 import {render, screen} from '@testing-library/react';
+import {act} from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import BadgerSearchResult from './BadgerSearchResult.jsx';
+import BadgerSearchResult from '../components/app/BadgerSearchResult.jsx';
 import userEvent from '@testing-library/user-event';
 import 'holderjs/holder';
 import '@testing-library/jest-dom';
@@ -13,10 +14,13 @@ jest.mock('holderjs/holder', () => {
 
 describe('My search result', () => {
       expect(document).toBeDefined(); // Check if document is available
+      // test if element renders
       test('should render', async () => {
             render(<BrowserRouter>
                   <BadgerSearchResult />
             </BrowserRouter>);
             expect(true).toBe(true);
       })
+
+
 })
