@@ -1,10 +1,17 @@
-import { Card, Carousel, Row, Col, Button } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router';
-import { useHolderjs } from 'use-holderjs';
+import { useEffect } from 'react';
+import { Card, Carousel, Row, Col, Button} from 'react-bootstrap';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {run} from 'holderjs/holder'
 import BadgerReview from '../app/BadgerReview';
-import { ArrowLeft } from 'react-bootstrap-icons';
-import ReactAddReviewButton from './ReactAddReviewButton';
+import {ArrowLeft} from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
+import ReactAddReviewButton from './ReactAddReviewButton';
+// async function loadHolder() {
+//       // if(typeof window !== undefined) {
+//             const mod = await import('holderjs/holder');
+//             return mod.run;
+//       // }
+// }
 
 
 // Component to display details, images and reviews for a particular location
@@ -19,9 +26,13 @@ export default function BadgerStudySpot() {
             let path = '../';
             navigate(path);
       }
-      // use login state to determine whether to show the add review button
-      const {user, login} = useLoginState();
+      
+      useEffect(() => {
+            // const run = loadHolder;
+            run('image-class-name');
+      }, [])
 
+      const {user, setUser, login, setLogin} = useLoginState();
 
       // dummy data for reviews
       const reviews = [
@@ -46,7 +57,6 @@ export default function BadgerStudySpot() {
                                     <Card.Subtitle style={{ fontSize: '1.5rem', textAlign: 'right', paddingTop: '0.75rem' }}>{state.distance}mi</Card.Subtitle>
                               </Col>
                         </Row>
-                        {useHolderjs()}
                         <Carousel data-bs-theme="dark">
                               <Carousel.Item>
                                     <Card.Img variant='bottom' src='holder.js/75px360' style={{ margin: 'auto', width: 'auto' }} />
