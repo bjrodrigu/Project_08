@@ -49,6 +49,13 @@ export default function BadgerStudySearch() {
       // tester
       // useEffect(() => {console.log(chosenTags)}, [chosenTags]);
 
+      // geolocation api handle
+      if ('geolocation' in Navigator) {
+            // get location if available
+      } else {
+            // if location rejected
+      }
+
       // update tag list
       const handleChange = (e) => {
             let temp = e.reduce((prev, curr) => {
@@ -127,7 +134,7 @@ export default function BadgerStudySearch() {
       
 
       return <>      
-            <Card key={'Primary'} style={{height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '9vh', left: '2vw'}}>
+            <Card key={'Primary'} style={{height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width:'35rem', position: 'absolute', top: '9vh', left: '2vw'}}>
                   <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
