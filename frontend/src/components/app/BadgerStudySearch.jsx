@@ -63,22 +63,21 @@ export default function BadgerStudySearch() {
       return <>      
             <Card key={'Primary'} style={{height: '90vh', overflowY: 'auto', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '9vh', left: '2vw'}}>
                   <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
-
                         <Form>
-                              <Form.Group className="search" controlId="exampleForm.ControlInput1">
-                                    <Form.Control onInput={e=> setQuery(e.target.value)} type="text" placeholder="Search for a Location" style={{height: '3rem', }}/>
+                              <Form.Group controlId="search">
+                                    <Form.Control data-testid="search" onInput={e=> setQuery(e.target.value)} type="text" placeholder="Search for a location" style={{height: '3rem', }}/>
                               </Form.Group>
                               <br />
                               <Form.Select size='sm' style={{width: '5rem'}} onChange={e => setSort(e.target.value)} defaultValue={1}>
-                                    <option disabled={true}><Filter style={{backgroundSize: '10px'}} />Sort</option>
-                                    <option value={1}>Distance Ascending<ArrowUp /></option>
-                                    <option value={2}>Distance Descending<ArrowDown /></option>
+                                    <option disabled={true}>Sort</option>
+                                    <option value={1}>Distance Ascending</option>
+                                    <option value={2}>Distance Descending</option>
                               </Form.Select>
                         </Form>
                   </Card.Header>
                   <Card.Body style={{paddingLeft: '2rem', paddingRight: '2rem'}}>
                         {filterData.map((location) => {
-                                    return <BadgerSearchResult key={location.name} {...location}/>
+                                    return <BadgerSearchResult aria-label="Location" key={location.name} {...location}/>
                               })
                         }
                         {filterData == '' && <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', height: '72vh', margin: '2vh 1.5vw 2vh 1.5vw'}}>
