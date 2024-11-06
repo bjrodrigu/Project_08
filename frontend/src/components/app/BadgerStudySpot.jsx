@@ -4,6 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {run} from 'holderjs/holder'
 import BadgerReview from '../app/BadgerReview';
 import {ArrowLeft} from 'react-bootstrap-icons';
+import ReactAddReviewButton from './ReactAddReviewButton';
+import { useLoginState } from '../contexts/LoginContext';
 // async function loadHolder() {
 //       // if(typeof window !== undefined) {
 //             const mod = await import('holderjs/holder');
@@ -29,6 +31,9 @@ export default function BadgerStudySpot() {
             // const run = loadHolder;
             run('image-class-name');
       }, [])
+
+      // retrieve and unpack user state
+      const {user, setUser, login, setLogin} = useLoginState();
 
       // dummy data for reviews
       const reviews = [
