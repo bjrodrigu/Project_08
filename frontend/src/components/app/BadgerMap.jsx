@@ -52,7 +52,7 @@ const BadgerMap = () => {
                 <div className="map">
                     <Map
                         defaultZoom={16}
-                        defaultCenter={{ lat: 43.076, lng: -89.4040 }}
+                        defaultCenter={{ lat: 43.076, lng: -89.404 }}
                     >
                     </Map>
                     {studySpots.map((studySpot) => (
