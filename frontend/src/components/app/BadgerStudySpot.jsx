@@ -11,7 +11,6 @@ import { useLoginState } from '../contexts/LoginContext';
 export default function BadgerStudySpot() {
       // retrieve the currently selected location via useLocation and save to a state object
       const { state } = useLocation();
-      console.log("state ", state);
 
       // create a navigate object
       let navigate = useNavigate();
@@ -21,8 +20,7 @@ export default function BadgerStudySpot() {
             navigate(path);
       }
       // use login state to determine whether to show the add review button
-      const {user, setUser, login, setLogin} = useLoginState();
-      console.log("user ", user);
+      const {user, login} = useLoginState();
 
 
       // dummy data for reviews
