@@ -129,7 +129,6 @@ export default function BadgerStudySearch() {
       return <>      
             <Card key={'Primary'} style={{height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '9vh', left: '2vw'}}>
                   <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
-
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
                                     <Form.Control onInput={e=> {setQuery(e.target.value)}} type="text" placeholder="Search for a Location" style={{height: '3rem', width: 'fit'}}/>
