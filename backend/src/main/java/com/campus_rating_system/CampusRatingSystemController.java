@@ -35,6 +35,8 @@ public class CampusRatingSystemController {
     private final LocationTaskService locationTaskService;
     @Autowired
     private final FavoriteService favoriteService;
+    @Autowired
+    private final ImageService imageService;
 
     /**
      * Constructs a CampusRatingSystemController with services for managing users, locations,
@@ -48,7 +50,7 @@ public class CampusRatingSystemController {
      */
     public CampusRatingSystemController(UserService userService, LocationService locationService, 
     ReviewService reviewService, TaskService taskService, LocationTaskService locationTaskService, 
-    FavoriteService favoriteService) {
+    FavoriteService favoriteService, ImageService imageService) {
 
         this.userService = userService;
         this.locationService = locationService;
@@ -56,6 +58,7 @@ public class CampusRatingSystemController {
         this.taskService = taskService;
         this.locationTaskService = locationTaskService;
         this.favoriteService = favoriteService;
+        this.imageService = imageService;
     }
 
     /**
@@ -158,12 +161,28 @@ public class CampusRatingSystemController {
      * @param locationName the name of the location to be marked as favorite
      * @return a ResponseEntity containing the newly created Favorite and a CREATED status
      */
-    @PostMapping("/add")
+    @PostMapping("/favorite/addFavorite")
     public ResponseEntity<Favorite> addFavorite(
             @RequestParam String email,
             @RequestParam String locationName) {
 
         Favorite newFavorite = favoriteService.addFavorite(email, locationName);
         return new ResponseEntity<>(newFavorite, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint to add a new image URL associated with a specific location.
+     *
+     * @param imageUrl the URL of the image to store
+     * @param locationName the name of the location to associate with the image
+     * @return a ResponseEntity containing the saved Image entity and a CREATED status
+     */
+    @PostMapping("/image/addImage")
+    public ResponseEntity<Image> addImageUrl(
+            @RequestParam("imageUrl") String imageUrl,
+            @RequestParam("locationName") String locationName) {
+
+        Image savedImage = imageService.addImageUrl(imageUrl, locationName);
+        return new ResponseEntity<>(savedImage, HttpStatus.CREATED);
     }
 }
