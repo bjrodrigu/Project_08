@@ -1,5 +1,7 @@
 package com.campus_rating_system.controllers;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.campus_rating_system.services.UserService;
@@ -36,5 +38,14 @@ public class CampusRatingSystemController {
     @GetMapping("/private/hello")
     public String amongus(){
         return("amongus");
+    }
+
+    @GetMapping("/me")
+    public String authenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User currentUser = (User) authentication.getPrincipal();
+
+        return currentUser.getUsername();
     }
 }
