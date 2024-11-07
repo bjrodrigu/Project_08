@@ -23,7 +23,6 @@ const BadgerAddReviewPage = () => {
 
     const locationHook = useLocation();
     const location = locationHook.state?.location || {};
-    console.log("location ", location.name);
 
     const {user, setUser, login, setLogin} = useLoginState();
 
@@ -43,6 +42,9 @@ const BadgerAddReviewPage = () => {
        
 
         // ADD HTTP POST REQUEST HERE
+        // Will post the review to the backend, including the user, location, rating, and review, and review title
+        // If successful, alert the user and return to the home page
+
         routeChange(); // return home
         alert('Review submitted successfully!');
     };
@@ -82,6 +84,7 @@ const BadgerAddReviewPage = () => {
                                 index < rating ?
                                     <StarFill
                                         key={index}
+                                        data-testid="star"
                                         onClick={() => handleStarClick(index)}
                                         style={{
                                             cursor: 'pointer',
@@ -91,6 +94,7 @@ const BadgerAddReviewPage = () => {
                                     /> :
                                     <Star
                                         key={index}
+                                        data-testid="star"
                                         onClick={() => handleStarClick(index)}
                                         style={{
                                             cursor: 'pointer',
