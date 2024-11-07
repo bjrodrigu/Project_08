@@ -1,5 +1,7 @@
 package com.campus_rating_system.entities;
 
+import java.util.Date;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,8 +17,12 @@ public class Image {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "image_url")
+    private String image_url;
+
+    @Column(name = "uploaded_at", updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date uploaded_at;
 
     // Getters and setters
 
@@ -37,10 +43,18 @@ public class Image {
     }
 
     public String getUrl() {
-        return url;
+        return image_url;
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        this.image_url = url;
+    }
+
+    public Date getUploadedAt() {
+        return uploaded_at;
+    }
+
+    public void setUploadedAt(Date uploadedAt) {
+        this.uploaded_at = uploadedAt;
     }
 }
