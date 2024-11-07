@@ -28,12 +28,12 @@ public class CampusRatingSystemController {
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
-    @GetMapping("/hello")
+    @GetMapping("/public/hello")
     public String hello(){
         return("hey");
     }
 
-    @GetMapping("/helloo")
+    @GetMapping("/private/hello")
     public String amongus(){
         return("amongus");
     }
