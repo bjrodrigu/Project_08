@@ -35,7 +35,7 @@ public class TaskService {
      * Adds a new task to the system by creating a Task entity with the given name
      * and description, then saving it to the database.
      *
-     * @param name the name of the task (e.g., "Clean Campus Area")
+     * @param name the name of the task (e.g., "Eating, Reading, Studying")
      * @param description a brief description of the task's purpose or details
      * @return the saved Task entity containing the newly added task information
      */

@@ -15,7 +15,7 @@ import com.campus_rating_system.repositories.TaskRepository;
  * This class includes methods to facilitate the creation of a LocationTask by fetching
  * both Task and Location entities by their names.
  *
- * <p>Bugs: None known
+ * <p>Bugs: Need to add stuff to handle suitability ratings.
  *
  * @author Rithik Rajaram
  */
