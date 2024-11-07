@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
@@ -30,8 +32,10 @@ public class AuthenticationService {
     public User signup(RegisterUserDto input) {
         User user = new User();
         user.setUser(input.getFullName());
-        user.setGoogleId(input.getEmail());
+        user.setEmail(input.getEmail());
         user.setPassword(passwordEncoder.encode(input.getPassword()));
+        user.setCreatedAt(new Date());
+        user.setUpdatedAt(new Date());
 
         return userRepository.save(user);
     }
