@@ -19,15 +19,4 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public User addNewUser(String username, String email) {
-        User user = new User();
-        user.setUser(username);
-        user.setEmail(email);
-        user.setGoogleId(UUID.randomUUID().toString()); // replace with proper authentication
-        user.setCreatedAt(new Date());
-        user.setUpdatedAt(new Date());
-
-        return userRepository.save(user);
-    }
-
 }
