@@ -17,7 +17,7 @@ import com.campus_rating_system.repositories.TaskRepository;
  *
  * <p>Bugs: None known
  *
- * @author (your name)
+ * @author Rithik Rajaram
  */
 @Service
 public class LocationTaskService {
