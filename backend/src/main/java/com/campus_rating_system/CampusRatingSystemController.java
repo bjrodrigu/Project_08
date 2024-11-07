@@ -33,23 +33,29 @@ public class CampusRatingSystemController {
     private final TaskService taskService;
     @Autowired
     private final LocationTaskService locationTaskService;
+    @Autowired
+    private final FavoriteService favoriteService;
 
     /**
      * Constructs a CampusRatingSystemController with services for managing users, locations,
-     * reviews, and tasks. Each service is injected to support API endpoints that delegate
-     * operations to the corresponding service layer.
+     * reviews, tasks, locationtasks, and favorites. Each service is injected to support API 
+     * endpoints that delegate operations to the corresponding service layer.
      *
      * @param userService the service for handling user operations
      * @param locationService the service for handling location operations
      * @param reviewService the service for handling review operations
      * @param taskService the service for handling task operations
      */
-    public CampusRatingSystemController(UserService userService, LocationService locationService, ReviewService reviewService, TaskService taskService, LocationTaskService locationTaskService) {
+    public CampusRatingSystemController(UserService userService, LocationService locationService, 
+    ReviewService reviewService, TaskService taskService, LocationTaskService locationTaskService, 
+    FavoriteService favoriteService) {
+
         this.userService = userService;
         this.locationService = locationService;
         this.reviewService = reviewService;
         this.taskService = taskService;
         this.locationTaskService = locationTaskService;
+        this.favoriteService = favoriteService;
     }
 
     /**
@@ -142,5 +148,22 @@ public class CampusRatingSystemController {
 
         LocationTask newLocationTask = locationTaskService.addLocationTask(taskName, locationName);
         return new ResponseEntity<>(newLocationTask, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint to add a new Favorite, associating a user and location by their respective
+     * email and name.
+     *
+     * @param email the email of the user marking the location as favorite
+     * @param locationName the name of the location to be marked as favorite
+     * @return a ResponseEntity containing the newly created Favorite and a CREATED status
+     */
+    @PostMapping("/add")
+    public ResponseEntity<Favorite> addFavorite(
+            @RequestParam String email,
+            @RequestParam String locationName) {
+
+        Favorite newFavorite = favoriteService.addFavorite(email, locationName);
+        return new ResponseEntity<>(newFavorite, HttpStatus.CREATED);
     }
 }
