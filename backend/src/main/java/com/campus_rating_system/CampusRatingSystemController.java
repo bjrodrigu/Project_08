@@ -25,9 +25,14 @@ public class CampusRatingSystemController {
 
     @Autowired
     private final UserService userService;
+    @Autowired
     private final LocationService locationService;
+    @Autowired
     private final ReviewService reviewService;
+    @Autowired
     private final TaskService taskService;
+    @Autowired
+    private final LocationTaskService locationTaskService;
 
     /**
      * Constructs a CampusRatingSystemController with services for managing users, locations,
@@ -39,11 +44,12 @@ public class CampusRatingSystemController {
      * @param reviewService the service for handling review operations
      * @param taskService the service for handling task operations
      */
-    public CampusRatingSystemController(UserService userService, LocationService locationService, ReviewService reviewService, TaskService taskService) {
+    public CampusRatingSystemController(UserService userService, LocationService locationService, ReviewService reviewService, TaskService taskService, LocationTaskService locationTaskService) {
         this.userService = userService;
         this.locationService = locationService;
         this.reviewService = reviewService;
         this.taskService = taskService;
+        this.locationTaskService = locationTaskService;
     }
 
     /**
@@ -120,5 +126,21 @@ public class CampusRatingSystemController {
 
         Task newTask = taskService.addNewTask(name, description);
         return new ResponseEntity<>(newTask, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint to add a new LocationTask, associating a task with a location by their names.
+     *
+     * @param taskName the name of the task to associate with the location
+     * @param locationName the name of the location to associate with the task
+     * @return a ResponseEntity containing the newly created LocationTask and a CREATED status
+     */
+    @PostMapping("/locationTask/addLocationTask")
+    public ResponseEntity<LocationTask> addLocationTask(
+            @RequestParam String taskName,
+            @RequestParam String locationName) {
+
+        LocationTask newLocationTask = locationTaskService.addLocationTask(taskName, locationName);
+        return new ResponseEntity<>(newLocationTask, HttpStatus.CREATED);
     }
 }
