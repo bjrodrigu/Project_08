@@ -86,6 +86,12 @@ import org.springframework.http.ResponseEntity;
             return ResponseEntity.ok(registeredUser);
         }
 
+        /**
+         * Endpoint to add a new user to the system.
+         *
+         * @param loginUserDto takes in the input of Email and Password of the user
+         * @return a ResponseEntity containing the newly created User and a CREATED status
+         */
         @PostMapping("/user/login")
         public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
             User authenticatedUser = authenticationService.authenticate(loginUserDto);
@@ -95,23 +101,6 @@ import org.springframework.http.ResponseEntity;
             LoginResponse loginResponse = new LoginResponse().setToken(jwtToken).setExpiresIn(jwtService.getExpirationTime());
 
             return ResponseEntity.ok(loginResponse);
-        }
-
-        @GetMapping("/public/hello")
-        public String hello(){
-            return("hey");
-        }
-
-        @GetMapping("/hello")
-        public String amongus(){
-            return("amongus");
-        }
-
-        @GetMapping("/me")
-        public String authenticatedUser() {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            User currentUser = (User) authentication.getPrincipal();
-            return currentUser.getUsername();
         }
 
         /**
