@@ -1,5 +1,12 @@
 package com.campus_rating_system.dtos;
 
+/**
+ * Service class used for mapping Login details to a User entity in our database for validation
+ *
+ * <p>Bugs: None known
+ *
+ * @author Ethan Yang
+ */
 public class LoginUserDto {
     private String email;
 

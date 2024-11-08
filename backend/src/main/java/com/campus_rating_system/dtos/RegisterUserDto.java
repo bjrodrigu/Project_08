@@ -1,5 +1,12 @@
 package com.campus_rating_system.dtos;
 
+/**
+ * Service class used for mapping SignUp details to a User entity in our database to be added
+ *
+ * <p>Bugs: None known
+ *
+ * @author Ethan Yang
+ */
 public class RegisterUserDto {
     private String email;
 

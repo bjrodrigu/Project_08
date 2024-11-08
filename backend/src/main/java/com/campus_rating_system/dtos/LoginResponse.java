@@ -1,5 +1,12 @@
 package com.campus_rating_system.dtos;
 
+/**
+ * Output given to frontend/user when login is a success
+ *
+ * <p>Bugs: None known
+ *
+ * @author Ethan Yang
+ */
 public class LoginResponse {
     private String token;
 
