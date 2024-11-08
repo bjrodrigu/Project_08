@@ -79,7 +79,7 @@ import org.springframework.http.ResponseEntity;
          * @param registerUserDto takes in the input of Email, Password and Name of the user
          * @return a ResponseEntity containing the newly created User and a CREATED status
          */
-        @PostMapping("/user/addUser")
+        @PostMapping("/user/signup")
         public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
             User registeredUser = authenticationService.signup(registerUserDto);
 
