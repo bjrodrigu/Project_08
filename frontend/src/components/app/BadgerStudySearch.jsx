@@ -2,20 +2,22 @@ import React, {useState, useEffect} from 'react';
 import Select from 'react-select';
 import {Form, Card, Col, Row, ListGroup, ListGroupItem} from 'react-bootstrap';
 import BadgerSearchResult from './BadgerSearchResult';
+import { useLocationState} from '../contexts/MapContext';
 import { Filter, ArrowDown, ArrowUp} from 'react-bootstrap-icons';
 
 // dummy values for testing
-const testData = [
-      {name: 'Bascom Hall Lounge', distance: 0.7, description: 'Quiet spot with lots of chairs and tables. Outlets are everywhere. Rarely occupied', rating: 4.3, reviews: 5, tags: ['Outlets', 'Tables', 'Groups', 'Cabins']},
-      {name: 'lorem', distance: 0.6, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.6, reviews: 12, tags: ['Quiet', 'Sofas']},
-      {name: 'ipsum', distance: 0.8, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 2.2, reviews: 23, tags: ['Groups', 'Loud', 'Food']},
-      {name: 'dolor', distance: 0.9, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 1.1, reviews: 24, tags: ['Tables', 'Cabins', 'Quiet']},
-      {name: 'sit', distance: 1.2, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 4.8, reviews: 1, tags: ['Wiscard', 'Reservations', 'Loud']},
-      {name: 'amet', distance: 2.4, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, tags: ['Lorem', 'Ipsum', 'Dolor']},
-]
+// const testData = [
+//       {name: 'Bascom Hall Lounge', distance: 0.7, description: 'Quiet spot with lots of chairs and tables. Outlets are everywhere. Rarely occupied', rating: 4.3, reviews: 5, longitude: -89.4013, latitude: 43.0767, tags: ['Outlets', 'Tables', 'Groups', 'Cabins']},
+//       {name: 'lorem', distance: 0.6, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.6, reviews: 12, longitude: -89.4011, latitude: 43.0775, tags: ['Quiet', 'Sofas']},
+//       {name: 'ipsum', distance: 0.8, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 2.2, reviews: 23, longitude: -89.4016, latitude: 43.0761, tags: ['Groups', 'Loud', 'Food']},
+//       {name: 'dolor', distance: 0.9, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 1.1, reviews: 24, longitude: -89.4014, latitude: 43.0772, tags: ['Tables', 'Cabins', 'Quiet']},
+//       {name: 'sit', distance: 1.2, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 4.8, reviews: 1, longitude: -89.4023, latitude: 43.0767, tags: ['Wiscard', 'Reservations', 'Loud']},
+//       {name: 'amet', distance: 2.4, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, longitude: -89.4013, latitude: 43.0757, tags: ['Lorem', 'Ipsum', 'Dolor']},
+// ]
 
 
 let tags = ['Loud', 'Quiet', 'Wiscard', 'Outlets', 'Group', 'Cabins', 'Reservations', 'Lorem', 'Ipsum', 'Dolor', 'Tables', 'Sofas'];
+
 // TODO: Remove once we actually scrape API
 // Convenience script to conver a simple placeholder list to appropriate form for react select
 tags = tags.reduce((prev, curr) => {
@@ -35,11 +37,12 @@ const options = [
       { value: 3, label: "Best Rated" },
       { value: 4, label: "Least Reviews" },
       { value: 5, label: "Most Reviews" },
-    ];
+];
 
 // Primary Component of homepage. Has search, and shows results
 // TODO: Implement advanced filtered components, and filtering on updating form state
 export default function BadgerStudySearch() {
+      const {userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings} = useLocationState();
       const [query, setQuery] = useState('');
       const [filterData, setFilterData] = useState([]);
       const params = ['name', 'distance', 'description', 'rating'];
@@ -61,7 +64,8 @@ export default function BadgerStudySearch() {
 
       // filter and sort data
       useEffect(() => {
-            let temp = [...testData];
+            let temp = [...locationList];
+            console.log(temp);
             // console.log(temp);
 
             // filter data first
@@ -123,11 +127,11 @@ export default function BadgerStudySearch() {
                         break;
                   }
             setFilterData(temp);
-      }, [query, sort, chosenTags]);
+      }, [query, sort, chosenTags, locationList]);
       
 
       return <>      
-            <Card key={'Primary'} style={{height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width:'40rem', position: 'absolute', top: '9vh', left: '2vw'}}>
+            <Card key={'Primary'} style={{height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width:'35rem', position: 'absolute', top: '9vh', left: '2vw'}}>
                   <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
