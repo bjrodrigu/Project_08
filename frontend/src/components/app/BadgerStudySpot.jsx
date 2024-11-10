@@ -3,10 +3,9 @@ import { Card, Carousel, Row, Col, Button, ListGroup} from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {run} from 'holderjs/holder'
 import BadgerReview from '../app/BadgerReview';
-import {ArrowLeft, List} from 'react-bootstrap-icons';
-import ReactAddReviewButton from './ReactAddReviewButton';
+import {ArrowLeft} from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
-import StarRatings from 'react-star-ratings';
+import ReactAddReviewButton from './ReactAddReviewButton';
 // async function loadHolder() {
 //       // if(typeof window !== undefined) {
 //             const mod = await import('holderjs/holder');
@@ -46,6 +45,7 @@ export default function BadgerStudySpot() {
             run('image-class-name');
       }, [])
 
+      const {user, setUser, login, setLogin} = useLoginState();
 
       // dummy data for reviews
       const reviews = [
