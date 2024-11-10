@@ -1,6 +1,6 @@
-import { useRef, useContext } from 'react';
-import { Form, Button, Row, Col, Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
+import { useRef, useState} from 'react';
+import { Form, Button, Row, Col, Card, Spinner } from 'react-bootstrap';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
 
@@ -11,7 +11,8 @@ export default function BadgerLogin() {
   const { user, setUser, login, setLogin } = useLoginState();
   const usernameInput = useRef();
   const passwordInput = useRef();
-
+  const [loading, setLoading] = useState(false); 
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
   //const link = "Backend-Api";
 
@@ -22,51 +23,46 @@ export default function BadgerLogin() {
   }
 
   function handleLogin(e) {
-    e?.preventDefault();
+    e.preventDefault();
 
-    if (usernameInput.current.value === "" ||
-      passwordInput.current.value === "") {
+    if (usernameInput.current.value === "" || passwordInput.current.value === "") {
       alert("You must provide both a username and password!");
       return;
-      //used to test. 
-    } else {
-      setLogin(true);
-      setUser(usernameInput.current.value)
-      sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
-      navigate('/');
     }
 
-    // fetch(link,{
-    //     method: "POST",
-    //     credentials: "include",
-    //     headers:{
-    //         // assumed we are going to use JSON to transfer data. 
-    //         "Content-Type": "application/json"
-    //     },
-    //     // assumed we are going to use JSON to transfer data. 
-    //     body: JSON.stringify({
-    //         username: usernameInput.current.value,
-    //         password: passwordInput.current.value
-    //     })
-    // })
-    // .then(res => {
-    //     if(res.status === 401){
-    //         alert("Error: Incorrect login, please try again.");
-    //     }
+    setLoading(true);
+    setError(null);
 
-    //     if(res.status === 200){
-    //         alert("Your login is successfull");
-    //         const data = { username: usernameInput.current.value, loginStatus: 200 };
-    //         // we are going to use session storage to store if user is logged in 
-    //         sessionStorage.setItem("isLoggedIn",JSON.stringify(data));
-    //         setLoginStatus(200);
-    //         navigate('/');
-    //     }
-
-    // })
+    fetch('/api/login', {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        username: usernameInput.current.value,
+        password: passwordInput.current.value
+      })
+    })
+      .then(res => {
+        if (res.status === 401) {
+          alert("Error: Incorrect login, please try again.");
+        } else if (res.ok) {
+          alert("Your login is successful");
+          setLogin(true);
+          setUser(usernameInput.current.value);
+          sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
+          navigate('/');
+        }
+      })
+      .catch(() => {
+        setError("Login failed, please try again later.");
+      })
+      .finally(() => {
+        setLoading(false); 
+      });
   }
   return (
-
     <>
       <Row style={{ width: '85vw', marginBottom: '2rem' }}>
         <Col sm='2'>
@@ -78,9 +74,7 @@ export default function BadgerLogin() {
             <ArrowLeft />
           </Button>
         </Col>
-        <Col sm='10' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}>
-
-        </Col>
+        <Col sm='10' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}></Col>
       </Row>
       <div style={styles.pageContainer}>
         <Card style={styles.card}>
@@ -91,6 +85,7 @@ export default function BadgerLogin() {
                 <Form.Label>Username</Form.Label>
                 <Form.Control
                   ref={usernameInput}
+                  isInvalid={usernameInput.current && !usernameInput.current.value}
                   style={{ padding: '10px', borderRadius: '5px' }}
                   placeholder="Enter your username"
                 />
@@ -101,6 +96,7 @@ export default function BadgerLogin() {
                 <Form.Control
                   type="password"
                   ref={passwordInput}
+                  isInvalid={passwordInput.current && !passwordInput.current.value}
                   style={{ padding: '10px', borderRadius: '5px' }}
                   placeholder="Enter your password"
                 />
@@ -111,17 +107,24 @@ export default function BadgerLogin() {
                 variant="primary"
                 className="w-100 mt-3"
                 style={styles.button}
+                disabled={loading}
               >
-                Login
+                {loading ? (
+                  <>
+                    <Spinner animation="border" size="sm" /> Logging in
+                  </>
+                ) : (
+                  'Login'
+                )}
               </Button>
             </Form>
+            {error && <p className="text-danger mt-3">{error}</p>}
           </Card.Body>
         </Card>
       </div>
     </>
   );
 }
-
 const styles = {
   pageContainer: {
     display: 'flex',
