@@ -38,8 +38,8 @@ const MapContextProvider = ({ children }) => {
             // TODO: implement context
             navigator.geolocation.getCurrentPosition((position) => {
                   // get coordinates
-                  let long = position.coords.latitude.toFixed(5);
-                  let lat = position.coords.longitude.toFixed(5);
+                  let lat = position.coords.latitude.toFixed(5);
+                  let long = position.coords.longitude.toFixed(5);
                   let lobj = {lat: lat, lng: long};
                   // pass to map context
             setUserLocation(lobj);
