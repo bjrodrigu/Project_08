@@ -36,23 +36,4 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * Adds a new user to the system by creating a User entity with the given
-     * username and email, generating a placeholder Google ID, and setting
-     * timestamps for creation and last update.
-     *
-     * @param username the name of the user (e.g., "John Doe")
-     * @param email the email address of the user, used for identification
-     * @return the saved User entity containing the newly added user information
-     */
-    public User addNewUser(String username, String email) {
-        User user = new User();
-        user.setName(username);
-        user.setEmail(email);
-        user.setGoogleId(UUID.randomUUID().toString()); // replace with proper authentication
-        user.setCreatedAt(new Date());
-        user.setUpdatedAt(new Date());
-
-        return userRepository.save(user);
-    }
 }
