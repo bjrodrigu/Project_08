@@ -5,6 +5,7 @@ import com.campus_rating_system.dtos.LoginResponse;
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
 import com.campus_rating_system.services.JwtService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -125,6 +126,11 @@ import org.springframework.http.ResponseEntity;
 
             Location newLocation = locationService.addNewLocation(name, description, latitude, longitude, address, category);
             return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
+        }
+
+        @GetMapping("/location/getLocations")
+        public List<Location> getLocations() {
+            return locationService.getLocations();
         }
 
         /**
