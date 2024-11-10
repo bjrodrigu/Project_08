@@ -1,4 +1,4 @@
-import { useRef, useContext } from 'react';
+import { useRef, useContext, useState } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
@@ -11,6 +11,9 @@ export default function BadgerSignup() {
     const confirmPasswordInput = useRef();
     const navigate = useNavigate();
     const usrEmail = useRef();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
     //const link = "Backend-Api";
 
     // create routeChange function to redirect to home
@@ -24,8 +27,9 @@ export default function BadgerSignup() {
         return regex.test(email);
     };
 
-    function handleRegister(e) {
+    async function handleRegister(e) {
         e.preventDefault();
+        setError("");
         if (usernameInput.current.value === "") {
             alert("You must provide a username!");
             return;
@@ -41,35 +45,37 @@ export default function BadgerSignup() {
             return;
         }
 
-        else {
-            // send data to backend. 
+        setLoading(true);
 
-            // fetch("back-api-link", {
-            //     method: "POST",
-            //     credentials: "include",
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     },
-            //     body: JSON.stringify({
-            //         username: usernameInput,
-            //         password: passwordInput,
-            //         email: usrEmail
-            //     })
-            // })
-            //     .then(res => {
-            //         if (res.status === 409) {
-            //             alert("That username has already been taken!");
-            //         }
-            //         if (res.status === 200) {
-            //             alert("Your registration is successfull");
-            //         }
-            //     })
+        try {
+            const res = await fetch("/api/register", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    username: usernameInput.current.value,
+                    password: passwordInput.current.value,
+                    email: usrEmail.current.value
+                })
+            });
 
-            // after registered, system will automatically login the registered account.
-            setLogin(true);
-            setUser(usernameInput.current.value)
-            sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
-            navigate('/');
+            if (res.status === 409) {
+                setError("That username has already been taken!");
+            } else if (res.ok) {
+                alert("Your registration is successful");
+                setLogin(true);
+                setUser(usernameInput.current.value);
+                sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
+                navigate('/');
+            } else {
+                setError("Registration failed, please try again.");
+            }
+        } catch (err) {
+            setError("An error occurred. Please try again later.");
+        } finally {
+            setLoading(false); // 关闭加载状态
         }
     }
     return (
@@ -138,9 +144,16 @@ export default function BadgerSignup() {
                                 type="submit"
                                 variant="primary"
                                 className="w-100 mt-3"
+                                disabled={loading}
                                 style={styles.button}
                             >
-                                Register
+                                {loading ? (
+                                    <>
+                                        <Spinner animation="border" size="sm" /> Registering
+                                    </>
+                                ) : (
+                                    'Register'
+                                )}
                             </Button>
                         </Form>
                     </Card.Body>
