@@ -70,7 +70,7 @@ export default function BadgerStudySpot() {
                                     <Card.Subtitle style={{ fontSize: '1.5rem', textAlign: 'right', paddingTop: '0.75rem' }}>{state.distance}mi</Card.Subtitle>
                               </Col>
                               <Col sm="3">
-                                    <Button pill variant='primary' style={{marginTop: '0.25rem', height: '2.5rem'}}> Navigate</Button>
+                                    <Button variant='primary' style={{marginTop: '0.25rem', height: '2.5rem'}}> Navigate</Button>
                               </Col>
                         </Row>
                   </Card.Header>
@@ -79,8 +79,6 @@ export default function BadgerStudySpot() {
                         <ReactAddReviewButton location={state} />
                   </div>
                   }
-                  {/* show reviews */}
-                  {/* BadgerReview has been expanded here for more convenient styling */}
                   <Card.Body style={{overflowY: 'scroll', padding: '1rem'}}>
                         <ListGroup variant='flush'>
                               <ListGroup.Item>
@@ -97,22 +95,10 @@ export default function BadgerStudySpot() {
                                     </Carousel>
                               </ListGroup.Item>
                               <ListGroup.Item>
-                                    {/* <ListGroup variant='flush'> */}
-                                          {/* <ListGroup.Item> */}
-                                                <h1>Reviews</h1>
-                                          {/* </ListGroup.Item> */}
-                                    {/* </ListGroup> */}
+                                    <h1>Reviews</h1>
                               </ListGroup.Item>
                               {reviews.map((review) => {
-                                    return <>
-                                          <ListGroup.Item key={review.name} onMouseEnter={() => { setColor('Info'); }} onMouseLeave={() => { setColor('Light'); }} style={{ height: 'auto', borderRadius: '1.5rem', marginTop: '2rem' }}>
-                                                <h2>{review.name}</h2>
-                                                <StarRatings rating={review.rating} numberOfStars={5} starRatedColor='black' starDimension='1.5rem' />
-                                                <br />
-                                                <br />
-                                                <p>{review.review}</p>
-                                          </ListGroup.Item>
-                                    </>
+                                    return <BadgerReview key={review.name} {...review}/>
                               })}
                         </ListGroup>
                   </Card.Body>
