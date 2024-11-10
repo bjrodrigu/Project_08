@@ -111,7 +111,7 @@ export default function BadgerLogin() {
               >
                 {loading ? (
                   <>
-                    <Spinner animation="border" size="sm" /> Logging in...
+                    <Spinner animation="border" size="sm" /> Logging in
                   </>
                 ) : (
                   'Login'
