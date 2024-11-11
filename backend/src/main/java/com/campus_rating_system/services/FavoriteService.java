@@ -1,5 +1,8 @@
 package com.campus_rating_system.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -67,5 +70,26 @@ public class FavoriteService {
         favorite.setLocation(location);
         
         return favoriteRepository.save(favorite);
+    }
+
+    /**
+     * Retrieves all locations that have been marked as favorite by a specific user.
+     * This method first verifies the existence of the user before attempting to
+     * fetch their favorite locations.
+     *
+     * @param userId the ID of the user whose favorite locations are to be retrieved
+     * @return a List of Location objects that the user has marked as favorite
+     * @throws RuntimeException if the user is not found in the system
+     * @Author Taehyun Kim
+     */
+    public List<Location> getFavoriteLocations(Integer userId) {
+        // Verify user exists and fetch their data
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+
+        // Extract locations from favorites using stream operations
+        return user.getFavorites().stream()
+            .map(favorite -> favorite.getLocation())
+            .collect(Collectors.toList());
     }
 }
