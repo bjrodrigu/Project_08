@@ -5,6 +5,9 @@ import com.campus_rating_system.dtos.LoginResponse;
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
 import com.campus_rating_system.services.JwtService;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -46,6 +49,7 @@ import org.springframework.http.ResponseEntity;
         private final JwtService jwtService;
         @Autowired
         private final AuthenticationService authenticationService;
+
 
 
         /**
@@ -194,6 +198,18 @@ import org.springframework.http.ResponseEntity;
 
             Favorite newFavorite = favoriteService.addFavorite(email, locationName);
             return new ResponseEntity<>(newFavorite, HttpStatus.CREATED);
+        }
+
+        /**
+         * Endpoint to get a list of Favorite places.
+         * 
+         * @param userId the ID of the user whose favorite locations are to be retrieved
+         * @return a List of Location objects that the user has marked as favorite
+         */
+        @GetMapping("/favorite/getFavorites")
+        public ResponseEntity<List<Location>> getFavoriteLocations(@RequestParam Integer userId) {
+            List<Location> favorites = favoriteService.getFavoriteLocations(userId);
+            return ResponseEntity.ok(favorites);
         }
 
         /**
