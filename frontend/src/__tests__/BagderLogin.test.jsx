@@ -63,7 +63,7 @@ describe("BadgerLogin Component", () => {
             })
         );
 
-        sessionStorage.clear();
+        localStorage.clear();
     });
 
     afterEach(() => {
@@ -99,7 +99,7 @@ describe("BadgerLogin Component", () => {
             expect(window.alert).toHaveBeenCalledWith("Your login is successful");
             expect(setLogin).toHaveBeenCalledWith(true);
             expect(setUser).toHaveBeenCalledWith("testUser");
-            expect(sessionStorage.getItem("isLoggedIn")).toBe(JSON.stringify("testUser"));
+            expect(localStorage.getItem("isLoggedIn")).toBe(JSON.stringify("testUser"));
         });
 
         // Ensure button is re-enabled and text is back to "Login"
