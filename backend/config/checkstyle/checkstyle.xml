@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.sourceforge.io/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <module name="TreeWalker">
+
+        <!-- Method Names -->
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/> <!-- lowerCamelCase for method names -->
+        </module>
+
+        <!-- Local Variable Names -->
+        <module name="LocalVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/> <!-- lowerCamelCase for local variables -->
+        </module>
+
+        <!-- Constant Names -->
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z0-9_]*$"/> <!-- UPPER_SNAKE_CASE for constants -->
+        </module>
+
+        <!-- Spacing -->
+        <module name="WhitespaceAround">
+            <property name="tokens" value="LCURLY, RCURLY, ASSIGN, BAND, BAND_ASSIGN, BOR, BOR_ASSIGN, MINUS, EQUAL, GE, GT, LT, LE, MINUS_ASSIGN, MOD, MOD_ASSIGN, NOT_EQUAL, PLUS, PLUS_ASSIGN, QUESTION"/>
+        </module>
+
+        <module name="WhitespaceAfter">
+            <property name="tokens" value="COMMA"/>
+        </module>
+
+        <module name="Indentation">
+            <property name="lineWrappingIndentation" value="6"/>
+        </module>
+
+        <!-- Ensure JavaDoc comments are present for classes -->
+        <module name="JavadocType"/>
+
+        <!-- Ensure JavaDoc comments are present for methods -->
+        <module name="JavadocMethod"/>
+    </module>
+
+    <!-- Line Length check must be outside of TreeWalker -->
+    <module name="LineLength">
+        <property name="max" value="100"/> <!-- Set maximum line length -->
+    </module>
+</module>

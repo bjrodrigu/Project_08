@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Button, Form } from 'react-bootstrap';
+import { Card, Button, Form, Spinner } from 'react-bootstrap';
 import { Star, StarFill } from 'react-bootstrap-icons';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLocation, useNavigate } from 'react-router';
@@ -11,6 +11,7 @@ const BadgerAddReviewPage = () => {
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [reviewTitle, setReviewTitle] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // create a navigate object
     let navigate = useNavigate();
@@ -24,8 +25,7 @@ const BadgerAddReviewPage = () => {
     const locationHook = useLocation();
     const location = locationHook.state?.location || {};
 
-    const {user, setUser, login, setLogin} = useLoginState();
-
+    const { user, setUser, login, setLogin } = useLoginState();
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -33,20 +33,44 @@ const BadgerAddReviewPage = () => {
             alert('Please select a rating before submitting your review.');
             return;
         }
-        console.log('Review:', review);
-        console.log('Rating:', rating);
-        console.log('Review Title:', reviewTitle);
-        setRating(0);
-        setReview('');
-        setReviewTitle('');
-       
 
-        // ADD HTTP POST REQUEST HERE
-        // Will post the review to the backend, including the user, location, rating, and review, and review title
-        // If successful, alert the user and return to the home page
+        setIsSubmitting(true);
 
-        routeChange(); // return home
-        alert('Review submitted successfully!');
+        const queryParams = new URLSearchParams({
+            email: user, // user email, hardcoded for now
+            locationName: 'Union South', // location name, hardcoded for now
+            rating: rating,
+            comment: review,
+        });
+
+        const token = localStorage.getItem("token");
+        console.log(token)
+
+        fetch(`http://localhost:8080/review/addReview?${queryParams.toString()}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to submit the review');
+                }
+            })
+            .then(() => {
+                setRating(0);
+                setReview('');
+                setReviewTitle('');
+                setIsSubmitting(false);
+                alert('Review submitted successfully!');
+                routeChange();
+            })
+            .catch((error) => {
+                console.error('Error submitting review:', error);
+                alert('There was an error submitting your review.');
+                setIsSubmitting(false);
+            });
     };
 
     const handleStarClick = (index) => {
@@ -128,9 +152,14 @@ const BadgerAddReviewPage = () => {
                         />
                     </Form.Group>
 
-                    <Button variant="primary" type="submit">
-                        Submit Review
+                    <Button variant="primary" type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? (
+                            <Spinner animation="border" size="sm" />
+                        ) : (
+                            'Submit Review'
+                        )}
                     </Button>
+
                 </Form>
             </Card.Body>
         </Card>

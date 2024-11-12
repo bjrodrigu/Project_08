@@ -54,7 +54,7 @@ export default function BadgerSignup() {
                 body: JSON.stringify({
                     email: usrEmail.current.value,
                     password: passwordInput.current.value,
-                    fullname: fullName.current.value
+                    fullName: fullName.current.value
                 })
             });
 
