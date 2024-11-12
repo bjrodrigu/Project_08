@@ -2,6 +2,8 @@ package com.campus_rating_system.services;
 
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.campus_rating_system.entities.Review;
@@ -40,9 +42,7 @@ public class ReviewService {
      * @param userRepository the repository interface for accessing user data
      * @param locationRepository the repository interface for accessing location data
      */
-    public ReviewService(ReviewRepository reviewRepository,
-                         UserRepository userRepository,
-                         LocationRepository locationRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, LocationRepository locationRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
@@ -53,20 +53,20 @@ public class ReviewService {
      * This method validates the existence of both the user and location before creating the
      * review entry, ensuring data integrity.
      *
-     * @param email the email of the user submitting the review, used to find the User entity
      * @param locationName the name of the location being reviewed, used to find the Location entity
-     * @param rating an integer rating for the location
-     *               (expected to follow a predefined rating scale)
+     * @param rating an integer rating for the location (expected to follow a predefined rating scale)
      * @param comment a textual comment describing the user's experience at the location
      * @return the saved Review entity containing the newly added review information
      * @throws RuntimeException if the user or location is not found in the system
      */
-    public Review addNewReview(String email, String locationName, int rating, String comment) {
+    public Review addNewReview(String locationName, int rating, String comment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+
         // Fetch the User and Location entities based on their names
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new RuntimeException("User not found"));
-        Location location = locationRepository.findByName(locationName).orElseThrow(() ->
-                new RuntimeException("Location not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        Location location = locationRepository.findByName(locationName).orElseThrow(() -> new RuntimeException("Location not found"));
 
         // Create a new Review instance and set its properties
         Review review = new Review();
@@ -78,5 +78,34 @@ public class ReviewService {
         review.setUpdatedAt(new Date());
 
         return reviewRepository.save(review);
+    }
+
+     /**
+     * Deletes an existing review for a specific location by the currently authenticated user.
+     * This method retrieves the user based on the current authentication context,
+     * verifies the existence of both the user and location, and then deletes
+     * the review if found.
+     *
+     * @param locationName the name of the location whose review needs to be deleted
+     * @throws RuntimeException if the user, location, or review is not found in the system
+     */
+    public void deleteReview(String locationName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+        
+        // Find the user by email
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+            
+        // Find the location by name
+        Location location = locationRepository.findByName(locationName)
+            .orElseThrow(() -> new RuntimeException("Location not found"));
+            
+        // Find the review by user and location
+        Review review = reviewRepository.findByUserAndLocation(user, location)
+            .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        reviewRepository.delete(review);
     }
 }

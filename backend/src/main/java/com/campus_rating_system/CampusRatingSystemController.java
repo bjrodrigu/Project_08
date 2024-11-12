@@ -156,7 +156,6 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new review for a location.
      *
-     * @param email        the email of the user submitting the review
      * @param locationName the name of the location being reviewed
      * @param rating       an integer rating for the location
      * @param comment      a textual comment describing the user's experience
@@ -164,12 +163,11 @@ public class CampusRatingSystemController {
      */
     @PostMapping("/review/addReview")
     public ResponseEntity<Review> addReview(
-            @RequestParam String email,
             @RequestParam String locationName,
             @RequestParam int rating,
             @RequestParam String comment) {
 
-        Review newReview = reviewService.addNewReview(email, locationName, rating, comment);
+        Review newReview = reviewService.addNewReview(locationName, rating, comment);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
 
@@ -225,28 +223,25 @@ public class CampusRatingSystemController {
      * Endpoint to add a new Favorite, associating a user and location by their respective
      * email and name.
      *
-     * @param email        the email of the user marking the location as favorite
      * @param locationName the name of the location to be marked as favorite
      * @return a ResponseEntity containing the newly created Favorite and a CREATED status
      */
     @PostMapping("/favorite/addFavorite")
     public ResponseEntity<Favorite> addFavorite(
-            @RequestParam String email,
             @RequestParam String locationName) {
 
-        Favorite newFavorite = favoriteService.addFavorite(email, locationName);
+        Favorite newFavorite = favoriteService.addFavorite(locationName);
         return new ResponseEntity<>(newFavorite, HttpStatus.CREATED);
     }
 
     /**
      * Endpoint to get a list of Favorite places.
      *
-     * @param userId the ID of the user whose favorite locations are to be retrieved
      * @return a List of Location objects that the user has marked as favorite
      */
     @GetMapping("/favorite/getFavorites")
-    public ResponseEntity<List<Location>> getFavoriteLocations(@RequestParam Integer userId) {
-        List<Location> favorites = favoriteService.getFavoriteLocations(userId);
+    public ResponseEntity<List<Location>> getFavoriteLocations() {
+        List<Location> favorites = favoriteService.getFavoriteLocations();
         return ResponseEntity.ok(favorites);
     }
 
