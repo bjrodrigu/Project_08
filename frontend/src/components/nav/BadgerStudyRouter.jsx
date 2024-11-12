@@ -19,7 +19,7 @@ import BadgerSignup from "../auth/BadgerSignup";
 export default function BadgerStudyRouter() {
       const [loginStatus, setLoginStatus] = useState(undefined)
       useEffect(() => {
-            const data = sessionStorage.getItem('isLoggedIn');
+            const data = localStorage.getItem('isLoggedIn');
             // there's something in session storage.
             if (data) {
                   const info = JSON.parse(data);

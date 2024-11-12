@@ -6,11 +6,11 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 
 export default function BadgerSignup() {
     const { user, setUser, login, setLogin } = useLoginState();
-    const usernameInput = useRef();
     const passwordInput = useRef();
     const confirmPasswordInput = useRef();
     const navigate = useNavigate();
     const usrEmail = useRef();
+    const fullName = useRef();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -30,8 +30,8 @@ export default function BadgerSignup() {
     async function handleRegister(e) {
         e.preventDefault();
         setError("");
-        if (usernameInput.current.value === "") {
-            alert("You must provide a username!");
+        if (!validateEmail(usrEmail.current.value)) {
+            alert("You must provide a valid email!");
             return;
             //used to test. 
         } else if (passwordInput.current.value === "") {
@@ -40,24 +40,21 @@ export default function BadgerSignup() {
         } else if (confirmPasswordInput.current.value !== passwordInput.current.value) {
             alert("Your passwords do not match!");
             return;
-        } else if (!validateEmail(usrEmail.current.value)) {
-            alert("You must provide a valid email!");
-            return;
-        }
+        } 
 
         setLoading(true);
 
         try {
-            const res = await fetch("/api/register", {
+            const res = await fetch("http://localhost:8080/user/signup", {
                 method: "POST",
                 credentials: "include",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    username: usernameInput.current.value,
+                    email: usrEmail.current.value,
                     password: passwordInput.current.value,
-                    email: usrEmail.current.value
+                    fullname: fullName.current.value
                 })
             });
 
@@ -66,8 +63,8 @@ export default function BadgerSignup() {
             } else if (res.ok) {
                 alert("Your registration is successful");
                 setLogin(true);
-                setUser(usernameInput.current.value);
-                sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
+                setUser(usrEmail.current.value);
+                localStorage.setItem("isLoggedIn", JSON.stringify(usrEmail.current.value));
                 navigate('/');
             } else {
                 setError("Registration failed, please try again.");
@@ -75,7 +72,7 @@ export default function BadgerSignup() {
         } catch (err) {
             setError("An error occurred. Please try again later.");
         } finally {
-            setLoading(false); // 关闭加载状态
+            setLoading(false); // turn off loading
         }
     }
     return (
@@ -101,12 +98,13 @@ export default function BadgerSignup() {
                         <h2 className="text-center mb-4">Sign up</h2>
                         <Form onSubmit={handleRegister}>
 
-                            <Form.Group controlId="userName" style={styles.formGroup}>
-                                <Form.Label>Username</Form.Label>
+                            <Form.Group controlId="Email" style={styles.formGroup}>
+                                <Form.Label>Email</Form.Label>
                                 <Form.Control
-                                    ref={usernameInput}
+                                    ref={usrEmail}
                                     style={styles.input}
-                                    placeholder="Enter your username"
+                                    type="email"
+                                    placeholder="Please enter your email"
                                 />
                             </Form.Group>
 
@@ -130,13 +128,14 @@ export default function BadgerSignup() {
                                 />
                             </Form.Group>
 
-                            <Form.Group controlId="Email" style={styles.formGroup}>
-                                <Form.Label>Email</Form.Label>
+
+                            <Form.Group controlId="FullName" style={styles.formGroup}>
+                                <Form.Label>Your Full Name</Form.Label>
                                 <Form.Control
-                                    ref={usrEmail}
+                                    ref={fullName}
                                     style={styles.input}
-                                    type="email"
-                                    placeholder="Please enter your email"
+                                    type="text"
+                                    placeholder="Please enter your full name"
                                 />
                             </Form.Group>
 

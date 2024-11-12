@@ -18,7 +18,7 @@ export default function ReactRegisterButton() {
       // show user if logged in
       if (login) {
             // get current user username
-            const username = JSON.parse(sessionStorage.getItem("isLoggedIn") || '"User"');
+            const username = JSON.parse(localStorage.getItem("isLoggedIn") || '"User"');
             // TODO: button href handling for dropdown
             return (<>
                   <Dropdown title='User' className='rounded-pill'

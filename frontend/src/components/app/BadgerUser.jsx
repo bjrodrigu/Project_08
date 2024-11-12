@@ -170,7 +170,7 @@ export default function UserComments() {
         //         return response.json();  
         //     })
         //     .then(result => {    
-        //         sessionStorage.removeItem('isLoggedIn');
+        //         localStorage.removeItem('isLoggedIn');
         //         setLoginStatus(undefined);
         //         alert('Password changed successfully');
         //         navigate('/');
