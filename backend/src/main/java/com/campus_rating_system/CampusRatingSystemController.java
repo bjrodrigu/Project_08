@@ -131,6 +131,11 @@ import org.springframework.http.ResponseEntity;
             return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
         }
 
+        @GetMapping("/location/getLocations")
+        public List<Location> getLocations() {
+            return locationService.getLocations();
+        }
+
         /**
          * Endpoint to add a new review for a location.
          *
