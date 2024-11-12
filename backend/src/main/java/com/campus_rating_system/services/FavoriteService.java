@@ -20,7 +20,7 @@ import com.campus_rating_system.repositories.UserRepository;
  *
  * <p>Bugs: None known
  *
- * @Author Rithik Rajaram
+ * @author Rithik Rajaram
  */
 @Service
 public class FavoriteService {
@@ -42,7 +42,8 @@ public class FavoriteService {
      * @param userRepository the repository for User entities
      * @param locationRepository the repository for Location entities
      */
-    public FavoriteService(FavoriteRepository favoriteRepository, UserRepository userRepository, LocationRepository locationRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository, UserRepository userRepository,
+                           LocationRepository locationRepository) {
         this.favoriteRepository = favoriteRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
@@ -60,9 +61,11 @@ public class FavoriteService {
      */
     public Favorite addFavorite(String email, String locationName) {
         // Fetch the User entity by email
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("User not found"));
         // Fetch the Location entity by name
-        Location location = locationRepository.findByName(locationName).orElseThrow(() -> new RuntimeException("Location not found"));
+        Location location = locationRepository.findByName(locationName).orElseThrow(() ->
+                new RuntimeException("Location not found"));
         
         // Create a new Favorite instance and set its properties
         Favorite favorite = new Favorite();
@@ -80,12 +83,12 @@ public class FavoriteService {
      * @param userId the ID of the user whose favorite locations are to be retrieved
      * @return a List of Location objects that the user has marked as favorite
      * @throws RuntimeException if the user is not found in the system
-     * @Author Taehyun Kim
+     * @author Taehyun Kim
      */
     public List<Location> getFavoriteLocations(Integer userId) {
         // Verify user exists and fetch their data
         User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
 
         // Extract locations from favorites using stream operations
         return user.getFavorites().stream()

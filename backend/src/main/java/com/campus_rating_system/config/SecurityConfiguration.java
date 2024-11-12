@@ -22,7 +22,7 @@ import java.util.List;
  * <p>
  * Bugs: None known
  *
- * @Author Ethan Yang
+ * @author Ethan Yang
  */
 @Configuration
 @EnableWebSecurity
@@ -38,7 +38,8 @@ public class SecurityConfiguration {
      * <p>
      * Bugs: None known
      *
-     * @Author Ethan Yang
+     * @param jwtAuthenticationFilter file conatined in config directory
+     * @param authenticationProvider auto implemented by spring boot
      */
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,
@@ -72,7 +73,8 @@ public class SecurityConfiguration {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

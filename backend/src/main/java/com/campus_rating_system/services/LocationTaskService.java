@@ -39,7 +39,9 @@ public class LocationTaskService {
      * @param taskRepository the repository for Task entities
      * @param locationRepository the repository for Location entities
      */
-    public LocationTaskService(LocationTaskRepository locationTaskRepository, TaskRepository taskRepository, LocationRepository locationRepository) {
+    public LocationTaskService(LocationTaskRepository locationTaskRepository,
+                               TaskRepository taskRepository,
+                               LocationRepository locationRepository) {
         this.locationTaskRepository = locationTaskRepository;
         this.taskRepository = taskRepository;
         this.locationRepository = locationRepository;
@@ -57,9 +59,11 @@ public class LocationTaskService {
      */
     public LocationTask addLocationTask(String taskName, String locationName) {
         // Fetch the Task entity by name
-        Task task = taskRepository.findByName(taskName).orElseThrow(() -> new RuntimeException("Task not found"));
+        Task task = taskRepository.findByName(taskName).orElseThrow(() ->
+                new RuntimeException("Task not found"));
         // Fetch the Location entity by name
-        Location location = locationRepository.findByName(locationName).orElseThrow(() -> new RuntimeException("Location not found"));
+        Location location = locationRepository.findByName(locationName).orElseThrow(() ->
+                new RuntimeException("Location not found"));
         
         // Create a new LocationTask instance and set its properties
         LocationTask locationTask = new LocationTask();
