@@ -16,7 +16,7 @@ import java.util.Date;
  *
  * <p>Bugs: None known
  *
- * @Author Ethan Yang
+ * @author Ethan Yang
  */
 @Service
 public class AuthenticationService {

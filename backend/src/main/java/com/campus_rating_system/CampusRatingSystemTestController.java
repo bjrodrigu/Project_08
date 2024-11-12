@@ -20,7 +20,9 @@ public class CampusRatingSystemTestController {
     @Autowired
     private final AuthenticationService authenticationService;
 
-    public CampusRatingSystemTestController(UserService userService, JwtService jwtService, AuthenticationService authenticationService) {
+    public CampusRatingSystemTestController(UserService userService,
+                                            JwtService jwtService,
+                                            AuthenticationService authenticationService) {
 
         this.userService = userService;
         this.jwtService = jwtService;
@@ -29,14 +31,14 @@ public class CampusRatingSystemTestController {
 
     // test function for public use
     @GetMapping("/public/hello")
-    public String hello(){
-        return("hey");
+    public String hello() {
+        return ("hey");
     }
 
     // test function for private use
     @GetMapping("/hello")
-    public String amongus(){
-        return("amongus");
+    public String amongus() {
+        return ("amongus");
     }
 
     // test function to get user information
