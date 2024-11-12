@@ -1,4 +1,4 @@
-import { useRef, useState} from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card, Spinner } from 'react-bootstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
@@ -11,10 +11,22 @@ export default function BadgerLogin() {
   const { user, setUser, login, setLogin } = useLoginState();
   const usernameInput = useRef();
   const passwordInput = useRef();
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  //const link = "Backend-Api";
+  // check login status
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const tokenExpiration = localStorage.getItem("tokenExpiration");
+
+    // check if token exists and also it is not expired.
+    if (token && tokenExpiration && Date.now() < new Date(tokenExpiration).getTime()) {
+      setLogin(true);
+      const username = JSON.parse(sessionStorage.getItem("isLoggedIn") || '"User"');
+      setUser(username);
+      navigate('/');
+    }
+  }, []);
 
   // create routeChange function to redirect to home
   const routeChange = () => {
@@ -33,14 +45,14 @@ export default function BadgerLogin() {
     setLoading(true);
     setError(null);
 
-    fetch('/api/login', {
+    fetch('http://localhost:8080/user/login', {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        username: usernameInput.current.value,
+        email: usernameInput.current.value,
         password: passwordInput.current.value
       })
     })
@@ -48,6 +60,19 @@ export default function BadgerLogin() {
         if (res.status === 401) {
           alert("Error: Incorrect login, please try again.");
         } else if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Unexpected response status: " + res.status);
+        }
+      })
+      .then(data => {
+        if (data && data.token && data.expiresIn) {
+          //get expiration time
+          const expirationTime = Date.now() + data.expiresIn;
+
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("tokenExpiration", expirationTime);
+
           alert("Your login is successful");
           setLogin(true);
           setUser(usernameInput.current.value);
@@ -59,8 +84,9 @@ export default function BadgerLogin() {
         setError("Login failed, please try again later.");
       })
       .finally(() => {
-        setLoading(false); 
+        setLoading(false);
       });
+
   }
   return (
     <>
