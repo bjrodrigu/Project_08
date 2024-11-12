@@ -11,6 +11,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'checkstyle'
 	id 'org.jetbrains.kotlin.jvm'
 }
 
@@ -21,6 +22,24 @@ java {
 	// toolchain {
 	// 	languageVersion = JavaLanguageVersion.of(17)
 	// }
+}
+
+checkstyle {
+    toolVersion = '10.18.2'  // Specify the Checkstyle version
+    configFile = file('config/checkstyle/checkstyle.xml')  // Path to your Checkstyle configuration
+}
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml {
+            // To disable XML report, do not include this block or remove it entirely
+            // enabled = false  // Remove this line
+        }
+        html {
+            // To ensure HTML report is enabled, include this block
+            destination = file("${buildDir}/reports/checkstyle.html")  // Specify destination if needed
+        }
+    }
 }
 
 configurations {

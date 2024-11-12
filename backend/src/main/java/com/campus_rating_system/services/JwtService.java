@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  *
  * <p>Bugs: None known
  *
- * @Author Ethan Yang
+ * @author Ethan Yang
  */
 @Service
 public class JwtService {
