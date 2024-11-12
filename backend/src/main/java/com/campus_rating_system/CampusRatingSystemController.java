@@ -5,9 +5,6 @@ import com.campus_rating_system.dtos.LoginResponse;
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
 import com.campus_rating_system.services.JwtService;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -49,7 +46,6 @@ import org.springframework.http.ResponseEntity;
         private final JwtService jwtService;
         @Autowired
         private final AuthenticationService authenticationService;
-
 
 
         /**
@@ -152,6 +148,22 @@ import org.springframework.http.ResponseEntity;
         }
 
         /**
+         * Endpoint to delete a review for a specified location by the authenticated user.
+         *
+         * @param locationName the name of the location whose review is to be deleted
+         * @return a ResponseEntity indicating the status of the deletion request
+         */
+        @DeleteMapping("/review/deleteReview")
+        public ResponseEntity<String> deleteReview(@RequestParam String locationName) {
+            try {
+                reviewService.deleteReview(locationName);
+                return ResponseEntity.ok("Review deleted successfully.");
+            } catch (RuntimeException e) {
+                return ResponseEntity.status(404).body(e.getMessage());
+            }
+        }   
+
+        /**
          * Endpoint to add a new task to the system.
          *
          * @param name the name of the task
@@ -198,18 +210,6 @@ import org.springframework.http.ResponseEntity;
 
             Favorite newFavorite = favoriteService.addFavorite(email, locationName);
             return new ResponseEntity<>(newFavorite, HttpStatus.CREATED);
-        }
-
-        /**
-         * Endpoint to get a list of Favorite places.
-         * 
-         * @param userId the ID of the user whose favorite locations are to be retrieved
-         * @return a List of Location objects that the user has marked as favorite
-         */
-        @GetMapping("/favorite/getFavorites")
-        public ResponseEntity<List<Location>> getFavoriteLocations(@RequestParam Integer userId) {
-            List<Location> favorites = favoriteService.getFavoriteLocations(userId);
-            return ResponseEntity.ok(favorites);
         }
 
         /**

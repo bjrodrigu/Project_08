@@ -6,9 +6,6 @@ import org.springframework.stereotype.Service;
 import com.campus_rating_system.entities.User;
 import com.campus_rating_system.repositories.UserRepository;
 
-import java.util.Date;
-import java.util.UUID; // placeholder for Google ID generation
-
 /**
  * Service class for managing user operations within the campus rating system.
  * This class provides methods to handle user-related business logic, including
