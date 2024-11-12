@@ -45,7 +45,7 @@ export default function BadgerStudySpot() {
             run('image-class-name');
       }, [])
 
-      const {user, setUser, login, setLogin} = useLoginState();
+      
 
       // dummy data for reviews
       const reviews = [
