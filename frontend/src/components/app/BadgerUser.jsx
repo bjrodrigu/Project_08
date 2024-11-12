@@ -1,9 +1,9 @@
-//TODO: remove or edit user reviews.
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
+import BadgerMessage from './BadgerMessage';
 //style
 const backButtonStyle = {
     display: 'flex',
@@ -29,62 +29,72 @@ const user = {
     email: 'user@example.com'
 };
 
-const reviews = [
+let test_reviews = [
     {
+        id: 1,
         location: 'Library - Studyspot 1',
         userRating: 4.5,
         totalScore: 5,
         comment: 'Great place to study, quiet and comfortable.'
     },
     {
+        id: 2,
         location: 'Library - Studyspot 2',
         userRating: 4.0,
         totalScore: 5,
         comment: 'Decent spot, but can be a bit noisy during peak hours.'
     },
     {
+        id: 3,
         location: 'Library - Studyspot 3',
         userRating: 3.5,
         totalScore: 5,
         comment: 'Small study area, but still a good place to focus.'
     },
     {
+        id: 4,
         location: 'Library - Studyspot 4',
         userRating: 4.8,
         totalScore: 5,
         comment: 'Very quiet, perfect for long study sessions.'
     },
     {
+        id: 5,
         location: 'Library - Studyspot 5',
         userRating: 3.0,
         totalScore: 5,
         comment: 'Not enough outlets, but still usable.'
     },
     {
+        id: 6,
         location: 'Library - Studyspot 6',
         userRating: 4.2,
         totalScore: 5,
         comment: 'Good ambiance and comfortable seating.'
     },
     {
+        id: 7,
         location: 'Library - Studyspot 7',
         userRating: 4.7,
         totalScore: 5,
         comment: 'Spacious and quiet, perfect for group studies.'
     },
     {
+        id: 8,
         location: 'Library - Studyspot 8',
         userRating: 3.8,
         totalScore: 5,
         comment: 'A bit cramped, but still a good place to focus.'
     },
     {
+        id: 9,
         location: 'Library - Studyspot 9',
         userRating: 4.1,
         totalScore: 5,
         comment: 'Good lighting and comfortable seats.'
     },
     {
+        id: 10,
         location: 'Library - Studyspot 10',
         userRating: 4.6,
         totalScore: 5,
@@ -93,7 +103,11 @@ const reviews = [
 ];
 
 export default function UserComments() {
-    //const [reviews, setReviews] = useState([]);
+
+    const [editIndex, setEditIndex] = useState(null); // current review in edition mode
+    const [reviews, setReviews] = useState(test_reviews); // all reviews
+    const [editedRating, setEditedRating] = useState('');
+    const [editedComment, setEditedComment] = useState(''); // edited single review
     const [currentPage, setCurrentPage] = useState(1);
     //test
     const reviewsPerPage = 2;
@@ -108,7 +122,6 @@ export default function UserComments() {
     //         .then((response) => response.json())
     //         .then((data) => setReviews(data));
     // }, []);
-
 
     const totalPages = Math.ceil(reviews.length / reviewsPerPage);
 
@@ -129,7 +142,7 @@ export default function UserComments() {
     };
     const logout = useLogout();
 
-    
+
     // change password, user will be logged out.
     const handlePasswordChange = (e) => {
         e?.preventDefault();
@@ -157,7 +170,7 @@ export default function UserComments() {
         //         return response.json();  
         //     })
         //     .then(result => {    
-        //         sessionStorage.removeItem('isLoggedIn');
+        //         localStorage.removeItem('isLoggedIn');
         //         setLoginStatus(undefined);
         //         alert('Password changed successfully');
         //         navigate('/');
@@ -171,6 +184,57 @@ export default function UserComments() {
         alert('Password changed successfully');
         logout();
     }
+
+    // start edition mode
+    const handleEditReview = (key, comment, rating) => {
+        setEditIndex(key);
+        //store info before editing, so that original comment can be shown while editing
+        setEditedComment(comment);
+        setEditedRating(rating);
+    };
+
+    // store saved edition
+    const handleSaveEdit = (key) => {
+        // fetch(`/api/reviews/${review.id}`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ ...review, comment: editedComment }) // update review
+        // })
+        //     .then(response => response.json())
+        //     .then(updatedReview => {
+        //         const updatedReviews = reviewList.map((r, index) =>
+        //             index === editIndex ? { ...r, comment: editedComment } : r
+        //         );
+        //         setReviewList(updatedReviews); // display updated review
+        //         setEditIndex(null); // quit the edition mode
+        //         alert('Review updated successfully');
+        //     })
+        //     .catch(error => {
+        //         console.error('Error updating review:', error);
+        //         alert(`Error: ${error.message}`);
+        //     });
+
+        //template
+        //const actualIndex = index + (currentPage - 1) * reviewsPerPage;
+
+        const updatedReviews = reviews.map(review =>
+            review.id === key ? { ...review, comment: editedComment, userRating: editedRating } : review
+        );
+        setReviews(updatedReviews); // update review.
+        setEditIndex(null); // exit edition mode.
+    };
+
+    const handleRemove = (key) => {
+        //template
+        const isConfirmed = window.confirm("Are you sure you want to delete this review?");
+        if (!isConfirmed) return; 
+
+        const updatedReviews = reviews.filter(review => review.id !== key);
+        setReviews(updatedReviews);
+    }
+
     return (
         <div>
             <div style={userInfoStyle}>
@@ -188,14 +252,19 @@ export default function UserComments() {
             </div>
             <div style={containerStyle}>
                 <h2>Your Comments</h2>
-                {currentReviews.map((review, index) => (
-                    <Card key={index}>
-                        <Card.Body>
-                            <Card.Title>{review.location}</Card.Title>
-                            <Card.Text>Rating: {review.userRating} / 5</Card.Text>
-                            <Card.Text>{review.comment}</Card.Text>
-                        </Card.Body>
-                    </Card>
+                {currentReviews.map(review => (
+                    <BadgerMessage
+                        {...review}
+                        editIndex={editIndex}
+                        setEditIndex={setEditIndex}
+                        handleEditReview={handleEditReview}
+                        handleSaveEdit={handleSaveEdit}
+                        editedComment={editedComment}
+                        setEditedComment={setEditedComment}
+                        editedRating={editedRating}
+                        setEditedRating={setEditedRating}
+                        handleRemove={handleRemove}
+                    />
                 ))}
                 <div className="d-flex justify-content-center mt-4">
                     <Pagination>
