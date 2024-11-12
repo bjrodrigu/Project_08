@@ -156,6 +156,7 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new review for a location.
      *
+     * @param title        title of the comment
      * @param locationName the name of the location being reviewed
      * @param rating       an integer rating for the location
      * @param comment      a textual comment describing the user's experience
@@ -165,9 +166,10 @@ public class CampusRatingSystemController {
     public ResponseEntity<Review> addReview(
             @RequestParam String locationName,
             @RequestParam int rating,
-            @RequestParam String comment) {
+            @RequestParam String comment,
+            @RequestParam String title) {
 
-        Review newReview = reviewService.addNewReview(locationName, rating, comment);
+        Review newReview = reviewService.addNewReview(locationName, rating, comment, title);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
 

@@ -34,6 +34,9 @@ public class Review {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
+    @Column(name = "title")
+    private String title;
+
     // Getters and setters
 
     public Integer getReviewId() {
@@ -90,5 +93,13 @@ public class Review {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }
