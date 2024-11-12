@@ -61,6 +61,23 @@ public class User implements UserDetails {
         this.googleId = googleId;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName() {
+        this.name = name;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -107,21 +124,12 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
     public String getUsername() {
         return name;
     }
 
     public void setUser(String user) {
-        name = user;
+        name = email;
     }
 
     @Override
