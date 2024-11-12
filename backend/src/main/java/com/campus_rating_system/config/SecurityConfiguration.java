@@ -15,10 +15,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 /**
- * This class is used to limit what users can and cannot access such as viewing specific
+ * This class is used to limit what users can and cannot access such as viewing
+ * specific
  * pages and what types of requests we can make.
  *
- * <p>Bugs: None known
+ * <p>
+ * Bugs: None known
  *
  * @Author Ethan Yang
  */
@@ -33,20 +35,21 @@ public class SecurityConfiguration {
      * Security configuration determines what users can and cannot see based on
      * whether they are logged into system or not
      *
-     * <p>Bugs: None known
+     * <p>
+     * Bugs: None known
      *
      * @Author Ethan Yang
      */
     public SecurityConfiguration(
             JwtAuthenticationFilter jwtAuthenticationFilter,
-            AuthenticationProvider authenticationProvider
-    ) {
+            AuthenticationProvider authenticationProvider) {
         this.authenticationProvider = authenticationProvider;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     /**
-     * Defines what web pages can and cannot be accessed based on user privilege level
+     * Defines what web pages can and cannot be accessed based on user privilege
+     * level
      * and the rules that will be applied when authenticating.
      *
      * @param http the JWT token
@@ -54,20 +57,19 @@ public class SecurityConfiguration {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf()
+        http
+                .cors() // allow CORS configuration
+                .and()
+                .csrf()
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/user/login", "/user/signup", "/public/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-                // Session Management Policy: The session management is set to stateless,
-                // meaning the application will not create HTTP sessions.
-                // Each request must be authenticated independently, typically using a JWT.
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                // What mechanisms are used for authentication
                 .and()
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
@@ -86,12 +88,15 @@ public class SecurityConfiguration {
 
         // allowed sites to make requests
         configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET","POST"));
-        configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
-
+        configuration.setAllowedMethods(List.of("GET", "POST"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        // credentials: Indicates whether user credentials should be included.
+        // "include": Specifies that credentials (such as Cookies) should be included
+        // regardless of whether the request is cross-origin or not.
+        configuration.setAllowCredentials(true); // activate credentials
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 
-        source.registerCorsConfiguration("/**",configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
         return source;
     }

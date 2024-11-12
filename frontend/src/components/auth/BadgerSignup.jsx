@@ -67,7 +67,7 @@ export default function BadgerSignup() {
                 alert("Your registration is successful");
                 setLogin(true);
                 setUser(usernameInput.current.value);
-                sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
+                localStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
                 navigate('/');
             } else {
                 setError("Registration failed, please try again.");
