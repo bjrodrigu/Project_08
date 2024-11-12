@@ -43,10 +43,14 @@ const BadgerAddReviewPage = () => {
             comment: review,
         });
 
+        const token = localStorage.getItem("token");
+        console.log(token)
+
         fetch(`http://localhost:8080/review/addReview?${queryParams.toString()}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
         })
             .then((response) => {
