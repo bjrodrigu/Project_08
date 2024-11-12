@@ -35,10 +35,9 @@ const BadgerAddReviewPage = () => {
         }
 
         setIsSubmitting(true);
-        console.log('user', user);
 
         const queryParams = new URLSearchParams({
-            email: 'testing@gmail.com', // user email, hardcoded for now
+            email: user, // user email, hardcoded for now
             locationName: 'Union South', // location name, hardcoded for now
             rating: rating,
             comment: review,
