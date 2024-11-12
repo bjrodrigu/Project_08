@@ -85,7 +85,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // allowed sites to make requests
-        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:3030"));
+        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:3000"));
         configuration.setAllowedMethods(List.of("GET","POST"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
 
