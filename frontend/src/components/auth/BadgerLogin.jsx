@@ -14,19 +14,31 @@ export default function BadgerLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const [redirecting, setRedirecting] = useState(false);
   // check login status
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const tokenExpiration = localStorage.getItem("tokenExpiration");
+    const tokenExpiration = Number(localStorage.getItem("tokenExpiration"));
+    const currentTime = Date.now();
 
-    // check if token exists and also it is not expired.
-    if (token && tokenExpiration && Date.now() < new Date(tokenExpiration).getTime()) {
+
+
+    if (token && tokenExpiration && currentTime < tokenExpiration) {
+
       setLogin(true);
-      const username = JSON.parse(sessionStorage.getItem("isLoggedIn") || '"User"');
+      console.log("username: ",)
+      const username = JSON.parse(localStorage.getItem("isLoggedIn") || '"User"');
       setUser(username);
+      setRedirecting(true); // set redirecting status
       navigate('/');
+    } else {
+      //expired.
+      localStorage.removeItem("token");
+      localStorage.removeItem("tokenExpiration");
+      localStorage.removeItem("isLoggedIn");
     }
-  }, []);
+  }, [navigate, setLogin, setUser]);
+
 
   // create routeChange function to redirect to home
   const routeChange = () => {
@@ -58,7 +70,7 @@ export default function BadgerLogin() {
     })
       .then(res => {
         if (res.status === 401) {
-          alert("Error: Incorrect login, please try again.");
+          alert("Error: Incorrect email or password, please try again.");
         } else if (res.ok) {
           return res.json();
         } else {
@@ -68,15 +80,21 @@ export default function BadgerLogin() {
       .then(data => {
         if (data && data.token && data.expiresIn) {
           //get expiration time
+
+
           const expirationTime = Date.now() + data.expiresIn;
+          localStorage.setItem("tokenExpiration", expirationTime);
+
 
           localStorage.setItem("token", data.token);
-          localStorage.setItem("tokenExpiration", expirationTime);
+
+
 
           alert("Your login is successful");
           setLogin(true);
           setUser(usernameInput.current.value);
-          sessionStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
+          localStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
+          console.log("Storing username:", usernameInput.current.value);
           navigate('/');
         }
       })
@@ -88,6 +106,11 @@ export default function BadgerLogin() {
       });
 
   }
+
+  if (redirecting) {
+    return null;
+  }
+
   return (
     <>
       <Row style={{ width: '85vw', marginBottom: '2rem' }}>

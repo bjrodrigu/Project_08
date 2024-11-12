@@ -30,7 +30,7 @@ export default function useLogout() {
         // });
         localStorage.removeItem("token");
         localStorage.removeItem("tokenExpiration");
-        sessionStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("isLoggedIn");
         setLogin(false);
         setUser(null);
         alert("You have been logged out!");
