@@ -40,7 +40,9 @@ public class ReviewService {
      * @param userRepository the repository interface for accessing user data
      * @param locationRepository the repository interface for accessing location data
      */
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, LocationRepository locationRepository) {
+    public ReviewService(ReviewRepository reviewRepository,
+                         UserRepository userRepository,
+                         LocationRepository locationRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
@@ -53,15 +55,18 @@ public class ReviewService {
      *
      * @param email the email of the user submitting the review, used to find the User entity
      * @param locationName the name of the location being reviewed, used to find the Location entity
-     * @param rating an integer rating for the location (expected to follow a predefined rating scale)
+     * @param rating an integer rating for the location
+     *               (expected to follow a predefined rating scale)
      * @param comment a textual comment describing the user's experience at the location
      * @return the saved Review entity containing the newly added review information
      * @throws RuntimeException if the user or location is not found in the system
      */
     public Review addNewReview(String email, String locationName, int rating, String comment) {
         // Fetch the User and Location entities based on their names
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        Location location = locationRepository.findByName(locationName).orElseThrow(() -> new RuntimeException("Location not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("User not found"));
+        Location location = locationRepository.findByName(locationName).orElseThrow(() ->
+                new RuntimeException("Location not found"));
 
         // Create a new Review instance and set its properties
         Review review = new Review();

@@ -17,7 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  *
  * <p>Bugs: None known
  *
- * @Author Ethan Yang
+ * @author Ethan Yang
  */
 @Configuration
 public class ApplicationConfiguration {
@@ -35,7 +35,8 @@ public class ApplicationConfiguration {
      */
     @Bean
     UserDetailsService userDetailsService() {
-        return username -> (org.springframework.security.core.userdetails.UserDetails) userRepository.findByEmail(username)
+        return username -> (org.springframework.security.core.userdetails.UserDetails)
+                userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
@@ -53,7 +54,7 @@ public class ApplicationConfiguration {
     /**
      * Responsible to manage authentication, manage requests
      * used to check login info (like a gatekeeper)
-     *
+     * <p>
      * ex: When someone tries to access a secure part of your app, Spring checks
      * if they’re logged in. If not, it asks the AuthenticationManager to check
      * their login info.
@@ -62,7 +63,8 @@ public class ApplicationConfiguration {
      * @return configuration setting
      */
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config)
+            throws Exception {
         return config.getAuthenticationManager();
     }
 
