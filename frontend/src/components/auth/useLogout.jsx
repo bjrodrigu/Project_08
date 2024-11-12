@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'react-bootstrap';  
+import { Button } from 'react-bootstrap';
 import { useLoginState } from '../contexts/LoginContext';
 
 export default function useLogout() {
     const navigate = useNavigate();
     //const link = "Backend-Api";
-    const {user, setUser, login, setLogin} = useLoginState();
-    
+    const { user, setUser, login, setLogin } = useLoginState();
+
     const handleLogout = () => {
         // fetch(link, {
         //     method: 'POST',
@@ -28,13 +28,21 @@ export default function useLogout() {
         // .catch(err => {
         //     console.error("Logout failed: ", err);
         // });
-        sessionStorage.removeItem('isLoggedIn');
+        localStorage.removeItem("token");
+        localStorage.removeItem("tokenExpiration");
+        sessionStorage.removeItem("isLoggedIn");
         setLogin(false);
         setUser(null);
         alert("You have been logged out!");
-        navigate('/'); 
+        navigate('/');
+
+
+
+
+
+
     };
 
     return handleLogout;
-        
+
 }
