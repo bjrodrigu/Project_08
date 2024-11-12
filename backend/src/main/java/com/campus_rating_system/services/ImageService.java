@@ -16,7 +16,7 @@ import com.campus_rating_system.repositories.LocationRepository;
  *
  * <p>Bugs: None known
  *
- * @Author Rithik Rajaram
+ * @author Rithik Rajaram
  */
 @Service
 public class ImageService {

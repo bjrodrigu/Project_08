@@ -24,7 +24,7 @@ import java.io.IOException;
  *
  * <p>Bugs: None known
  *
- * @Author Ethan Yang
+ * @author Ethan Yang
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -69,11 +69,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // checks if our authentication header is a Bearer type.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response); // checks to see if user can access requested page
+            filterChain.doFilter(request, response);
+            // checks to see if user can access requested page
             return;
         }
 
-        // this grabs the token and verifies if an email parameter exists alongside if the client knows
+        // this grabs the token and verifies if an email parameter
+        // exists alongside if the client knows
         // the user is verified or not. After performing these checks it will then perform a filter
         // request.
         try {
@@ -87,13 +89,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 // validates token by expiration date using jwtService method in .services package
                 if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
                     );
 
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    authToken.setDetails(new WebAuthenticationDetailsSource()
+                            .buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }

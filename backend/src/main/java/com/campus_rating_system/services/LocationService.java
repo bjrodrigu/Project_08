@@ -10,7 +10,8 @@ import com.campus_rating_system.entities.Location;
 import com.campus_rating_system.repositories.LocationRepository;
 
 /**
- * Service class responsible for handling operations related to locations within the campus rating system.
+ * Service class responsible for handling operations related to locations within the
+ * campus rating system.
  * This class abstracts the data access layer and provides methods to perform business logic
  * associated with locations, such as adding new locations.
  *
@@ -47,7 +48,11 @@ public class LocationService {
      * @param category the category or type of location (e.g., "Library")
      * @return the saved Location entity containing the newly added location information
      */
-    public Location addNewLocation(String name, String description, float latitude, float longitude, String address, String category) {
+    public Location addNewLocation(String name,
+                                   String description,
+                                   float latitude,
+                                   float longitude,
+                                   String address, String category) {
         Location location = new Location();
         location.setName(name);
         location.setDescription(description);
