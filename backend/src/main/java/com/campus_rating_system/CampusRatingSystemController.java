@@ -5,9 +5,6 @@ import com.campus_rating_system.dtos.LoginResponse;
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
 import com.campus_rating_system.services.JwtService;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -16,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.campus_rating_system.services.*;
 import com.campus_rating_system.entities.*;
+
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
@@ -173,6 +172,22 @@ public class CampusRatingSystemController {
         Review newReview = reviewService.addNewReview(email, locationName, rating, comment);
         return new ResponseEntity<>(newReview, HttpStatus.CREATED);
     }
+
+    /**
+    * Endpoint to delete a review for a specified location by the authenticated user.
+    *
+    * @param locationName the name of the location whose review is to be deleted
+    * @return a ResponseEntity indicating the status of the deletion request
+    */
+    @DeleteMapping("/review/deleteReview")
+    public ResponseEntity<String> deleteReview(@RequestParam String locationName) {
+        try {
+            reviewService.deleteReview(locationName);
+            return ResponseEntity.ok("Review deleted successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }   
 
     /**
      * Endpoint to add a new task to the system.
