@@ -42,7 +42,8 @@ public class ReviewService {
      * @param userRepository the repository interface for accessing user data
      * @param locationRepository the repository interface for accessing location data
      */
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, LocationRepository locationRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository,
+            LocationRepository locationRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
@@ -53,20 +54,23 @@ public class ReviewService {
      * This method validates the existence of both the user and location before creating the
      * review entry, ensuring data integrity.
      *
+     * @param title the title of the new review
      * @param locationName the name of the location being reviewed, used to find the Location entity
-     * @param rating an integer rating for the location (expected to follow a predefined rating scale)
+     * @param rating an integer rating for the location, expected to follow 1-5
      * @param comment a textual comment describing the user's experience at the location
      * @return the saved Review entity containing the newly added review information
      * @throws RuntimeException if the user or location is not found in the system
      */
-    public Review addNewReview(String locationName, int rating, String comment) {
+    public Review addNewReview(String locationName, int rating, String comment, String title) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
         String email = currentUser.getEmail();
 
         // Fetch the User and Location entities based on their names
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        Location location = locationRepository.findByName(locationName).orElseThrow(() -> new RuntimeException("Location not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> 
+        new RuntimeException("User not found"));
+        Location location = locationRepository.findByName(locationName).orElseThrow(() -> 
+        new RuntimeException("Location not found"));
 
         // Create a new Review instance and set its properties
         Review review = new Review();
@@ -76,6 +80,7 @@ public class ReviewService {
         review.setComment(comment);
         review.setCreatedAt(new Date());
         review.setUpdatedAt(new Date());
+        review.setTitle(title);
 
         return reviewRepository.save(review);
     }
@@ -96,15 +101,15 @@ public class ReviewService {
         
         // Find the user by email
         User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+              .orElseThrow(() -> new RuntimeException("User not found"));
             
         // Find the location by name
         Location location = locationRepository.findByName(locationName)
-            .orElseThrow(() -> new RuntimeException("Location not found"));
+              .orElseThrow(() -> new RuntimeException("Location not found"));
             
         // Find the review by user and location
         Review review = reviewRepository.findByUserAndLocation(user, location)
-            .orElseThrow(() -> new RuntimeException("Review not found"));
+              .orElseThrow(() -> new RuntimeException("Review not found"));
 
         reviewRepository.delete(review);
     }
