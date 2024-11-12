@@ -2,6 +2,7 @@ package com.campus_rating_system.services;
 
 import java.util.Date;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -58,5 +59,9 @@ public class LocationService {
         location.setCategory(category);
 
         return locationRepository.save(location);
+    }
+
+    public List<Location> getLocations() {
+        return locationRepository.findAll();
     }
 }
