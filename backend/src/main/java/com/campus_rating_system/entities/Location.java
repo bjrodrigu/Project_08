@@ -22,12 +22,6 @@ public class Location {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "latitude")
-    private Float latitude;
-
-    @Column(name = "longitude")
-    private Float longitude;
-
     @Column(name = "address")
     private String address;
 
@@ -38,6 +32,10 @@ public class Location {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "building_id", referencedColumnName = "building_id", nullable = false)
+    private Building building;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
@@ -83,22 +81,6 @@ public class Location {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public Float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Float latitude) {
-        this.latitude = latitude;
-    }
-
-    public Float getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Float longitude) {
-        this.longitude = longitude;
     }
 
     public String getAddress() {
@@ -151,6 +133,10 @@ public class Location {
 
     public List<Image> getImages() {
         return images;
+    }
+
+    public void setBuilding(Building building) {
+        this.building = building;
     }
 
     public void setImages(List<Image> images) {
