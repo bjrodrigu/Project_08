@@ -12,14 +12,18 @@
 
 image: gradle:jdk17
 
-before_script:
-  - cd backend
-  - GRADLE_USER_HOME="$(pwd)/.gradle"
-  - export GRADLE_USER_HOME
+stages:
+  - build
+  - test
+  - deploy
 
+# Backend build only
 build:
   stage: build
   script:
+    - cd backend
+    - GRADLE_USER_HOME="$(pwd)/.gradle"
+    - export GRADLE_USER_HOME
     - gradle --build-cache assemble
   cache:
     key: "$CI_COMMIT_REF_NAME"
@@ -28,17 +32,27 @@ build:
       - build
       - .gradle
 
-test:
+# Frontend tests
+frontend-test:
+  image: node:18-alpine
   stage: test
   script:
-    - gradle checkstyleMain
-    - gradle checkstyleTest
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
+    - cd frontend
+    - yarn install
+    - yarn test --no-watch
+  coverage: '/All files[^|]*\|[^|]*\s+([\d\.]+)/'
+  artifacts:
+    when: always
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: frontend/coverage/cobertura-coverage.xml
     paths:
-      - build
-      - .gradle
+      - frontend/coverage/
+  cache:
+    key: frontend-$CI_COMMIT_REF_NAME
+    paths:
+      - frontend/node_modules/
 
 deploy:
   stage: deploy
