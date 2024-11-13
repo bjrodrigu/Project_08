@@ -21,7 +21,7 @@ public class User implements UserDetails {
     private String googleId;
 
     @Column(name = "name")
-    private String name;
+    private String fullName;
 
     @Column(name = "password")
     private String password;
@@ -61,11 +61,37 @@ public class User implements UserDetails {
         this.googleId = googleId;
     }
 
+    public String getName() {
+        return fullName;
+    }
+
+    public void setName(String name) {
+        this.fullName = name;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
+        this.email = this.email;
+    }
+
+    public void setUser(String user) {
         this.email = email;
     }
 
@@ -104,24 +130,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public String getUsername() {
-        return name;
-    }
-
-    public void setUser(String user) {
-        name = user;
     }
 
     @Override
