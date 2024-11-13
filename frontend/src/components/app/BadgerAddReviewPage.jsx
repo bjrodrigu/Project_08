@@ -33,14 +33,14 @@ const BadgerAddReviewPage = () => {
             alert('Please select a rating before submitting your review.');
             return;
         }
+        console.log('Submitting review:', review, rating, reviewTitle);
 
         setIsSubmitting(true);
-
         const queryParams = new URLSearchParams({
-            email: user, // user email, hardcoded for now
             locationName: 'Union South', // location name, hardcoded for now
             rating: rating,
             comment: review,
+            title: reviewTitle
         });
 
         const token = localStorage.getItem("token");
