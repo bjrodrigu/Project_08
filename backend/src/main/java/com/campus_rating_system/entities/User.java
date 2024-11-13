@@ -45,19 +45,19 @@ public class User implements UserDetails {
 
     // Getters and setters
 
-    public Integer getUser_Id() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUser_Id(Integer userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public String getGoogle_Id() {
+    public String getGoogleId() {
         return googleId;
     }
 
-    public void setGoogle_Id(String googleId) {
+    public void setGoogleId(String googleId) {
         this.googleId = googleId;
     }
 
