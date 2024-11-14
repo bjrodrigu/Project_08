@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.campus_rating_system.services.*;
 import com.campus_rating_system.entities.*;
+import com.campus_rating_system.dtos.*;
 
 import java.util.List;
 
@@ -167,8 +168,15 @@ public class CampusRatingSystemController {
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
     }
 
+
+
+    /**
+     * Endpoint to get all locations along with their tasks.
+     *
+     * @return a dto containing all location data and all tasks associated with each location
+     */
     @GetMapping("/location/getLocations")
-    public List<Location> getLocations() {
+    public List<LocationWithTasksDTO> getLocations() {
         return locationService.getLocations();
     }
 
