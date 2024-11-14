@@ -77,6 +77,15 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
+    /**
+     * Retrieves all locations from the system, including the associated task names for each 
+     * location. This method collects and structures each location's information into a 
+     * LocationWithTasksDTO object, which includes essential location details and a list of 
+     * task names associated with it.
+     *
+     * @return a list of LocationWithTasksDTO objects, each representing a location along with its
+     *         associated task names
+     */
     public List<LocationWithTasksDTO> getLocations() {
         List<Location> locations = locationRepository.findAll();
 
