@@ -135,6 +135,10 @@ public class Location {
         return images;
     }
 
+    public Building getBuilding() {
+        return building;
+    }
+
     public void setBuilding(Building building) {
         this.building = building;
     }
