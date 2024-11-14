@@ -2,9 +2,12 @@ package com.campus_rating_system.services;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.campus_rating_system.dtos.LocationWithTasksDTO;
 import com.campus_rating_system.entities.Building;
 import com.campus_rating_system.entities.Location;
 import com.campus_rating_system.repositories.BuildingRepository;
@@ -74,7 +77,36 @@ public class LocationService {
         return locationRepository.save(location);
     }
 
-    public List<Location> getLocations() {
-        return locationRepository.findAll();
+    /**
+     * Retrieves all locations from the system, including the associated task names for each 
+     * location. This method collects and structures each location's information into a 
+     * LocationWithTasksDTO object, which includes essential location details and a list of 
+     * task names associated with it.
+     *
+     * @return a list of LocationWithTasksDTO objects, each representing a location along with its
+     *         associated task names
+     */
+    public List<LocationWithTasksDTO> getLocations() {
+        List<Location> locations = locationRepository.findAll();
+
+        return locations.stream().map(location -> {
+            LocationWithTasksDTO dto = new LocationWithTasksDTO();
+            dto.setLocationId(location.getLocationId());
+            dto.setName(location.getName());
+            dto.setDescription(location.getDescription());
+            dto.setCategory(location.getCategory());
+            dto.setAddress(location.getAddress());
+            dto.setCreatedAt(location.getCreatedAt());
+            dto.setUpdatedAt(location.getUpdatedAt());
+            dto.setBuildingName(location.getBuilding().getName());
+
+            // Populate task names
+            List<String> taskNames = location.getLocationTasks().stream()
+                  .map(locationTask -> locationTask.getTask().getName())
+                  .collect(Collectors.toList());
+
+            dto.setTaskNames(taskNames);
+            return dto;
+        }).collect(Collectors.toList());
     }
 }
