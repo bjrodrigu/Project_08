@@ -9,8 +9,6 @@ public class LocationWithTasksDTO {
     private String description;
     private String category;
     private String address;
-    private Float latitude;
-    private Float longitude;
     private Date createdAt;
     private Date updatedAt;
     private String buildingName;
@@ -55,22 +53,6 @@ public class LocationWithTasksDTO {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public Float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Float latitude) {
-        this.latitude = latitude;
-    }
-
-    public Float getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Float longitude) {
-        this.longitude = longitude;
     }
 
     public Date getCreatedAt() {
