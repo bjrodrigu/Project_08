@@ -1,12 +1,13 @@
 package com.campus_rating_system.services;
 
 import java.util.Date;
-
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.campus_rating_system.entities.Building;
 import com.campus_rating_system.entities.Location;
+import com.campus_rating_system.repositories.BuildingRepository;
 import com.campus_rating_system.repositories.LocationRepository;
 
 /**
@@ -17,22 +18,28 @@ import com.campus_rating_system.repositories.LocationRepository;
  *
  * <p>Bugs: None known
  *
- * @author Rithik Rajaram
  */
 @Service
 public class LocationService {
 
     @Autowired
     private final LocationRepository locationRepository;
+    
+    @Autowired
+    private final BuildingRepository buildingRepository;
 
     /**
-     * Constructor for LocationService, injecting the LocationRepository dependency.
+     * Constructor for LocationService, injecting the Location & Building Repository dependency.
      * This setup facilitates the decoupling of data access from business logic.
      *
      * @param locationRepository the repository interface for accessing location data
+     * @param buildingRepository the repository interface for accessing building data
      */
-    public LocationService(LocationRepository locationRepository) {
+    public LocationService(LocationRepository locationRepository, 
+          BuildingRepository buildingRepository) {
+
         this.locationRepository = locationRepository;
+        this.buildingRepository = buildingRepository;
     }
 
     /**
@@ -42,26 +49,27 @@ public class LocationService {
      *
      * @param name the name of the location (e.g., "Central Library")
      * @param description a description of the location (e.g., "A large library with study rooms")
-     * @param latitude the geographic latitude of the location
-     * @param longitude the geographic longitude of the location
      * @param address the physical address of the location
      * @param category the category or type of location (e.g., "Library")
+     * @param buildingName the name of the building associated with the location
      * @return the saved Location entity containing the newly added location information
      */
     public Location addNewLocation(String name,
                                    String description,
-                                   float latitude,
-                                   float longitude,
-                                   String address, String category) {
+                                   String address,
+                                   String category,
+                                   String buildingName) {
         Location location = new Location();
         location.setName(name);
         location.setDescription(description);
-        location.setLatitude(latitude);
-        location.setLongitude(longitude);
         location.setAddress(address);
+        location.setCategory(category);
         location.setCreatedAt(new Date());
         location.setUpdatedAt(new Date());
-        location.setCategory(category);
+
+        // Set the associated building
+        Building building = buildingRepository.findByName(buildingName).orElse(null);
+        location.setBuilding(building);
 
         return locationRepository.save(location);
     }
