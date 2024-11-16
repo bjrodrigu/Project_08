@@ -37,7 +37,7 @@ const BadgerAddReviewPage = () => {
 
         setIsSubmitting(true);
         const queryParams = new URLSearchParams({
-            locationName: 'Union South', // location name, hardcoded for now
+            locationName: 'Union South Cafeteria', // location name, hardcoded for now
             rating: rating,
             comment: review,
             title: reviewTitle
