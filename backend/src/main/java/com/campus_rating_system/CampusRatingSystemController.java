@@ -4,7 +4,7 @@ import com.campus_rating_system.config.AuthenticationService;
 import com.campus_rating_system.dtos.LoginResponse;
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
-import com.campus_rating_system.services.JwtService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.campus_rating_system.services.*;
 import com.campus_rating_system.entities.*;
+import com.campus_rating_system.dtos.*;
 
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class CampusRatingSystemController {
 
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final BuildingService buildingService;
     @Autowired
     private final LocationService locationService;
     @Autowired
@@ -56,6 +59,7 @@ public class CampusRatingSystemController {
      * endpoints that delegate operations to the corresponding service layer.
      *
      * @param userService             the service for handling user operations
+     * @param buildingService         the service for handling building operations
      * @param locationService         the service for handling location operations
      * @param reviewService           the service for handling review operations
      * @param taskService             the service for handling task operations
@@ -73,9 +77,11 @@ public class CampusRatingSystemController {
                                         FavoriteService favoriteService,
                                         ImageService imageService,
                                         JwtService jwtService,
-                                        AuthenticationService authenticationService) {
+                                        AuthenticationService authenticationService,
+                                        BuildingService buildingService) {
 
         this.userService = userService;
+        this.buildingService = buildingService;
         this.locationService = locationService;
         this.reviewService = reviewService;
         this.taskService = taskService;
@@ -119,37 +125,58 @@ public class CampusRatingSystemController {
     }
 
     /**
+     * Endpoint to add a new building.
+     *
+     * @param name the name of the building
+     * @param longitude the longitude of the building
+     * @param latitude the latitude of the building
+     * @return the added Building entity as a response
+     */
+    @PostMapping("/building/addBuilding")
+    public ResponseEntity<Building> addBuilding(@RequestParam String name,
+                                                @RequestParam Float longitude,
+                                                @RequestParam Float latitude) {
+
+        Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude);
+        return new ResponseEntity<>(newBuilding, HttpStatus.CREATED);
+    }
+
+    /**
      * Endpoint to add a new location to the system.
      *
      * @param name        the name of the location
      * @param description a brief description of the location
-     * @param latitude    the latitude coordinate of the location
-     * @param longitude   the longitude coordinate of the location
      * @param address     the physical address of the location
      * @param category    the category or type of location (e.g., library, park)
+     * @param buildingName the name of the building associated with the location
      * @return a ResponseEntity containing the newly created Location and a CREATED status
      */
     @PostMapping("/location/addLocation")
     public ResponseEntity<Location> addNewLocation(
             @RequestParam String name,
             @RequestParam String description,
-            @RequestParam float latitude,
-            @RequestParam float longitude,
             @RequestParam String address,
-            @RequestParam String category) {
-
+            @RequestParam String category,
+            @RequestParam String buildingName) {
         Location newLocation = locationService.addNewLocation(
                 name,
                 description,
-                latitude,
-                longitude,
                 address,
-                category);
+                category,
+                buildingName);
+
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
     }
 
+
+
+    /**
+     * Endpoint to get all locations along with their tasks.
+     *
+     * @return a dto containing all location data and all tasks associated with each location
+     */
     @GetMapping("/location/getLocations")
-    public List<Location> getLocations() {
+    public List<LocationWithTasksDTO> getLocations() {
         return locationService.getLocations();
     }
 
