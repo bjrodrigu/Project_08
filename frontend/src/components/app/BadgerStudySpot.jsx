@@ -44,6 +44,28 @@ export default function BadgerStudySpot() {
             run('image-class-name');
       }, [])
 
+      useEffect(() => {
+            fetchReviews();
+      }, []);
+
+      // function to fetch reviews from the API
+
+      const [reviews, setReviews] = useState([]);
+      const fetchReviews = async () => {
+            try {
+                  const response = await fetch('http://localhost:8080/review/getAllReviews');
+                  if (response.ok) {
+                        const reviewsData = await response.json();
+                        setReviews(reviewsData);
+                  } else {
+                        throw new Error('Failed to fetch reviews');
+                  }
+            } catch (error) {
+                  console.error(error);
+            }
+      };
+
+
       // renders the add review button if the user is logged in, and the user has not already reviewed the location otherwise returns edit review button
       const renderAddReviewButton = () => {
             if (login) {
@@ -65,13 +87,15 @@ export default function BadgerStudySpot() {
 
 
       // dummy data for reviews
-      const reviews = [
-            { name: 'lorem', rating: 1.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'ipsum', rating: 3.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'dolor', rating: 4.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'sit', rating: 3.8, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'amet', rating: 0.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' }
-      ]
+      // const reviews = [
+      //       { name: 'lorem', rating: 1.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'ipsum', rating: 3.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'dolor', rating: 4.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'sit', rating: 3.8, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'amet', rating: 0.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' }
+      // ]
+
+
 
       return <>
             <Card key={'Primary'} style={{ height: '90vh', overflowY: 'hidden', borderRadius: '2rem', width: '35rem', position: "absolute", top: '9vh', left: '2vw' }}>
@@ -115,9 +139,14 @@ export default function BadgerStudySpot() {
                                           {renderAddReviewButton()}
                                     </div>
                               </ListGroup.Item>
-                              {reviews.map((review) => {
-                                    return <BadgerReview key={review.name} {...review} />
-                              })}
+                              {reviews.map((review) => (
+                                    <BadgerReview 
+                                    key={review.reviewId}
+                                    name={review.title}
+                                    review={review.comment}
+                                    rating={review.rating}
+                                  />
+                              ))}
                         </ListGroup>
                   </Card.Body>
             </Card>

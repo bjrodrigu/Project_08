@@ -3,6 +3,8 @@ package com.campus_rating_system.entities;
 import jakarta.persistence.*;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "Task")
 public class Task {
@@ -19,6 +21,7 @@ public class Task {
     private String description;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<LocationTask> locationTasks;
 
     // Getters and setters
