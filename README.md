@@ -176,13 +176,12 @@ classDiagram
         + get all variables()
         + set all variables()
 
-        + public String getUsername();
-        + public Collection<? extends GrantedAuthority> getAuthorities();
-        + public boolean isAccountNonExpired();
-        + public boolean isAccountNonLocked();
-        + public boolean isCredentialsNonExpired();
-        + public boolean isEnabled();
-
+        + public String getUsername()
+        + public Collection<? extends GrantedAuthority> getAuthorities()
+        + public boolean isAccountNonExpired()
+        + public boolean isAccountNonLocked()
+        + public boolean isCredentialsNonExpired()
+        + public boolean isEnabled()
     }
     class Location {
         - private int location_id
