@@ -176,21 +176,12 @@ classDiagram
         + get all variables()
         + set all variables()
 
-        public String getUsername();
-            @Override
-    public Collection<? extends GrantedAuthority> getAuthorities();
-
-    @Override
-    public boolean isAccountNonExpired();
-
-    @Override
-    public boolean isAccountNonLocked();
-
-    @Override
-    public boolean isCredentialsNonExpired();
-
-    @Override
-    public boolean isEnabled();
+        + public String getUsername();
+        + public Collection<? extends GrantedAuthority> getAuthorities();
+        + public boolean isAccountNonExpired();
+        + public boolean isAccountNonLocked();
+        + public boolean isCredentialsNonExpired();
+        + public boolean isEnabled();
 
     }
     class Location {
@@ -263,13 +254,7 @@ classDiagram
 
         + get all variables()
         + set all variables()
-
-    @Autowired
-    private final UserRepository userRepository;
-
-    @Autowired
-    private final LocationRepository locationRepository;
-        }
+    }
     class MainController {
         @PostMapping("/user/signup")
         + public ResponseEntity<User> register(@RequestBody registerUserDto)
