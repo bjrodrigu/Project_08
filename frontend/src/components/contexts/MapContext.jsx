@@ -24,10 +24,10 @@ const MapContextProvider = ({ children }) => {
             { name: 'Building E', longitude: -89.3985, latitude: 43.0723 },
             { name: 'Building F', longitude: -89.4070, latitude: 43.0753 },
       ]
-      /*
+
       useEffect(() => {
             fetchLocations();
-      });
+      }, []); 
 
       // create API call for locations
       const fetchLocations = async () => {
@@ -35,7 +35,6 @@ const MapContextProvider = ({ children }) => {
                   const response = await fetch('http://localhost:8080/location/getLocations');
                   if (response.ok) {
                         const locationsData = await response.json();
-                        // setLocationList(locationsData);
                         console.log(locationsData);
                   } else {
                         throw new Error('Failed to fetch locations');
@@ -44,23 +43,23 @@ const MapContextProvider = ({ children }) => {
                   console.error(error);
             }
       };
-
-      // create API call for buildings
-      const fetchBuildings = async () => {
-            try {
-                  const response = await fetch('http://localhost:8080/building/getBuildings');
-                  if (response.ok) {
-                        const buildingsData = await response.json();
-                        //setBuildings(buildingsData);
-                  } else {
-                        throw new Error('Failed to fetch buildings');
+      /*
+            // create API call for buildings
+            const fetchBuildings = async () => {
+                  try {
+                        const response = await fetch('http://localhost:8080/building/getBuildings');
+                        if (response.ok) {
+                              const buildingsData = await response.json();
+                              //setBuildings(buildingsData);
+                        } else {
+                              throw new Error('Failed to fetch buildings');
+                        }
+                  } catch (error) {
+                        console.error(error);
                   }
-            } catch (error) {
-                  console.error(error);
-            }
-      };
-
-      */
+            };
+      
+            */
       // initialize states
       const [userLocation, setUserLocation] = useState(null);
       const [locationList, setLocationList] = useState(testLocations);
