@@ -67,7 +67,7 @@ subgraph Database
 end
 
 A <-->|REST API| B
-B <--> C
+B <--> | JDBC | C
 ```
 
 #### Database
