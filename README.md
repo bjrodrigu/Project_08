@@ -67,8 +67,94 @@ end
 A <-->|REST API| B
 B <--> | JDBC | C
 ```
-
 #### Database
+
+```mermaid
+---
+title: Our Database ERD
+---
+erDiagram
+    User {
+      INT user_id PK
+      VARCHAR google_id
+      VARCHAR name
+      VARCHAR email
+      DATETIME created_at
+      DATETIME updated_at
+      VARCHAR password
+    }
+
+    Location {
+      INT location_id PK
+      VARCHAR name
+      TEXT description
+      VARCHAR category
+      FLOAT latitude
+      FLOAT longitude
+      VARCHAR address
+      DATETIME created_at
+      DATETIME updated_at
+      VARCHAR category
+      INT building_id FK
+    }
+
+    Building {
+      INT building_id PK
+      VARCHAR name
+      FLOAT longitude
+      FLOAT latitude
+      VARCHAR created_at
+      VARCHAR updated_at
+    }
+
+    Review {
+      INT review_id PK
+      INT user_id FK
+      INT location_id FK
+      INT rating
+      TEXT comment
+      DATETIME created_at
+      DATETIME updated_at
+      VARCHAR title
+    }
+
+    Task {
+      INT task_id PK
+      VARCHAR name
+      TEXT description
+    }
+
+    Location_Task {
+      INT location_task_id PK
+      INT location_id FK
+      INT task_id FK
+      INT suitability_rating
+    }
+
+    Favorite {
+      INT favorite_id PK
+      INT user_id FK
+      INT location_id FK
+    }
+
+    Image {
+      INT image_id PK
+      INT location_id FK
+      VARCHAR image_url
+      DATETIME uploaded_at
+    }
+
+    User ||--o{ Review : writes
+    Location ||--o{ Review : receives
+    Location ||--o{ Location_Task : has
+    Task ||--o{ Location_Task : rated_for
+    User ||--o{ Favorite : favorites
+    Location ||--o{ Favorite : is_favorited
+    Location ||--o{ Image : has
+    Location ||--o{ Building: contains
+```
+
+#### Class Diagram
 
 ```mermaid
 ---
