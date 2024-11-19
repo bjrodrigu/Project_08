@@ -72,94 +72,6 @@ B <--> | JDBC | C
 
 ```mermaid
 ---
-title: Our Database ERD
----
-erDiagram
-    User {
-      INT user_id PK
-      VARCHAR google_id
-      VARCHAR name
-      VARCHAR email
-      DATETIME created_at
-      DATETIME updated_at
-      VARCHAR password
-    }
-
-    Location {
-      INT location_id PK
-      VARCHAR name
-      TEXT description
-      VARCHAR category
-      FLOAT latitude
-      FLOAT longitude
-      VARCHAR address
-      DATETIME created_at
-      DATETIME updated_at
-      VARCHAR category
-      INT building_id FK
-    }
-
-    Building {
-      INT building_id PK
-      VARCHAR name
-      FLOAT longitude
-      FLOAT latitude
-      VARCHAR created_at
-      VARCHAR updated_at
-    }
-
-    Review {
-      INT review_id PK
-      INT user_id FK
-      INT location_id FK
-      INT rating
-      TEXT comment
-      DATETIME created_at
-      DATETIME updated_at
-      VARCHAR title
-    }
-
-    Task {
-      INT task_id PK
-      VARCHAR name
-      TEXT description
-    }
-
-    Location_Task {
-      INT location_task_id PK
-      INT location_id FK
-      INT task_id FK
-      INT suitability_rating
-    }
-
-    Favorite {
-      INT favorite_id PK
-      INT user_id FK
-      INT location_id FK
-    }
-
-    Image {
-      INT image_id PK
-      INT location_id FK
-      VARCHAR image_url
-      DATETIME uploaded_at
-    }
-
-    User ||--o{ Review : writes
-    Location ||--o{ Review : receives
-    Location ||--o{ Location_Task : has
-    Task ||--o{ Location_Task : rated_for
-    User ||--o{ Favorite : favorites
-    Location ||--o{ Favorite : is_favorited
-    Location ||--o{ Image : has
-    Location ||--o{ Building: contains
-```
-
-
-#### Class Diagram
-
-```mermaid
----
 title: Class Diagram for Campus Rating Program
 ---
 classDiagram
@@ -254,6 +166,24 @@ classDiagram
         + get all variables()
         + set all variables()
     }
+        class Review{
+        - private Integer reviewId;
+        - private User user;
+        - private Location location;
+        - private String comment;
+        - private String created_at;
+        - private String updated_at;
+        - private String title;
+
+        + get all variables()
+        + set all variables()
+
+    @Autowired
+    private final UserRepository userRepository;
+
+    @Autowired
+    private final LocationRepository locationRepository;
+        }
     class MainController {
         @PostMapping("/user/signup")
         + public ResponseEntity<User> register(@RequestBody registerUserDto)
@@ -280,6 +210,31 @@ classDiagram
         @PostMapping("/image/addImage")
         + public ResponseEntity<Image> addImageUrl(String imageUrl, String locationName)
     }
+
+    class ServiceClasses {
+        UserService
+        LocationService
+        FavoriteService
+        ImageService
+        TaskService
+        LocationTaskService
+        BuildingService
+        ReviewService
+        JwtService
+    }
+    class dtosClasses {
+        LocationWithTasksDTO
+        LoginResponse
+        LoginUserDto
+        RegisterUserDto
+    }
+    class configClasses{
+        ApplicationConfiguration
+        AuthenticationService
+        JwtAuthenticationFilter
+        SecurityConfig
+    }
+    
     MainController <|-- User
     MainController <|-- Location
     MainController <|-- Favorites
@@ -287,6 +242,10 @@ classDiagram
     MainController <|-- Task
     MainController <|-- Location_Task
     MainController <|-- Building
+    MainController <|-- Review
+    ServiceClasses <|-- MainController
+    dtosClasses <|-- MainController
+    configClasses <|-- dtosClasses
 ```
 
 #### Flowchart
