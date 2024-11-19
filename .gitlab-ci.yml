@@ -57,7 +57,6 @@ deploy:
   stage: deploy
   script:
     - echo "Add your deployment commands here"
-    # Add actual deployment steps
   environment: production
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
