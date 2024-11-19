@@ -21,7 +21,7 @@ public class Task {
     private String description;
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonBackReference
+    @JsonBackReference // Prevents infinite recursion between Task and LocationTask
     private List<LocationTask> locationTasks;
 
     // Getters and setters
