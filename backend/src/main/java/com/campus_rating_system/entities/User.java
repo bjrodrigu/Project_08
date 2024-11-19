@@ -5,7 +5,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Collection;
 import java.util.Date;
@@ -13,7 +12,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "User")
-@JsonIgnoreProperties({"reviews"})
+@JsonIgnoreProperties({"reviews"}) 
+// Added to prevent infinite recursive calls between user and reviews
 public class User implements UserDetails {
 
     @Id
@@ -42,7 +42,6 @@ public class User implements UserDetails {
     private Date updatedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

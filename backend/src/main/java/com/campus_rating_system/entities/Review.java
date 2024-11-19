@@ -3,8 +3,6 @@ package com.campus_rating_system.entities;
 import jakarta.persistence.*;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "Review")
@@ -17,7 +15,6 @@ public class Review {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonManagedReference
     private User user;
 
     @ManyToOne
