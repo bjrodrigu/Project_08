@@ -48,9 +48,7 @@ Specific customers informing this document include:
 
 #### Technology Stack
 
-Mapping will be handled via OpenStreetMaps using Leaflet.
-
-A <-->|"REST API"| B
+Mapping will be handled via Google Maps.
 
 ```mermaid
 flowchart RL
