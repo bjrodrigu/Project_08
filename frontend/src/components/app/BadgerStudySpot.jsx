@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Carousel, Row, Col, Button, ListGroup } from 'react-bootstrap';
+import { Card, Carousel, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { run } from 'holderjs/holder'
 import BadgerReview from '../app/BadgerReview';
@@ -49,15 +49,19 @@ export default function BadgerStudySpot() {
       }, []);
 
       // function to fetch reviews from the API
-
+      // TODO: CHANGE TO FETCH REVIEWS FOR SPECIFIC LOCATION NOT ALL REVIEWS
       const [reviews, setReviews] = useState([]);
+      const [loading, setLoading] = useState(false);
       const fetchReviews = async () => {
+            setLoading(true);
             try {
                   const response = await fetch('http://localhost:8080/review/getAllReviews');
                   if (response.ok) {
+                        setLoading(false);
                         const reviewsData = await response.json();
                         setReviews(reviewsData);
                   } else {
+                        setLoading(false);
                         throw new Error('Failed to fetch reviews');
                   }
             } catch (error) {
@@ -69,8 +73,7 @@ export default function BadgerStudySpot() {
       // renders the add review button if the user is logged in, and the user has not already reviewed the location otherwise returns edit review button
       const renderAddReviewButton = () => {
             if (login) {
-                  const userReview = reviews.find((review) => review.poster === user);
-
+                  const userReview = reviews.find((review) => review.user.username === user);
                   return (
                         <div style={{ margin: '1rem', textAlign: 'right' }}>
                               <ReactAddReviewButton
@@ -139,14 +142,33 @@ export default function BadgerStudySpot() {
                                           {renderAddReviewButton()}
                                     </div>
                               </ListGroup.Item>
-                              {reviews.map((review) => (
-                                    <BadgerReview 
-                                    key={review.reviewId}
-                                    name={review.title}
-                                    review={review.comment}
-                                    rating={review.rating}
-                                  />
-                              ))}
+                              {loading ? (
+                                    <div
+                                          style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                height: '100%',
+                                                paddingTop: '50px'
+                                          }}
+                                    >
+                                          <Spinner animation="border" role="status" />
+
+                                    </div>
+                              ) : (
+                                    reviews.length > 0 ? (
+                                          reviews.map((review) => (
+                                                <BadgerReview
+                                                      key={review.reviewId}
+                                                      name={review.title}
+                                                      review={review.comment}
+                                                      rating={review.rating}
+                                                />
+                                          ))
+                                    ) : (
+                                          <p>No reviews available.</p>
+                                    )
+                              )}
                         </ListGroup>
                   </Card.Body>
             </Card>
