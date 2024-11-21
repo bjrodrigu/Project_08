@@ -245,6 +245,33 @@ public class CampusRatingSystemControllerTests {
     }
 
     /**
+     * Test case for editing a review.
+     */
+    @Test
+    public void testEditReviewIsSuccess() throws Exception {
+        Review mockReview = new Review();
+        mockReview.setTitle("Updated Review");
+        mockReview.setRating(4);
+        mockReview.setComment("Great study spot!");
+
+        when(reviewService.editReview(anyString(), anyInt(), anyString(), 
+            anyString())).thenReturn(mockReview);
+
+        mockMvc.perform(put("/review/editReview")
+        .param("locationName", "Library")
+        .param("newRating", "4")
+        .param("newComment", "Great study spot!")
+        .param("newTitle", "Updated Review"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.title").value("Updated Review"))
+        .andExpect(jsonPath("$.rating").value(4))
+               .andExpect(jsonPath("$.comment").value("Great study spot!"));
+
+        verify(reviewService, times(1)).editReview(anyString(), anyInt(), anyString(), anyString());
+    }
+
+
+    /**
      * Test case for adding a new task.
      */
     @Test
