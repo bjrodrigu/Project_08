@@ -6,7 +6,7 @@ import { Card, Button, Form } from 'react-bootstrap';
 export default function BadgerMessage(props) {
 
     return (
-        <Card>
+        <Card style={{ margin: '1rem 0' }}>
             <Card.Body>
                 <Card.Title>{props.location}</Card.Title>
                 <Card.Text>Rating: {props.userRating} / 5</Card.Text>

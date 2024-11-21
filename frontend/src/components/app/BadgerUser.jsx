@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { Card, Button, Pagination, Form, Row, Col } from 'react-bootstrap';
+import { Card, Button, Pagination, Form, Row, Col, Spinner } from 'react-bootstrap';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext'
@@ -31,76 +31,16 @@ const user = {
 };
 
 let test_reviews = [
-    {
-        id: 1,
-        location: 'Library - Studyspot 1',
-        userRating: 4.5,
-        totalScore: 5,
-        comment: 'Great place to study, quiet and comfortable.'
-    },
-    {
-        id: 2,
-        location: 'Library - Studyspot 2',
-        userRating: 4.0,
-        totalScore: 5,
-        comment: 'Decent spot, but can be a bit noisy during peak hours.'
-    },
-    {
-        id: 3,
-        location: 'Library - Studyspot 3',
-        userRating: 3.5,
-        totalScore: 5,
-        comment: 'Small study area, but still a good place to focus.'
-    },
-    {
-        id: 4,
-        location: 'Library - Studyspot 4',
-        userRating: 4.8,
-        totalScore: 5,
-        comment: 'Very quiet, perfect for long study sessions.'
-    },
-    {
-        id: 5,
-        location: 'Library - Studyspot 5',
-        userRating: 3.0,
-        totalScore: 5,
-        comment: 'Not enough outlets, but still usable.'
-    },
-    {
-        id: 6,
-        location: 'Library - Studyspot 6',
-        userRating: 4.2,
-        totalScore: 5,
-        comment: 'Good ambiance and comfortable seating.'
-    },
-    {
-        id: 7,
-        location: 'Library - Studyspot 7',
-        userRating: 4.7,
-        totalScore: 5,
-        comment: 'Spacious and quiet, perfect for group studies.'
-    },
-    {
-        id: 8,
-        location: 'Library - Studyspot 8',
-        userRating: 3.8,
-        totalScore: 5,
-        comment: 'A bit cramped, but still a good place to focus.'
-    },
-    {
-        id: 9,
-        location: 'Library - Studyspot 9',
-        userRating: 4.1,
-        totalScore: 5,
-        comment: 'Good lighting and comfortable seats.'
-    },
-    {
-        id: 10,
-        location: 'Library - Studyspot 10',
-        userRating: 4.6,
-        totalScore: 5,
-        comment: 'Quiet and well-lit, ideal for studying.'
-    }
+    { id: 1, location: 'Library - Studyspot 1', userRating: 4.5, totalScore: 5, comment: 'Great place to study.' },
+    { id: 2, location: 'Library - Studyspot 2', userRating: 4.0, totalScore: 5, comment: 'A bit noisy sometimes.' },
+    { id: 3, location: 'Library - Studyspot 3', userRating: 3.5, totalScore: 5, comment: 'Small but cozy.' },
+    { id: 4, location: 'Library - Studyspot 4', userRating: 4.8, totalScore: 5, comment: 'Very quiet.' },
+    { id: 5, location: 'Library - Studyspot 5', userRating: 3.0, totalScore: 5, comment: 'Not enough outlets.' },
+    { id: 6, location: 'Library - Studyspot 6', userRating: 4.2, totalScore: 5, comment: 'Good ambiance.' },
+    { id: 7, location: 'Library - Studyspot 7', userRating: 4.7, totalScore: 5, comment: 'Spacious and quiet.' },
+    { id: 8, location: 'Library - Studyspot 8', userRating: 3.8, totalScore: 5, comment: 'A bit cramped.' },
+    { id: 9, location: 'Library - Studyspot 9', userRating: 4.1, totalScore: 5, comment: 'Good lighting.' },
+    { id: 10, location: 'Library - Studyspot 10', userRating: 4.6, totalScore: 5, comment: 'Ideal for studying.' },
 ];
 
 export default function UserComments() {
@@ -109,43 +49,58 @@ export default function UserComments() {
     const [reviews, setReviews] = useState(test_reviews); // all reviews
     const [editedRating, setEditedRating] = useState('');
     const [editedComment, setEditedComment] = useState(''); // edited single review
-    const [currentPage, setCurrentPage] = useState(1);
-    //test
-    const reviewsPerPage = 2;
-    // const { user, setUser, login, setLogin } = useLoginState();
-
     const passwordInput = useRef();
-    //const reviewsPerPage = 5;
-
-    // // get current user's all reviews
-    // useEffect(() => {
-    //     fetch('/api/user/userId/reviews')
-    //         .then((response) => response.json())
-    //         .then((data) => setReviews(data));
-    // }, []);
-
-    const totalPages = Math.ceil(reviews.length / reviewsPerPage);
-
-
-    const indexOfLastReviews = currentPage * reviewsPerPage;
-    const indexOfFirstReviews = indexOfLastReviews - reviewsPerPage;
-    const currentReviews = reviews.slice(indexOfFirstReviews, indexOfLastReviews);
     const navigate = useNavigate();
+    const commentRef = useRef();
+    const favRef = useRef();
+    const hasMore = useState(true);
+    const [currentCount, setCurrentCount] = useState(5); // 当前显示评论的数量
+    const [loading, setLoading] = useState(false); // 加载状态
+    const [currentReviews, setCurrentReviews] = useState([]);
+    useEffect(() => {
+
+        setCurrentReviews(reviews.slice(0, currentCount));
+    }, [currentCount, reviews]);
+
+    useEffect(() => {
+
+        const handleScroll = () => {
+            if (!commentRef.current) return;
+
+            const { scrollTop, scrollHeight, clientHeight } = commentRef.current;
+
+
+            if (scrollTop + clientHeight >= scrollHeight - 10 && !loading && currentCount < reviews.length) {
+                loadMoreReviews();
+            }
+        };
+
+        const currentCard = commentRef.current;
+        currentCard.addEventListener('scroll', handleScroll);
+
+        return () => {
+            currentCard.removeEventListener('scroll', handleScroll);
+        };
+    }, [currentCount, loading, reviews]);
+
+    const loadMoreReviews = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setCurrentCount((prev) => Math.min(prev + 3, reviews.length)); // 每次加载 3 条评论
+            setLoading(false);
+        }, 1000);
+    };
+
+
+
+
 
     const routeChange = () => {
         let path = '../';
         navigate(path);
     }
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-    const handlePrevPage = (page) => {
-        setCurrentPage(currentPage => currentPage - 1)
-    };
-    const handleNextPage = (page) => {
-        setCurrentPage(currentPage => currentPage + 1)
-    };
+  
     const logout = useLogout();
 
 
@@ -223,7 +178,7 @@ export default function UserComments() {
         //     });
 
         //template
-        //const actualIndex = index + (currentPage - 1) * reviewsPerPage;
+        
 
         const updatedReviews = reviews.map(review =>
             review.id === key ? { ...review, comment: editedComment, userRating: editedRating } : review
@@ -274,6 +229,7 @@ export default function UserComments() {
                                     overflowY: 'hidden',
                                     borderRadius: '2rem',
                                 }}
+                                
                             >
                                 <Card.Body>
                                     <Card.Title>User Info</Card.Title>
@@ -293,52 +249,40 @@ export default function UserComments() {
                             </Card>
                         </div>
 
-                        {/* Card 2: Comments */}
+
+                        {/* Infinite Scroll Comments */}
                         <div className="col-lg-4 col-md-6 col-sm-12">
                             <Card
                                 style={{
                                     height: '85vh',
-                                    overflowY: 'hidden',
+                                    overflowY: 'auto',
                                     borderRadius: '2rem',
                                 }}
+                                ref={commentRef}
                             >
-                                <Card.Body>
+                                <Card.Body style={{ padding: 0 }}>
                                     <Card.Title>Your Comments</Card.Title>
                                     {currentReviews.map((review) => (
                                         <BadgerMessage
-                                            key={review.id} // Ensure a unique key
+                                            key={review.id} 
                                             {...review}
-                                            editIndex={editIndex}
-                                            setEditIndex={setEditIndex}
-                                            handleEditReview={handleEditReview}
                                             handleSaveEdit={handleSaveEdit}
-                                            editedComment={editedComment}
-                                            setEditedComment={setEditedComment}
-                                            editedRating={editedRating}
-                                            setEditedRating={setEditedRating}
                                             handleRemove={handleRemove}
+                                            handleEditReview={handleEditReview}
                                         />
                                     ))}
-                                    <div className="d-flex justify-content-center mt-4">
-                                        <Pagination>
-                                            <Pagination.Prev onClick={handlePrevPage} disabled={currentPage === 1} />
-                                            {[...Array(totalPages)].map((_, index) => (
-                                                <Pagination.Item
-                                                    key={index + 1}
-                                                    active={index + 1 === currentPage}
-                                                    onClick={() => handlePageChange(index + 1)}
-                                                >
-                                                    {index + 1}
-                                                </Pagination.Item>
-                                            ))}
-                                            <Pagination.Next onClick={handleNextPage} disabled={currentPage === totalPages} />
-                                        </Pagination>
-                                    </div>
+                                    {loading && (
+                                        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                                            <Spinner animation="border" role="status">
+                                                <span className="sr-only">Loading...</span>
+                                            </Spinner>
+                                        </div>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </div>
-
-                        {/* Card 3: Navigation */}
+                        
+                        {/* Card 3: fav location */}
                         <div className="col-lg-4 col-md-6 col-sm-12">
                             <Card
                                 style={{
@@ -348,10 +292,8 @@ export default function UserComments() {
                                 }}
                             >
                                 <Card.Body>
-                                    <Card.Title>Navigation</Card.Title>
-                                    <Button variant="primary" onClick={() => navigate('/')}>
-                                        Back
-                                    </Button>
+                                    <Card.Title>Favorite Location</Card.Title>
+                                    <p>hahahahaha</p>
                                 </Card.Body>
                             </Card>
                         </div>
