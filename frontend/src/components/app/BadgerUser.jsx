@@ -224,6 +224,10 @@ export default function UserComments() {
                                 }}
 
                             >
+                                <Card.Header style={{ backgroundColor: '#f8f9fa', padding: '1rem', borderTopLeftRadius: '2rem', borderTopRightRadius: '2rem', }}>
+                                    <h5>Your Info</h5>
+                                </Card.Header>
+
                                 <Card.Body>
                                     <Card.Title>User Info</Card.Title>
                                     <Card.Text>Email: {user.email}</Card.Text>
@@ -247,8 +251,8 @@ export default function UserComments() {
                         <div className="col-lg-4 col-md-6 col-sm-12">
                             <Card
                                 style={{
-                                    height: '85vh', 
-                                    borderRadius: '2rem', 
+                                    height: '85vh',
+                                    borderRadius: '2rem',
                                 }}
                                 ref={commentRef}
                             >
@@ -257,8 +261,8 @@ export default function UserComments() {
                                 </Card.Header>
                                 <Card.Body
                                     style={{
-                                        height: 'calc(85vh - 4rem)', 
-                                        overflowY: 'auto', 
+                                        height: 'calc(85vh - 4rem)',
+                                        overflowY: 'auto',
                                         padding: '1rem',
                                     }}
                                 >
@@ -268,7 +272,7 @@ export default function UserComments() {
                                             {...review}
                                             handleSaveEdit={handleSaveEdit}
                                             handleRemove={handleRemove}
-                                            
+
                                         />
                                     ))}
                                     {loading && (
