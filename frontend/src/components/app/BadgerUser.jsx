@@ -146,16 +146,8 @@ export default function UserComments() {
         logout();
     }
 
-    // start edition mode
-    const handleEditReview = (key, comment, rating) => {
-        setEditIndex(key);
-        //store info before editing, so that original comment can be shown while editing
-        setEditedComment(comment);
-        setEditedRating(rating);
-    };
-
     // store saved edition
-    const handleSaveEdit = (key) => {
+    const handleSaveEdit = (key, comment, rating) => {
         // fetch(`/api/reviews/${review.id}`, {
         //     method: 'PUT',
         //     headers: {
@@ -181,7 +173,7 @@ export default function UserComments() {
 
 
         const updatedReviews = reviews.map(review =>
-            review.id === key ? { ...review, comment: editedComment, userRating: editedRating } : review
+            review.id === key ? { ...review, comment: comment, userRating: rating } : review
         );
         setReviews(updatedReviews); // update review.
         setEditIndex(null); // exit edition mode.
@@ -255,8 +247,8 @@ export default function UserComments() {
                         <div className="col-lg-4 col-md-6 col-sm-12">
                             <Card
                                 style={{
-                                    height: '85vh', // 限制卡片整体高度
-                                    borderRadius: '2rem', // 设置圆角
+                                    height: '85vh', 
+                                    borderRadius: '2rem', 
                                 }}
                                 ref={commentRef}
                             >
@@ -265,8 +257,8 @@ export default function UserComments() {
                                 </Card.Header>
                                 <Card.Body
                                     style={{
-                                        height: 'calc(85vh - 4rem)', // 卡片总高度减去 Header 的高度，动态调整
-                                        overflowY: 'auto', // 滚动条仅作用于内容区域
+                                        height: 'calc(85vh - 4rem)', 
+                                        overflowY: 'auto', 
                                         padding: '1rem',
                                     }}
                                 >
@@ -276,7 +268,7 @@ export default function UserComments() {
                                             {...review}
                                             handleSaveEdit={handleSaveEdit}
                                             handleRemove={handleRemove}
-                                            handleEditReview={handleEditReview}
+                                            
                                         />
                                     ))}
                                     {loading && (
