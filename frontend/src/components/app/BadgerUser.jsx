@@ -100,7 +100,7 @@ export default function UserComments() {
         navigate(path);
     }
 
-  
+
     const logout = useLogout();
 
 
@@ -178,7 +178,7 @@ export default function UserComments() {
         //     });
 
         //template
-        
+
 
         const updatedReviews = reviews.map(review =>
             review.id === key ? { ...review, comment: editedComment, userRating: editedRating } : review
@@ -229,7 +229,7 @@ export default function UserComments() {
                                     overflowY: 'hidden',
                                     borderRadius: '2rem',
                                 }}
-                                
+
                             >
                                 <Card.Body>
                                     <Card.Title>User Info</Card.Title>
@@ -254,17 +254,24 @@ export default function UserComments() {
                         <div className="col-lg-4 col-md-6 col-sm-12">
                             <Card
                                 style={{
-                                    height: '85vh',
-                                    overflowY: 'auto',
-                                    borderRadius: '2rem',
+                                    height: '85vh', // 限制卡片整体高度
+                                    borderRadius: '2rem', // 设置圆角
                                 }}
                                 ref={commentRef}
                             >
-                                <Card.Body style={{ padding: 0 }}>
-                                    <Card.Title>Your Comments</Card.Title>
+                                <Card.Header style={{ backgroundColor: '#f8f9fa', padding: '1rem', borderTopLeftRadius: '2rem', borderTopRightRadius: '2rem', }}>
+                                    <h5>Your comments</h5>
+                                </Card.Header>
+                                <Card.Body
+                                    style={{
+                                        height: 'calc(85vh - 4rem)', // 卡片总高度减去 Header 的高度，动态调整
+                                        overflowY: 'auto', // 滚动条仅作用于内容区域
+                                        padding: '1rem',
+                                    }}
+                                >
                                     {currentReviews.map((review) => (
                                         <BadgerMessage
-                                            key={review.id} 
+                                            key={review.id}
                                             {...review}
                                             handleSaveEdit={handleSaveEdit}
                                             handleRemove={handleRemove}
@@ -281,7 +288,8 @@ export default function UserComments() {
                                 </Card.Body>
                             </Card>
                         </div>
-                        
+
+
                         {/* Card 3: fav location */}
                         <div className="col-lg-4 col-md-6 col-sm-12">
                             <Card
