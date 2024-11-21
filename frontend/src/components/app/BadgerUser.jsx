@@ -185,6 +185,7 @@ export default function UserComments() {
         );
         setReviews(updatedReviews); // update review.
         setEditIndex(null); // exit edition mode.
+        setCurrentReviews(updatedReviews.slice(0, currentCount)); // Synchronized Updates currentReviews
     };
 
     const handleRemove = (key) => {
