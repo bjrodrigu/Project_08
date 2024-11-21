@@ -193,4 +193,47 @@ public class ReviewServiceTests {
         verify(reviewRepository, times(1)).findByUserAndLocation(mockUser, mockLocation);
         verify(reviewRepository, never()).delete(any());
     }
+    
+    /**
+     * Verifies that a review is successfully edited and saved when valid inputs are provided.
+     */
+    @Test
+    public void testEditReviewIsSuccess() {
+
+        // Arrange
+        String locationName = "Library";
+        int newRating = 4;
+        String newComment = "Great study spot!";
+        String newTitle = "Updated Review";
+
+        User mockUser = new User();
+        mockUser.setEmail("test@example.com");
+
+        Location mockLocation = new Location();
+        mockLocation.setName(locationName);
+
+        Review mockReview = new Review();
+        mockReview.setUser(mockUser);
+        mockReview.setLocation(mockLocation);
+        mockReview.setRating(5);
+        mockReview.setComment("Old comment");
+        mockReview.setTitle("Old title");
+
+        when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(mockUser));
+        when(locationRepository.findByName(anyString())).thenReturn(Optional.of(mockLocation));
+        when(reviewRepository.findByUserAndLocation(any(User.class), any(Location.class)))
+              .thenReturn(Optional.of(mockReview));
+        when(reviewRepository.save(any(Review.class))).thenAnswer(invocation -> 
+              invocation.getArgument(0));
+
+        // Act
+        Review updatedReview = reviewService.editReview(locationName, newRating, 
+              newComment, newTitle);
+
+        // Assert
+        assertEquals(newRating, updatedReview.getRating());
+        assertEquals(newComment, updatedReview.getComment());
+        assertEquals(newTitle, updatedReview.getTitle());
+        verify(reviewRepository, times(1)).save(mockReview);
+    }
 }
