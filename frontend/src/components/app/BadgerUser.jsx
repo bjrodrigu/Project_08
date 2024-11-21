@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
-import { Card, Button, Pagination, Form } from 'react-bootstrap';
+import { Card, Button, Pagination, Form, Row, Col } from 'react-bootstrap';
+import { ArrowLeft } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
@@ -131,6 +132,11 @@ export default function UserComments() {
     const currentReviews = reviews.slice(indexOfFirstReviews, indexOfLastReviews);
     const navigate = useNavigate();
 
+    const routeChange = () => {
+        let path = '../';
+        navigate(path);
+    }
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -229,7 +235,7 @@ export default function UserComments() {
     const handleRemove = (key) => {
         //template
         const isConfirmed = window.confirm("Are you sure you want to delete this review?");
-        if (!isConfirmed) return; 
+        if (!isConfirmed) return;
 
         const updatedReviews = reviews.filter(review => review.id !== key);
         setReviews(updatedReviews);
@@ -237,56 +243,125 @@ export default function UserComments() {
 
     return (
         <div>
-            <div style={userInfoStyle}>
-                <p>Email: {user.email}</p>
-                <Form>
-                    <Form.Control
-                        id='password'
-                        type="password"
-                        ref={passwordInput}
-                        placeholder="Enter your password"
-                    />
-                </Form>
-                <br></br>
-                <Button variant="primary" onClick={handlePasswordChange}>Change Password</Button>
-            </div>
-            <div style={containerStyle}>
-                <h2>Your Comments</h2>
-                {currentReviews.map(review => (
-                    <BadgerMessage
-                        {...review}
-                        editIndex={editIndex}
-                        setEditIndex={setEditIndex}
-                        handleEditReview={handleEditReview}
-                        handleSaveEdit={handleSaveEdit}
-                        editedComment={editedComment}
-                        setEditedComment={setEditedComment}
-                        editedRating={editedRating}
-                        setEditedRating={setEditedRating}
-                        handleRemove={handleRemove}
-                    />
-                ))}
-                <div className="d-flex justify-content-center mt-4">
-                    <Pagination>
-                        <Pagination.Prev onClick={handlePrevPage} disabled={currentPage === 1} />
-                        {[...Array(totalPages)].map((_, index) => (
-                            <Pagination.Item
-                                key={index + 1}
-                                active={index + 1 === currentPage}
-                                onClick={() => handlePageChange(index + 1)}
+            <Row style={{ width: '85vw', marginBottom: '2rem' }}>
+                <Col sm="2">
+                    <Button
+                        variant="outline-info"
+                        onClick={routeChange}
+                        style={{
+                            top: '5vh',
+                            left: '5vw',
+                            borderRadius: '50%',
+                            height: '3rem',
+                            width: '3rem',
+                            position: 'fixed',
+                        }}
+                    >
+                        <ArrowLeft />
+                    </Button>
+                </Col>
+                <Col sm="10" className="d-flex justify-content-center" style={{ marginTop: '2rem' }}></Col>
+            </Row>
+
+            <div>
+                <div className="container my-4">
+                    <div className="row g-4">
+                        {/* Card 1: User Info */}
+                        <div className="col-lg-4 col-md-6 col-sm-12">
+                            <Card
+                                style={{
+                                    height: '85vh',
+                                    overflowY: 'hidden',
+                                    borderRadius: '2rem',
+                                }}
                             >
-                                {index + 1}
-                            </Pagination.Item>
-                        ))}
-                        <Pagination.Next onClick={handleNextPage} disabled={currentPage === totalPages} />
-                    </Pagination>
+                                <Card.Body>
+                                    <Card.Title>User Info</Card.Title>
+                                    <Card.Text>Email: {user.email}</Card.Text>
+                                    <Form>
+                                        <Form.Control
+                                            id="password"
+                                            type="password"
+                                            ref={passwordInput}
+                                            placeholder="Enter your password"
+                                        />
+                                    </Form>
+                                    <Button className="mt-3" variant="primary" onClick={handlePasswordChange}>
+                                        Change Password
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </div>
+
+                        {/* Card 2: Comments */}
+                        <div className="col-lg-4 col-md-6 col-sm-12">
+                            <Card
+                                style={{
+                                    height: '85vh',
+                                    overflowY: 'hidden',
+                                    borderRadius: '2rem',
+                                }}
+                            >
+                                <Card.Body>
+                                    <Card.Title>Your Comments</Card.Title>
+                                    {currentReviews.map((review) => (
+                                        <BadgerMessage
+                                            key={review.id} // Ensure a unique key
+                                            {...review}
+                                            editIndex={editIndex}
+                                            setEditIndex={setEditIndex}
+                                            handleEditReview={handleEditReview}
+                                            handleSaveEdit={handleSaveEdit}
+                                            editedComment={editedComment}
+                                            setEditedComment={setEditedComment}
+                                            editedRating={editedRating}
+                                            setEditedRating={setEditedRating}
+                                            handleRemove={handleRemove}
+                                        />
+                                    ))}
+                                    <div className="d-flex justify-content-center mt-4">
+                                        <Pagination>
+                                            <Pagination.Prev onClick={handlePrevPage} disabled={currentPage === 1} />
+                                            {[...Array(totalPages)].map((_, index) => (
+                                                <Pagination.Item
+                                                    key={index + 1}
+                                                    active={index + 1 === currentPage}
+                                                    onClick={() => handlePageChange(index + 1)}
+                                                >
+                                                    {index + 1}
+                                                </Pagination.Item>
+                                            ))}
+                                            <Pagination.Next onClick={handleNextPage} disabled={currentPage === totalPages} />
+                                        </Pagination>
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </div>
+
+                        {/* Card 3: Navigation */}
+                        <div className="col-lg-4 col-md-6 col-sm-12">
+                            <Card
+                                style={{
+                                    height: '85vh',
+                                    overflowY: 'hidden',
+                                    borderRadius: '2rem',
+                                }}
+                            >
+                                <Card.Body>
+                                    <Card.Title>Navigation</Card.Title>
+                                    <Button variant="primary" onClick={() => navigate('/')}>
+                                        Back
+                                    </Button>
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div style={backButtonStyle}>
-                <Button variant="primary" onClick={() => { navigate('/') }}>
-                    Back
-                </Button>
-            </div>
-        </div >
+
+
+
+        </div>
     );
+
 }
