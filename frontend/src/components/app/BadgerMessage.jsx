@@ -26,7 +26,7 @@ export default function BadgerMessage(props) {
         <>
            
             <Card
-                style={{ margin: "1rem 0", cursor: "pointer" }}
+                style={{ margin: "1rem 0", padding: '1rem', borderRadius: '1rem', cursor: "pointer" }}
                 onClick={handleShowModal} 
             >
                 <Card.Body>

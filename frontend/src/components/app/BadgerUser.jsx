@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
 import BadgerMessage from './BadgerMessage';
+import BadgerFavoriteLocations from './BadgerFavoriteLocations';
 //style
 const backButtonStyle = {
     display: 'flex',
@@ -43,6 +44,14 @@ let test_reviews = [
     { id: 10, location: 'Library - Studyspot 10', userRating: 4.6, totalScore: 5, comment: 'Ideal for studying.' },
 ];
 
+let test_fav_locations = [
+    { id: 1, location: 'Library - Studyspot 1' },
+    { id: 2, location: 'Library - Studyspot 2' },
+    { id: 3, location: 'Library - Studyspot 3' },
+    { id: 4, location: 'Library - Studyspot 4' },
+    { id: 5, location: 'Library - Studyspot 5' },
+];
+
 export default function UserComments() {
 
     const [editIndex, setEditIndex] = useState(null); // current review in edition mode
@@ -54,9 +63,13 @@ export default function UserComments() {
     const commentRef = useRef();
     const favRef = useRef();
     const hasMore = useState(true);
-    const [currentCount, setCurrentCount] = useState(5); // 当前显示评论的数量
+    const [currentCount, setCurrentCount] = useState(10); // 当前显示评论的数量
     const [loading, setLoading] = useState(false); // 加载状态
     const [currentReviews, setCurrentReviews] = useState([]);
+
+    //fav
+    const [favorites, setFavorites] = useState(test_fav_locations);
+
     useEffect(() => {
 
         setCurrentReviews(reviews.slice(0, currentCount));
@@ -189,6 +202,21 @@ export default function UserComments() {
         setReviews(updatedReviews);
     }
 
+    // remove fav locations
+    const handleRemoveFavorite = (location) => {
+        //temp, will be removed when integration.
+        setFavorites((prevFavorites) =>
+            prevFavorites.filter((fav) => fav.location !== location)
+        );
+        console.log(`Removing favorite location: ${location}`);
+        // 示例 API 调用
+        // fetch(`/api/remove-favorite`, {
+        //     method: "POST",
+        //     headers: { "Content-Type": "application/json" },
+        //     body: JSON.stringify({ location }),
+        // }).then(response => console.log("API response:", response));
+    };
+
     return (
         <div>
             <Row style={{ width: '85vw', marginBottom: '2rem' }}>
@@ -213,21 +241,26 @@ export default function UserComments() {
 
             <div>
                 <div className="container my-4">
+                    {/* 第一行：User Info */}
                     <div className="row g-4">
-                        {/* Card 1: User Info */}
-                        <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="col-12">
                             <Card
                                 style={{
-                                    height: '85vh',
+                                    height: '50vh', // 调整高度使其更适合顶部展示
                                     overflowY: 'hidden',
                                     borderRadius: '2rem',
                                 }}
-
                             >
-                                <Card.Header style={{ backgroundColor: '#f8f9fa', padding: '1rem', borderTopLeftRadius: '2rem', borderTopRightRadius: '2rem', }}>
+                                <Card.Header
+                                    style={{
+                                        backgroundColor: '#f8f9fa',
+                                        padding: '1rem',
+                                        borderTopLeftRadius: '2rem',
+                                        borderTopRightRadius: '2rem',
+                                    }}
+                                >
                                     <h5>Your Info</h5>
                                 </Card.Header>
-
                                 <Card.Body>
                                     <Card.Title>User Info</Card.Title>
                                     <Card.Text>Email: {user.email}</Card.Text>
@@ -245,23 +278,32 @@ export default function UserComments() {
                                 </Card.Body>
                             </Card>
                         </div>
+                    </div>
 
-
+                    {/* 第二行：两个并列卡片 */}
+                    <div className="row g-4 mt-4">
                         {/* Infinite Scroll Comments */}
-                        <div className="col-lg-4 col-md-6 col-sm-12">
+                        <div className="col-lg-6 col-md-12">
                             <Card
                                 style={{
-                                    height: '85vh',
+                                    height: '70vh', // 调整高度适配页面布局
                                     borderRadius: '2rem',
                                 }}
                                 ref={commentRef}
                             >
-                                <Card.Header style={{ backgroundColor: '#f8f9fa', padding: '1rem', borderTopLeftRadius: '2rem', borderTopRightRadius: '2rem', }}>
+                                <Card.Header
+                                    style={{
+                                        backgroundColor: '#f8f9fa',
+                                        padding: '1rem',
+                                        borderTopLeftRadius: '2rem',
+                                        borderTopRightRadius: '2rem',
+                                    }}
+                                >
                                     <h5>Your comments</h5>
                                 </Card.Header>
                                 <Card.Body
                                     style={{
-                                        height: 'calc(85vh - 4rem)',
+                                        height: 'calc(70vh - 4rem)', // 减去Header高度
                                         overflowY: 'auto',
                                         padding: '1rem',
                                     }}
@@ -272,7 +314,6 @@ export default function UserComments() {
                                             {...review}
                                             handleSaveEdit={handleSaveEdit}
                                             handleRemove={handleRemove}
-
                                         />
                                     ))}
                                     {loading && (
@@ -286,19 +327,36 @@ export default function UserComments() {
                             </Card>
                         </div>
 
-
-                        {/* Card 3: fav location */}
-                        <div className="col-lg-4 col-md-6 col-sm-12">
+                        {/* Favorite Location */}
+                        <div className="col-lg-6 col-md-12">
                             <Card
                                 style={{
-                                    height: '85vh',
+                                    height: '70vh', // 调整高度适配页面布局
                                     overflowY: 'hidden',
                                     borderRadius: '2rem',
                                 }}
                             >
+                                <Card.Header
+                                    style={{
+                                        backgroundColor: '#f8f9fa',
+                                        padding: '1rem',
+                                        borderTopLeftRadius: '2rem',
+                                        borderTopRightRadius: '2rem',
+                                    }}
+                                >
+                                    <h5>Favorite Locations</h5>
+                                </Card.Header>
                                 <Card.Body>
-                                    <Card.Title>Favorite Location</Card.Title>
-                                    <p>hahahahaha</p>
+                                    {favorites.map((fav) => (
+                                        
+                                            <BadgerFavoriteLocations
+                                                key={fav.id}
+                                                location={fav.location}
+                                                isStarred={true}
+                                                onRemoveFavorite={handleRemoveFavorite}
+                                            />
+                                        
+                                    ))}
                                 </Card.Body>
                             </Card>
                         </div>
