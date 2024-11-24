@@ -50,6 +50,11 @@ let test_fav_locations = [
     { id: 3, location: 'Library - Studyspot 3' },
     { id: 4, location: 'Library - Studyspot 4' },
     { id: 5, location: 'Library - Studyspot 5' },
+    { id: 6, location: 'Library - Studyspot 6' },
+    { id: 7, location: 'Library - Studyspot 7' },
+    { id: 8, location: 'Library - Studyspot 8' },
+    { id: 9, location: 'Library - Studyspot 9' },
+    { id: 10, location: 'Library - Studyspot 10' },
 ];
 
 export default function UserComments() {
@@ -63,13 +68,17 @@ export default function UserComments() {
     const commentRef = useRef();
     const favRef = useRef();
     const hasMore = useState(true);
-    const [currentCount, setCurrentCount] = useState(10); // 当前显示评论的数量
-    const [loading, setLoading] = useState(false); // 加载状态
+    const [currentCount, setCurrentCount] = useState(10); // Current number of displayed comments
+    const [loading, setLoading] = useState(false); // Loading state
     const [currentReviews, setCurrentReviews] = useState([]);
 
-    //fav
+    //fav-locations
     const [favorites, setFavorites] = useState(test_fav_locations);
+    const [currentFavCount, setCurrentFavCount] = useState(5); // 当前显示的收藏数量
+    const [loadingFavorites, setLoadingFavorites] = useState(false); // 收藏加载状态
+    const [currentFavorites, setCurrentFavorites] = useState([]); // 当前分页的收藏列表
 
+    //inifite scrolling for reviews.
     useEffect(() => {
 
         setCurrentReviews(reviews.slice(0, currentCount));
@@ -101,6 +110,34 @@ export default function UserComments() {
         setTimeout(() => {
             setCurrentCount((prev) => Math.min(prev + 3, reviews.length)); // 每次加载 3 条评论
             setLoading(false);
+        }, 1000);
+    };
+    // inite scrolling for favorites
+    useEffect(() => {
+        const handleFavScroll = () => {
+            if (!favRef.current) return;
+
+            const { scrollTop, scrollHeight, clientHeight } = favRef.current;
+
+            // 当滚动到底部时加载更多
+            if (scrollTop + clientHeight >= scrollHeight - 10 && !loadingFavorites && currentFavCount < favorites.length) {
+                loadMoreFavorites();
+            }
+        };
+
+        const currentCard = favRef.current;
+        currentCard.addEventListener('scroll', handleFavScroll);
+
+        return () => {
+            currentCard.removeEventListener('scroll', handleFavScroll);
+        };
+    }, [currentFavCount, loadingFavorites, favorites]);
+
+    const loadMoreFavorites = () => {
+        setLoadingFavorites(true);
+        setTimeout(() => {
+            setCurrentFavCount((prev) => Math.min(prev + 3, favorites.length)); // 每次加载 3 个
+            setLoadingFavorites(false);
         }, 1000);
     };
 
@@ -160,7 +197,7 @@ export default function UserComments() {
     }
 
     // store saved edition
-    const handleSaveEdit = (key, comment, rating) => {
+    const handleSaveEdit = (key, rating, comment) => {
         // fetch(`/api/reviews/${review.id}`, {
         //     method: 'PUT',
         //     headers: {
@@ -209,7 +246,6 @@ export default function UserComments() {
             prevFavorites.filter((fav) => fav.location !== location)
         );
         console.log(`Removing favorite location: ${location}`);
-        // 示例 API 调用
         // fetch(`/api/remove-favorite`, {
         //     method: "POST",
         //     headers: { "Content-Type": "application/json" },
@@ -241,12 +277,12 @@ export default function UserComments() {
 
             <div>
                 <div className="container my-4">
-                    {/* 第一行：User Info */}
+                    {/* First row: User Info */}
                     <div className="row g-4">
                         <div className="col-12">
                             <Card
                                 style={{
-                                    height: '50vh', // 调整高度使其更适合顶部展示
+                                    height: '50vh', // Adjust the height to better fit the top display
                                     overflowY: 'hidden',
                                     borderRadius: '2rem',
                                 }}
@@ -280,13 +316,13 @@ export default function UserComments() {
                         </div>
                     </div>
 
-                    {/* 第二行：两个并列卡片 */}
+                    {/* Second row: Two side-by-side cards */}
                     <div className="row g-4 mt-4">
                         {/* Infinite Scroll Comments */}
                         <div className="col-lg-6 col-md-12">
                             <Card
                                 style={{
-                                    height: '70vh', // 调整高度适配页面布局
+                                    height: '70vh', // Adjust height to fit page layout
                                     borderRadius: '2rem',
                                 }}
                                 ref={commentRef}
@@ -303,7 +339,7 @@ export default function UserComments() {
                                 </Card.Header>
                                 <Card.Body
                                     style={{
-                                        height: 'calc(70vh - 4rem)', // 减去Header高度
+                                        height: 'calc(70vh - 4rem)', // minus head of headers
                                         overflowY: 'auto',
                                         padding: '1rem',
                                     }}
@@ -331,10 +367,11 @@ export default function UserComments() {
                         <div className="col-lg-6 col-md-12">
                             <Card
                                 style={{
-                                    height: '70vh', // 调整高度适配页面布局
-                                    overflowY: 'hidden',
+                                    height: '70vh', // Adjust the height to fit the page layout
+                                    overflowY: 'auto',
                                     borderRadius: '2rem',
                                 }}
+                                ref={favRef}
                             >
                                 <Card.Header
                                     style={{
@@ -348,15 +385,21 @@ export default function UserComments() {
                                 </Card.Header>
                                 <Card.Body>
                                     {favorites.map((fav) => (
-                                        
-                                            <BadgerFavoriteLocations
-                                                key={fav.id}
-                                                location={fav.location}
-                                                isStarred={true}
-                                                onRemoveFavorite={handleRemoveFavorite}
-                                            />
-                                        
+
+                                        <BadgerFavoriteLocations
+                                            key={fav.id}
+                                            location={fav.location}
+                                            isStarred={true}
+                                            onRemoveFavorite={handleRemoveFavorite}
+                                        />
                                     ))}
+                                    {loadingFavorites && (
+                                        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                                            <Spinner animation="border" role="status">
+                                                <span className="sr-only">Loading...</span>
+                                            </Spinner>
+                                        </div>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </div>
