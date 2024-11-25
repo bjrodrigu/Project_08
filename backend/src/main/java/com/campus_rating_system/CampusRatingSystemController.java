@@ -1,9 +1,6 @@
 package com.campus_rating_system;
 
 import com.campus_rating_system.config.AuthenticationService;
-import com.campus_rating_system.dtos.LoginResponse;
-import com.campus_rating_system.dtos.LoginUserDto;
-import com.campus_rating_system.dtos.RegisterUserDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -215,6 +212,27 @@ public class CampusRatingSystemController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }   
+
+    /**
+    * Endpoint to edit an existing review for a location by the authenticated user.
+    *
+    * @param locationName the name of the location whose review is to be edited
+    * @param newRating    the updated rating for the location
+    * @param newComment   the updated comment describing the user's experience
+    * @param newTitle     the updated title of the review
+    * @return a ResponseEntity containing the updated Review and an OK status
+    */
+    @PutMapping("/review/editReview")
+    public ResponseEntity<Review> editReview(
+            @RequestParam String locationName,
+            @RequestParam int newRating,
+            @RequestParam String newComment,
+            @RequestParam String newTitle) {
+
+        Review updatedReview = reviewService.editReview(locationName, newRating, 
+              newComment, newTitle);
+        return ResponseEntity.ok(updatedReview);
+    }
 
     /**
      * Endpoint to add a new task to the system.
