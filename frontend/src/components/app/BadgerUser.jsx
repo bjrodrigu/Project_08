@@ -78,9 +78,10 @@ export default function UserComments() {
 
     //fav-locations
     const [favorites, setFavorites] = useState(test_fav_locations);
-    const [currentFavCount, setCurrentFavCount] = useState(5); // 当前显示的收藏数量
-    const [loadingFavorites, setLoadingFavorites] = useState(false); // 收藏加载状态
-    const [currentFavorites, setCurrentFavorites] = useState([]); // 当前分页的收藏列表
+    const [currentFavCount, setCurrentFavCount] = useState(5); // The current number of displayed favorites
+    const [loadingFavorites, setLoadingFavorites] = useState(false); // Loading state for favorites
+    const [currentFavorites, setCurrentFavorites] = useState([]); // Favorite list for the current page
+
 
     //inifite scrolling for reviews.
     useEffect(() => {
@@ -112,7 +113,7 @@ export default function UserComments() {
     const loadMoreReviews = () => {
         setLoading(true);
         setTimeout(() => {
-            setCurrentCount((prev) => Math.min(prev + 3, reviews.length)); // 每次加载 3 条评论
+            setCurrentCount((prev) => Math.min(prev + 3, reviews.length)); // Load 3 comments at a time
             setLoading(false);
         }, 1000);
     };
@@ -123,7 +124,7 @@ export default function UserComments() {
 
             const { scrollTop, scrollHeight, clientHeight } = favRef.current;
 
-            // 当滚动到底部时加载更多
+           // Load more when scrolled to the bottom
             if (scrollTop + clientHeight >= scrollHeight - 10 && !loadingFavorites && currentFavCount < favorites.length) {
                 loadMoreFavorites();
             }
@@ -140,7 +141,8 @@ export default function UserComments() {
     const loadMoreFavorites = () => {
         setLoadingFavorites(true);
         setTimeout(() => {
-            setCurrentFavCount((prev) => Math.min(prev + 3, favorites.length)); // 每次加载 3 个
+            setCurrentFavCount((prev) => Math.min(prev + 3, favorites.length)); // Load 3 items at a time
+
             setLoadingFavorites(false);
         }, 1000);
     };
