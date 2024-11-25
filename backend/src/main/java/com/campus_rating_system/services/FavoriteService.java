@@ -3,6 +3,7 @@ package com.campus_rating_system.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.campus_rating_system.entities.Review;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -77,6 +78,32 @@ public class FavoriteService {
         favorite.setUser(user);
         favorite.setLocation(location);
         
+        return favoriteRepository.save(favorite);
+    }
+
+    /**
+     * Deletes an existing Favorite place by associating a favorite_id with a user, using the
+     * user's email by looking up the respective entities. Throws an exception if
+     * either entity cannot be found by the provided identifiers.
+     *
+     * @param favorite_id the name of the location to be marked as favorite
+     * @return the saved Favorite entity containing the user and location association
+     * @throws RuntimeException if the user or location is not found in the system
+     */
+    public Favorite deleteFavorite(int favorite_id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+
+        // Fetch the User entity by email
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new RuntimeException("User not found"));
+        // Find the favorite place by user(email) and favorite id
+        Favorite favorite = favoriteRepository.findByUserAndFavoriteID(email, favorite_id)
+                .orElseThrow(() -> new RuntimeException("Review not found"));
+
+        favoriteRepository.delete(favorite);
+
         return favoriteRepository.save(favorite);
     }
 

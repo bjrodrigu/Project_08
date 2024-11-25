@@ -55,16 +55,16 @@ public class CampusRatingSystemController {
      * reviews, tasks, locationtasks, and favorites. Each service is injected to support API
      * endpoints that delegate operations to the corresponding service layer.
      *
-     * @param userService             the service for handling user operations
-     * @param buildingService         the service for handling building operations
-     * @param locationService         the service for handling location operations
-     * @param reviewService           the service for handling review operations
-     * @param taskService             the service for handling task operations
-     * @param locationTaskService     the service for handling tasks assigned to each location
-     * @param favoriteService         the service for handling accessing user's favorite locaitons
-     * @param imageService            the service for handling images
-     * @param jwtService              the service for handling jwt token
-     * @param authenticationService   the service for handling user authenticaiton
+     * @param userService           the service for handling user operations
+     * @param buildingService       the service for handling building operations
+     * @param locationService       the service for handling location operations
+     * @param reviewService         the service for handling review operations
+     * @param taskService           the service for handling task operations
+     * @param locationTaskService   the service for handling tasks assigned to each location
+     * @param favoriteService       the service for handling accessing user's favorite locaitons
+     * @param imageService          the service for handling images
+     * @param jwtService            the service for handling jwt token
+     * @param authenticationService the service for handling user authenticaiton
      */
     public CampusRatingSystemController(UserService userService,
                                         LocationService locationService,
@@ -75,7 +75,8 @@ public class CampusRatingSystemController {
                                         ImageService imageService,
                                         JwtService jwtService,
                                         AuthenticationService authenticationService,
-                                        BuildingService buildingService) {
+                                        BuildingService buildingService)
+    {
 
         this.userService = userService;
         this.buildingService = buildingService;
@@ -124,15 +125,16 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new building.
      *
-     * @param name the name of the building
+     * @param name      the name of the building
      * @param longitude the longitude of the building
-     * @param latitude the latitude of the building
+     * @param latitude  the latitude of the building
      * @return the added Building entity as a response
      */
     @PostMapping("/building/addBuilding")
     public ResponseEntity<Building> addBuilding(@RequestParam String name,
                                                 @RequestParam Float longitude,
-                                                @RequestParam Float latitude) {
+                                                @RequestParam Float latitude)
+    {
 
         Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude);
         return new ResponseEntity<>(newBuilding, HttpStatus.CREATED);
@@ -141,10 +143,10 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new location to the system.
      *
-     * @param name        the name of the location
-     * @param description a brief description of the location
-     * @param address     the physical address of the location
-     * @param category    the category or type of location (e.g., library, park)
+     * @param name         the name of the location
+     * @param description  a brief description of the location
+     * @param address      the physical address of the location
+     * @param category     the category or type of location (e.g., library, park)
      * @param buildingName the name of the building associated with the location
      * @return a ResponseEntity containing the newly created Location and a CREATED status
      */
@@ -154,7 +156,8 @@ public class CampusRatingSystemController {
             @RequestParam String description,
             @RequestParam String address,
             @RequestParam String category,
-            @RequestParam String buildingName) {
+            @RequestParam String buildingName)
+    {
         Location newLocation = locationService.addNewLocation(
                 name,
                 description,
@@ -164,8 +167,6 @@ public class CampusRatingSystemController {
 
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
     }
-
-
 
     /**
      * Endpoint to get all locations along with their tasks.
@@ -279,6 +280,25 @@ public class CampusRatingSystemController {
 
         Favorite newFavorite = favoriteService.addFavorite(locationName);
         return new ResponseEntity<>(newFavorite, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint to remove a user's Favorite, associating a user and favorite place by their
+     * respective email and favorite id.
+     *
+     * @param favorite_id the id of the user's favorite place
+     * @return a ResponseEntity containing if the operation was successful
+     */
+    @PostMapping("/favorite/deleteFavorite")
+    public ResponseEntity<String> deleteFavorite(
+            @RequestParam int favorite_id)
+    {
+        try {
+            Favorite newFavorite = favoriteService.deleteFavorite(favorite_id);
+            return ResponseEntity.ok("Review deleted successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
     }
 
     /**
