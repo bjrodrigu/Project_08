@@ -6,6 +6,7 @@ import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
 import BadgerMessage from './BadgerMessage';
 import BadgerFavoriteLocations from './BadgerFavoriteLocations';
+import BadgerInfo from './BadgerInfo';
 //style
 const backButtonStyle = {
     display: 'flex',
@@ -26,10 +27,7 @@ const userInfoStyle = {
     marginBottom: '20px',
     textAlign: 'center'
 }
-//example
-const user = {
-    email: 'user@example.com'
-};
+
 
 let test_reviews = [
     { id: 1, location: 'Library - Studyspot 1', userRating: 4.5, totalScore: 5, comment: 'Great place to study.' },
@@ -58,7 +56,13 @@ let test_fav_locations = [
 ];
 
 export default function UserComments() {
-
+    //userinfo
+    const [user, setUser] = useState({
+        username: 'JohnDoe',
+        email: 'user@example.com',
+        password: 'test123',
+    });
+    // comments
     const [editIndex, setEditIndex] = useState(null); // current review in edition mode
     const [reviews, setReviews] = useState(test_reviews); // all reviews
     const [editedRating, setEditedRating] = useState('');
@@ -153,48 +157,28 @@ export default function UserComments() {
 
     const logout = useLogout();
 
+    const handleSaveUserInfo = (updatedUser) => {
+        console.log('Updated user info:', updatedUser);
 
-    // change password, user will be logged out.
-    const handlePasswordChange = (e) => {
-        e?.preventDefault();
+        setUser(updatedUser);
 
-        if (passwordInput.current.value === "") {
-            alert("Password invalid!");
-            // user will be loged out after changing password
-            return;
-        }
-        //     fetch('/api/change-password', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-
-        //         },
-        //         body: JSON.stringify({
-        //             currentPassword: currentPassword,
-        //             newPassword: newPassword
-        //         })
-        //     })
-        //     .then(response => {
-        //         if (!response.ok) {
-        //             return response.json().then(err => { throw new Error(err.message); });
+        // fetch('/api/update-user', {
+        //     method: 'POST',
+        //     headers: { 'Content-Type': 'application/json' },
+        //     body: JSON.stringify(updatedUser),
+        // })
+        //     .then((response) => {
+        //         if (response.ok) {
+        //             console.log('User info updated successfully');
+        //         } else {
+        //             console.error('Failed to update user info');
         //         }
-        //         return response.json();  
-        //     })
-        //     .then(result => {    
-        //         localStorage.removeItem('isLoggedIn');
-        //         setLoginStatus(undefined);
-        //         alert('Password changed successfully');
-        //         navigate('/');
-        //     })
-        //     .catch(error => {
-        //         console.error('Error changing password:', error);
-        //         alert(`Error: ${error.message}`);  
         //     });
 
-        //test
-        alert('Password changed successfully');
-        logout();
-    }
+        //logout();
+    };
+
+
 
     // store saved edition
     const handleSaveEdit = (key, rating, comment) => {
@@ -280,39 +264,7 @@ export default function UserComments() {
                     {/* First row: User Info */}
                     <div className="row g-4">
                         <div className="col-12">
-                            <Card
-                                style={{
-                                    height: '50vh', // Adjust the height to better fit the top display
-                                    overflowY: 'hidden',
-                                    borderRadius: '2rem',
-                                }}
-                            >
-                                <Card.Header
-                                    style={{
-                                        backgroundColor: '#f8f9fa',
-                                        padding: '1rem',
-                                        borderTopLeftRadius: '2rem',
-                                        borderTopRightRadius: '2rem',
-                                    }}
-                                >
-                                    <h5>Your Info</h5>
-                                </Card.Header>
-                                <Card.Body>
-                                    <Card.Title>User Info</Card.Title>
-                                    <Card.Text>Email: {user.email}</Card.Text>
-                                    <Form>
-                                        <Form.Control
-                                            id="password"
-                                            type="password"
-                                            ref={passwordInput}
-                                            placeholder="Enter your password"
-                                        />
-                                    </Form>
-                                    <Button className="mt-3" variant="primary" onClick={handlePasswordChange}>
-                                        Change Password
-                                    </Button>
-                                </Card.Body>
-                            </Card>
+                            <BadgerInfo user={user} onSave={handleSaveUserInfo} />
                         </div>
                     </div>
 
@@ -368,7 +320,6 @@ export default function UserComments() {
                             <Card
                                 style={{
                                     height: '70vh', // Adjust the height to fit the page layout
-                                    overflowY: 'auto',
                                     borderRadius: '2rem',
                                 }}
                                 ref={favRef}
@@ -383,7 +334,13 @@ export default function UserComments() {
                                 >
                                     <h5>Favorite Locations</h5>
                                 </Card.Header>
-                                <Card.Body>
+                                <Card.Body
+                                    style={{
+                                        height: 'calc(70vh - 4rem)', // minus head of headers
+                                        overflowY: 'auto',
+                                        padding: '1rem',
+                                    }}
+                                >
                                     {favorites.map((fav) => (
 
                                         <BadgerFavoriteLocations
