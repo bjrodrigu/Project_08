@@ -113,63 +113,81 @@ export default function BadgerLogin() {
 
   return (
     <>
-      <Row style={{ width: '85vw', marginBottom: '2rem' }}>
-        <Col sm='2'>
-          <Button
-            variant='outline-info'
-            onClick={routeChange}
-            style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
-          >
-            <ArrowLeft />
-          </Button>
-        </Col>
-        <Col sm='10' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}></Col>
-      </Row>
       <div style={styles.pageContainer}>
-        <Card style={styles.card}>
-          <Card.Body>
-            <h2 className="text-center mb-4">Login</h2>
-            <Form onSubmit={handleLogin}>
-              <Form.Group controlId="userName" style={styles.formGroup}>
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  ref={usernameInput}
-                  isInvalid={usernameInput.current && !usernameInput.current.value}
-                  style={{ padding: '10px', borderRadius: '5px' }}
-                  placeholder="Enter your username"
-                />
-              </Form.Group>
+          <Card style={styles.card}>
+              <Card.Body>
+                  <h2 className="text-center mb-4">Sign up</h2>
+                  <Form onSubmit={handleRegister}>
+                      <Row>
+                          <Col>
+                              <Button
+                              variant='outline-info'
+                              onClick={routeChange}
+                              style={{ top: '3vh', left: '3vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'absolute'}}
+                              >
+                              <ArrowLeft />
+                              </Button>
+                          </Col>
+                          <Col>
+                          </Col>
+                      </Row>
+                      <Form.Group controlId="userName" style={styles.formGroup}>
+                          <Form.Label>Username</Form.Label>
+                          <Form.Control
+                              ref={usernameInput}
+                              style={styles.input}
+                              placeholder="Enter your username"
+                          />
+                      </Form.Group>
 
-              <Form.Group controlId="password" style={styles.formGroup}>
-                <Form.Label>Password</Form.Label>
-                <Form.Control
-                  type="password"
-                  ref={passwordInput}
-                  isInvalid={passwordInput.current && !passwordInput.current.value}
-                  style={{ padding: '10px', borderRadius: '5px' }}
-                  placeholder="Enter your password"
-                />
-              </Form.Group>
+                      <Form.Group controlId="Password" style={styles.formGroup}>
+                          <Form.Label>Password</Form.Label>
+                          <Form.Control
+                              ref={passwordInput}
+                              style={styles.input}
+                              type="password"
+                              placeholder="Enter your password"
+                          />
+                      </Form.Group>
 
-              <Button
-                type="submit"
-                variant="primary"
-                className="w-100 mt-3"
-                style={styles.button}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <Spinner animation="border" size="sm" /> Logging in
-                  </>
-                ) : (
-                  'Login'
-                )}
-              </Button>
-            </Form>
-            {error && <p className="text-danger mt-3">{error}</p>}
-          </Card.Body>
-        </Card>
+                      <Form.Group controlId="ConfirmPassword" style={styles.formGroup}>
+                          <Form.Label>Confirm Password</Form.Label>
+                          <Form.Control
+                              ref={confirmPasswordInput}
+                              style={styles.input}
+                              type="password"
+                              placeholder="Confirm your password"
+                          />
+                      </Form.Group>
+
+                      <Form.Group controlId="Email" style={styles.formGroup}>
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control
+                              ref={usrEmail}
+                              style={styles.input}
+                              type="email"
+                              placeholder="Please enter your email"
+                          />
+                      </Form.Group>
+
+                      <Button
+                          type="submit"
+                          variant="primary"
+                          className="w-100 mt-3"
+                          disabled={loading}
+                          style={styles.button}
+                      >
+                          {loading ? (
+                            <>
+                          <Spinner animation="border" size="sm" /> Registering
+                        </>
+                      ) : (
+                    'Register'
+                  )}
+                </Button>
+              </Form>
+            </Card.Body>
+          </Card>
       </div>
     </>
   );
