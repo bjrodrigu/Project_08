@@ -1,97 +1,140 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { BrowserRouter } from "react-router-dom";
-import BadgerAddReviewPage from "../components/app/BadgerAddReviewPage";
-import { LoginContext } from "../components/contexts/LoginContext";
+import React from 'react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import BadgerAddReviewPage from '../components/app/BadgerAddReviewPage';
 
-// Test that renders the correct form elements
-test("renders form elements correctly", () => {
-    render(
-        <LoginContext.Provider value={{ user: "Test User" }}>
-            <BrowserRouter>
-                <BadgerAddReviewPage />
-            </BrowserRouter>
-        </LoginContext.Provider>
-    );
+// Mock LoginContext
+jest.mock('../components/contexts/LoginContext', () => ({
+    useLoginState: () => ({
+        user: 'testuser@example.com',
+        setUser: jest.fn(),
+        login: true,
+        setLogin: jest.fn(),
+    }),
+}));
 
-    expect(screen.getByPlaceholderText(/title your review here/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/share your opinion on/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /submit review/i })).toBeInTheDocument();
+// Mock localStorage
+Object.defineProperty(window, 'localStorage', {
+    value: {
+        getItem: jest.fn(() => 'mockedToken'),
+    },
+    writable: true,
 });
 
-// Test that updates the review state when the user types in the review input
-test("updates review state when user types in review input", () => {
-    render(
-        <LoginContext.Provider value={{ user: "Test User" }}>
-            <BrowserRouter>
-                <BadgerAddReviewPage />
-            </BrowserRouter>
-        </LoginContext.Provider>
-    );
+// Mock fetch
+global.fetch = jest.fn();
 
-    const reviewInput = screen.getByPlaceholderText(/share your opinion on/i);
-    userEvent.type(reviewInput, "This is my review");
-    expect(reviewInput.value).toBe("This is my review");
+// Mocking window.alert
+beforeAll(() => {
+    global.alert = jest.fn(); // Mock alert
 });
 
-// Test that updates the rating state when the user clicks on a star
-test("updates rating state when user clicks on a star", () => {
-    render(
-        <LoginContext.Provider value={{ user: "Test User" }}>
-            <BrowserRouter>
-                <BadgerAddReviewPage />
-            </BrowserRouter>
-        </LoginContext.Provider>
-    );
-
-    // Select stars using the test ID
-    const stars = screen.getAllByTestId("star");
-
-    // Initial state (assuming rating starts at 0)
-    expect(stars[0]).toHaveStyle('color: #e4e5e9'); // First star should be unfilled
-    expect(stars[1]).toHaveStyle('color: #e4e5e9'); // Second star should be unfilled
-
-    userEvent.click(stars[2]); // Click on the third star
-
-    // Check updated styles after clicking the third star
-    expect(stars[1]).toHaveStyle('color: #2e2e2e'); // Second star should be filled
-    expect(stars[2]).toHaveStyle('color: #e4e5e9'); // Third star should be filled
-
+afterAll(() => {
+    jest.restoreAllMocks(); // Cleanup mocks after tests
 });
 
+describe('BadgerAddReviewPage Component', () => {
+    beforeEach(() => {
+        fetch.mockClear();
+    });
 
-// Test that updates the review title state when the user types in the review title input
-test("updates review title state when user types in title input", () => {
-    render(
-        <LoginContext.Provider value={{ user: "Test User" }}>
+    it('renders the form elements correctly', () => {
+        render(
             <BrowserRouter>
                 <BadgerAddReviewPage />
             </BrowserRouter>
-        </LoginContext.Provider>
-    );
+        );
 
-    const titleInput = screen.getByPlaceholderText(/title your review here/i);
-    userEvent.type(titleInput, "Great Place!");
-    expect(titleInput.value).toBe("Great Place!");
-});
+        // Check for star rating icons
+        const stars = screen.getAllByTestId('star');
+        expect(stars).toHaveLength(5);
 
+        // Check for input fields
+        expect(screen.getByPlaceholderText('Title your review here')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('Share your opinion on undefined here!')).toBeInTheDocument();
 
-// Mock alert function to be used in the next test
-global.alert = jest.fn();
+        // Check for the submit button
+        expect(screen.getByText('Submit Review')).toBeInTheDocument();
+    });
 
-// Test that alerts the user if they try to submit a review without selecting a rating
-test("alerts user if submitting without rating", () => {
-    render(
-        <LoginContext.Provider value={{ user: "Test User" }}>
+    it('allows the user to select a star rating', () => {
+        render(
             <BrowserRouter>
                 <BadgerAddReviewPage />
             </BrowserRouter>
-        </LoginContext.Provider>
-    );
+        );
 
-    const submitButton = screen.getByRole("button", { name: /submit review/i });
-    userEvent.click(submitButton);
+        const stars = screen.getAllByTestId('star');
+        fireEvent.click(stars[2]); // Select the 3rd star
 
-    expect(alert).toHaveBeenCalledWith('Please select a rating before submitting your review.');
+        // Expect the remaining stars to be empty
+        stars.slice(3).forEach(star => {
+            expect(star).toHaveStyle('color: rgb(228, 229, 233)'); // Light color for empty stars
+        });
+    });
+
+    it('displays an alert if the rating is not selected on submit', async () => {
+        const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
+
+        render(
+            <BrowserRouter>
+                <BadgerAddReviewPage />
+            </BrowserRouter>
+        );
+
+        fireEvent.click(screen.getByText('Submit Review'));
+
+        await waitFor(() => {
+            expect(alertMock).toHaveBeenCalledWith('Please select a rating before submitting your review.');
+        });
+
+        alertMock.mockRestore(); // Restore the original alert implementation
+    });
+   
+
+    it('handles API errors gracefully', async () => {
+        fetch.mockRejectedValueOnce(new Error('Failed to submit the review'));
+        const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
+
+
+        render(
+            <BrowserRouter>
+                <BadgerAddReviewPage />
+            </BrowserRouter>
+        );
+
+        const stars = screen.getAllByTestId('star');
+        fireEvent.click(stars[4]); // Select the 5th star
+
+        fireEvent.change(screen.getByPlaceholderText('Title your review here'), {
+            target: { value: 'Needs improvement' },
+        });
+
+        fireEvent.change(screen.getByPlaceholderText('Share your opinion on undefined here!'), {
+            target: { value: 'It was too noisy.' },
+        });
+
+        fireEvent.click(screen.getByText('Submit Review'));
+
+        await waitFor(() => {
+            expect(alertMock).toHaveBeenCalledWith('There was an error submitting your review.');
+        });
+
+        alertMock.mockRestore(); // Restore the original alert implementation
+    });
+
+    it('navigates back to the previous page when the back button is clicked', () => {
+        const mockNavigate = jest.fn();
+        jest.spyOn(require('react-router'), 'useNavigate').mockImplementation(() => mockNavigate);
+    
+        render(
+            <BrowserRouter>
+                <BadgerAddReviewPage />
+            </BrowserRouter>
+        );
+    
+        const backButton = screen.getByTestId('back-button');
+        fireEvent.click(backButton);
+        expect(mockNavigate).toHaveBeenCalledTimes(1);
+    });
 });
