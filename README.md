@@ -300,6 +300,28 @@ sequenceDiagram
     Backend -->> Frontend: Confirm successful update
     Frontend -->> User: Display new comment and rating
 
+    User ->> Frontend: Edit personal information
+    Frontend ->> Backend: Send updated personal information
+    Backend ->> Database: Update user information
+    Database -->> Backend: Confirm information update
+    Backend -->> Frontend: Confirm successful update
+    Frontend -->> User: Display updated personal information
+
+    User ->> Frontend: Add favorite location from main page
+    Frontend ->> Backend: Send favorite location request (location ID)
+    Backend ->> Database: Add location to user's favorite list
+    Database -->> Backend: Confirm favorite location added
+    Backend -->> Frontend: Confirm successful addition
+    Frontend -->> User: Display favorite location added
+
+    User ->> Frontend: Remove favorite location from profile
+    Frontend ->> Backend: Send remove favorite location request (location ID)
+    Backend ->> Database: Remove location from user's favorite list
+    Database -->> Backend: Confirm favorite location removed
+    Backend -->> Frontend: Confirm successful removal
+    Frontend -->> User: Display favorite location removed
+
+
 ```
 
 ### Standards & Conventions
