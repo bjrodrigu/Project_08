@@ -77,34 +77,30 @@ export default function BadgerSignup() {
     }
     return (
         <>
-            <Row style={{ width: '85vw', marginBottom: '2rem' }}>
-                <Col sm='2'>
-                    <Button
-                        variant='outline-info'
-                        onClick={routeChange}
-                        style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
-                    >
-                        <ArrowLeft />
-                    </Button>
-                </Col>
-                <Col sm='10' className="d-flex justify-content-center" style={{ marginTop: '2rem' }}>
-
-                </Col>
-            </Row>
-
             <div style={styles.pageContainer}>
                 <Card style={styles.card}>
                     <Card.Body>
                         <h2 className="text-center mb-4">Sign up</h2>
                         <Form onSubmit={handleRegister}>
-
-                            <Form.Group controlId="Email" style={styles.formGroup}>
-                                <Form.Label>Email</Form.Label>
+                            <Row>
+                                <Col>
+                                    <Button
+                                    variant='outline-info'
+                                    onClick={routeChange}
+                                    style={{ top: '3vh', left: '3vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'absolute'}}
+                                    >
+                                    <ArrowLeft />
+                                    </Button>
+                                </Col>
+                                <Col>
+                                </Col>
+                            </Row>
+                            <Form.Group controlId="userName" style={styles.formGroup}>
+                                <Form.Label>Username</Form.Label>
                                 <Form.Control
-                                    ref={usrEmail}
+                                    ref={usernameInput}
                                     style={styles.input}
-                                    type="email"
-                                    placeholder="Please enter your email"
+                                    placeholder="Enter your username"
                                 />
                             </Form.Group>
 
@@ -128,14 +124,13 @@ export default function BadgerSignup() {
                                 />
                             </Form.Group>
 
-
-                            <Form.Group controlId="FullName" style={styles.formGroup}>
-                                <Form.Label>Your Full Name</Form.Label>
+                            <Form.Group controlId="Email" style={styles.formGroup}>
+                                <Form.Label>Email</Form.Label>
                                 <Form.Control
-                                    ref={fullName}
+                                    ref={usrEmail}
                                     style={styles.input}
-                                    type="text"
-                                    placeholder="Please enter your full name"
+                                    type="email"
+                                    placeholder="Please enter your email"
                                 />
                             </Form.Group>
 
