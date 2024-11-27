@@ -55,7 +55,6 @@ public class LocationServiceTests {
         // Arrange
         String locationName = "Central Library";
         String description = "A large library with study rooms";
-        String address = "123 Library Lane";
         String category = "Library";
         String buildingName = "Main Building";
 
@@ -66,7 +65,6 @@ public class LocationServiceTests {
         Location mockLocation = new Location();
         mockLocation.setName(locationName);
         mockLocation.setDescription(description);
-        mockLocation.setAddress(address);
         mockLocation.setCategory(category);
         mockLocation.setBuilding(mockBuilding);
 
@@ -75,7 +73,7 @@ public class LocationServiceTests {
 
         // Act
         Location result = locationService.addNewLocation(locationName, 
-               description, address, category, buildingName);
+               description, category, buildingName);
 
         // Assert
         verify(buildingRepository, times(1)).findByName(buildingName);
@@ -96,14 +94,12 @@ public class LocationServiceTests {
         // Arrange
         String locationName = "Central Library";
         String description = "A large library with study rooms";
-        String address = "123 Library Lane";
         String category = "Library";
         String buildingName = "Nonexistent Building";
 
         Location mockLocation = new Location();
         mockLocation.setName(locationName);
         mockLocation.setDescription(description);
-        mockLocation.setAddress(address);
         mockLocation.setCategory(category);
         mockLocation.setBuilding(null);
 
@@ -112,7 +108,7 @@ public class LocationServiceTests {
 
         // Act
         Location result = locationService.addNewLocation(locationName, 
-              description, address, category, buildingName);
+              description, category, buildingName);
 
         // Assert
         verify(buildingRepository, times(1)).findByName(buildingName);
@@ -138,7 +134,6 @@ public class LocationServiceTests {
         location1.setName("Library");
         location1.setDescription("A library with study spaces");
         location1.setCategory("Library");
-        location1.setAddress("123 Library Lane");
         location1.setCreatedAt(new Date());
         location1.setUpdatedAt(new Date());
         location1.setBuilding(mockBuilding);

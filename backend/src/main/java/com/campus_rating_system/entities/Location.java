@@ -22,9 +22,6 @@ public class Location {
     @Column(name = "category")
     private String category;
 
-    @Column(name = "address")
-    private String address;
-
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -82,15 +79,7 @@ public class Location {
     public void setCategory(String category) {
         this.category = category;
     }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
+    
     public Date getCreatedAt() {
         return createdAt;
     }

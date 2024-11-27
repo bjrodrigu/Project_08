@@ -127,14 +127,17 @@ public class CampusRatingSystemController {
      * @param name the name of the building
      * @param longitude the longitude of the building
      * @param latitude the latitude of the building
+     * @param address the physical address of the location
      * @return the added Building entity as a response
      */
     @PostMapping("/building/addBuilding")
     public ResponseEntity<Building> addBuilding(@RequestParam String name,
                                                 @RequestParam Float longitude,
-                                                @RequestParam Float latitude) {
+                                                @RequestParam Float latitude,
+                                                @RequestParam String address) {
 
-        Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude);
+        Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude, address);
+
         return new ResponseEntity<>(newBuilding, HttpStatus.CREATED);
     }
 
@@ -143,7 +146,6 @@ public class CampusRatingSystemController {
      *
      * @param name        the name of the location
      * @param description a brief description of the location
-     * @param address     the physical address of the location
      * @param category    the category or type of location (e.g., library, park)
      * @param buildingName the name of the building associated with the location
      * @return a ResponseEntity containing the newly created Location and a CREATED status
@@ -152,13 +154,11 @@ public class CampusRatingSystemController {
     public ResponseEntity<Location> addNewLocation(
             @RequestParam String name,
             @RequestParam String description,
-            @RequestParam String address,
             @RequestParam String category,
             @RequestParam String buildingName) {
         Location newLocation = locationService.addNewLocation(
                 name,
                 description,
-                address,
                 category,
                 buildingName);
 
