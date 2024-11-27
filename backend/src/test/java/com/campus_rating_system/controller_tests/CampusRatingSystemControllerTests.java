@@ -142,20 +142,24 @@ public class CampusRatingSystemControllerTests {
         mockBuilding.setName("Test Building");
         mockBuilding.setLongitude(10.0f);
         mockBuilding.setLatitude(20.0f);
+        mockBuilding.setAddress("123 Main Street");
 
-        when(buildingService.addNewBuilding(anyString(), anyFloat(), anyFloat())).
+        when(buildingService.addNewBuilding(anyString(), anyFloat(), anyFloat(), anyString())).
               thenReturn(mockBuilding);
 
         mockMvc.perform(post("/building/addBuilding")
                 .param("name", "Test Building")
                 .param("longitude", "10.0")
-                .param("latitude", "20.0"))
+                .param("latitude", "20.0")
+                .param("address", "123 Main Street"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Test Building"))
                 .andExpect(jsonPath("$.longitude").value(10.0))
-                .andExpect(jsonPath("$.latitude").value(20.0));
+                .andExpect(jsonPath("$.latitude").value(20.0))
+                .andExpect(jsonPath("$.address").value("123 Main Street"));
 
-        verify(buildingService, times(1)).addNewBuilding(anyString(), anyFloat(), anyFloat());
+        verify(buildingService, times(1)).addNewBuilding(anyString(), anyFloat(), anyFloat(), 
+              anyString());
     }
 
     /**
@@ -167,13 +171,12 @@ public class CampusRatingSystemControllerTests {
         mockLocation.setName("Library");
         mockLocation.setDescription("A quiet place to study");
 
-        when(locationService.addNewLocation(anyString(), anyString(), anyString(), anyString(), 
-              anyString())).thenReturn(mockLocation);
+        when(locationService.addNewLocation(anyString(), anyString(), anyString(), anyString())).
+              thenReturn(mockLocation);
 
         mockMvc.perform(post("/location/addLocation")
                 .param("name", "Library")
                 .param("description", "A quiet place to study")
-                .param("address", "123 Library Lane")
                 .param("category", "Library")
                 .param("buildingName", "Main Building"))
                 .andExpect(status().isCreated())
@@ -181,7 +184,7 @@ public class CampusRatingSystemControllerTests {
                 .andExpect(jsonPath("$.description").value("A quiet place to study"));
 
         verify(locationService, times(1)).addNewLocation(anyString(), 
-              anyString(), anyString(), anyString(), anyString());
+              anyString(), anyString(), anyString());
     }
 
     /**
