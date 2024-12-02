@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "Location")
 public class Location {
@@ -32,12 +35,15 @@ public class Location {
 
     @ManyToOne
     @JoinColumn(name = "building_id", referencedColumnName = "building_id", nullable = false)
+    @JsonBackReference
     private Building building;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<LocationTask> locationTasks;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL, orphanRemoval = true)
