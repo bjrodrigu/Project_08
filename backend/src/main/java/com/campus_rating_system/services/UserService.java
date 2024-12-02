@@ -11,8 +11,7 @@ import com.campus_rating_system.repositories.UserRepository;
  * This class provides methods to handle user-related business logic, including
  * adding new users to the system and setting default properties.
  *
- * <p>Bugs: The Google ID is currently generated as a random UUID and should be
- * replaced by a proper ID obtained through an authentication mechanism.
+ * <p>Bugs: Not currently in use. Jwt service is being used for user services.
  *
  * @author Rithik Rajaram
  */

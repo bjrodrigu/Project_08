@@ -136,5 +136,43 @@ public class ReviewService {
      */
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
+    
+    /**
+    * Updates an existing review for a specific location by the currently authenticated user.
+    * This method retrieves the user based on the current authentication context, verifies the
+    * existence of both the user and location, and updates the review's content if found.
+    *
+    * @param locationName the name of the location whose review needs to be updated
+    * @param newRating    the updated rating for the location
+    * @param newComment   the updated comment describing the user's experience
+    * @param newTitle     the updated title of the review
+    * @return the updated Review entity
+    * @throws RuntimeException if the user, location, or review is not found in the system
+    */
+    public Review editReview(String locationName, int newRating, String newComment,
+          String newTitle) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+    
+        // Find the user by email
+        User user = userRepository.findByEmail(email)
+              .orElseThrow(() -> new RuntimeException("User not found"));
+    
+        // Find the location by name
+        Location location = locationRepository.findByName(locationName)
+              .orElseThrow(() -> new RuntimeException("Location not found"));
+    
+        // Find the review by user and location
+        Review review = reviewRepository.findByUserAndLocation(user, location)
+              .orElseThrow(() -> new RuntimeException("Review not found"));
+    
+        // Update the review's properties
+        review.setRating(newRating);
+        review.setComment(newComment);
+        review.setTitle(newTitle);
+        review.setUpdatedAt(new Date());
+    
+        return reviewRepository.save(review);
     }
 }
