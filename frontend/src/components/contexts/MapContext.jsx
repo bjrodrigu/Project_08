@@ -37,12 +37,12 @@ const MapContextProvider = ({ children }) => {
                   if (response.ok) {
                         const locationsData = await response.json();
                         const formattedLocations = locationsData.map((loc) => ({
-                              name: loc.name || "Unknown Location",
+                              name: loc.name,
                               distance: loc.distance || 0,
-                              description: loc.description || "No description available",
+                              description: loc.description,
                               rating: loc.rating || 0, 
                               reviews: loc.reviews || 0, 
-                              building: loc.buildingName || "Unknown Building",
+                              building: loc.buildingName,
                               tags: loc.tags || [] 
                           }));
               

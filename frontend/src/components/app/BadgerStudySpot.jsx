@@ -34,13 +34,11 @@ export default function BadgerStudySpot() {
             width: '80%',
             maxWidth: '600px',
       };
-
       const headingStyle = {
             fontSize: '1.8rem',
             color: '#333',
             marginBottom: '0.5rem',
       };
-
       const paragraphStyle = {
             fontSize: '1rem',
             color: '#777',
@@ -82,8 +80,7 @@ export default function BadgerStudySpot() {
             fetchReviews();
       }, []);
 
-      // function to fetch reviews from the API
-      // TODO: CHANGE TO FETCH REVIEWS FOR SPECIFIC LOCATION NOT ALL REVIEWS
+      // function to fetch reviews from the API for a specific location
       const [reviews, setReviews] = useState([]);
       const [loading, setLoading] = useState(false);
       const fetchReviews = async () => {
@@ -120,19 +117,6 @@ export default function BadgerStudySpot() {
             }
             return null;
       };
-
-
-
-      // dummy data for reviews
-      // const reviews = [
-      //       { name: 'lorem', rating: 1.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-      //       { name: 'ipsum', rating: 3.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-      //       { name: 'dolor', rating: 4.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-      //       { name: 'sit', rating: 3.8, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-      //       { name: 'amet', rating: 0.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' }
-      // ]
-
-
 
       return <>
             <Card key={'Primary'} style={{ height: '90vh', overflowY: 'hidden', borderRadius: '2rem', width: '35rem', position: "absolute", top: '9vh', left: '2vw' }}>
