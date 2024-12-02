@@ -1,9 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
-import {Form, Card, Col, Row, ListGroup, ListGroupItem} from 'react-bootstrap';
+import { Form, Card, Col, Row, ListGroup, ListGroupItem, Spinner } from 'react-bootstrap';
 import BadgerSearchResult from './BadgerSearchResult';
-import { useLocationState} from '../contexts/MapContext';
-import { Filter, ArrowDown, ArrowUp} from 'react-bootstrap-icons';
+import { useLocationState } from '../contexts/MapContext';
+import { Filter, ArrowDown, ArrowUp } from 'react-bootstrap-icons';
+
 
 // dummy values for testing
 // const testData = [
@@ -42,12 +43,13 @@ const options = [
 // Primary Component of homepage. Has search, and shows results
 // TODO: Implement advanced filtered components, and filtering on updating form state
 export default function BadgerStudySearch() {
-      const {userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings} = useLocationState();
+      const { userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings } = useLocationState();
       const [query, setQuery] = useState('');
       const [filterData, setFilterData] = useState([]);
       const params = ['name', 'distance', 'description', 'rating'];
       const [sort, setSort] = useState(0);
       const [chosenTags, setChosenTags] = useState([]);
+      const [loading, setLoading] = useState(false);
 
       // tester
       // useEffect(() => {console.log(chosenTags)}, [chosenTags]);
@@ -64,6 +66,7 @@ export default function BadgerStudySearch() {
 
       // filter and sort data
       useEffect(() => {
+            setLoading(true);
             let temp = [...locationList];
             console.log(temp);
             // console.log(temp);
@@ -88,7 +91,7 @@ export default function BadgerStudySearch() {
             });
             // console.log(temp);
             // sort data
-            switch(sort) {
+            switch (sort) {
                   // closest first
                   case 0:
                         temp.sort((a, b) => {
@@ -125,26 +128,27 @@ export default function BadgerStudySearch() {
                               return b['reviews'] - a['reviews'];
                         })
                         break;
-                  }
+            }
             setFilterData(temp);
+            setLoading(false);
       }, [query, sort, chosenTags, locationList]);
-      
 
-      return <>      
-            <Card key={'Primary'} style={{height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width:'35rem', position: 'absolute', top: '9vh', left: '2vw'}}>
-                  <Card.Header style={{padding: '2rem', paddingBottom: '1rem'}}>
+
+      return <>
+            <Card key={'Primary'} style={{ height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width: '35rem', position: 'absolute', top: '9vh', left: '2vw' }}>
+                  <Card.Header style={{ padding: '2rem', paddingBottom: '1rem' }}>
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
-                                    <Form.Control onInput={e=> {setQuery(e.target.value)}} type="text" placeholder="Search for a Location" style={{height: '3rem', width: 'fit'}}/>
+                                    <Form.Control onInput={e => { setQuery(e.target.value) }} type="text" placeholder="Search for a Location" style={{ height: '3rem', width: 'fit' }} />
                               </Form.Group>
                               <br />
                               <Row>
                                     <Col>
                                           <Select
                                                 placeholder={'Sort Study Spots'}
-                                                onChange={e => {setSort( e.value)}}
+                                                onChange={e => { setSort(e.value) }}
                                                 options={options}
-                                                />
+                                          />
                                     </Col>
                                     <Col>
                                           <Select
@@ -163,20 +167,35 @@ export default function BadgerStudySearch() {
                               </Form.Select> */}
                         </Form>
                   </Card.Header>
-                  <Card.Body style={{ overflowY: 'scroll', paddingLeft: '2rem', paddingRight: '2rem'}}>
-                        {filterData == '' && <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', height: '60vh', margin: '2vh 1.5vw 2vh 1.5vw'}}>
-                              <div style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    height: '100%'
-                              }}>
-                                    No Results
+                  <Card.Body style={{ overflowY: 'scroll', paddingLeft: '2rem', paddingRight: '2rem' }}>
+                        {loading ? (
+                              <div
+                                    style={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          height: '100%',
+                                    }}
+                              >
+                                    <Spinner animation="border" role="status" />
+
                               </div>
-                        </Card>}
-                        {filterData.map((location) => {
-                                    return <BadgerSearchResult key={location.name} {...location}/>
-                              })
+                        ) : filterData.length === 0 ? (
+                              <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', height: '60vh', margin: '2vh 1.5vw 2vh 1.5vw' }}>
+                                    <div style={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          height: '100%'
+                                    }}>
+                                          No Results
+                                    </div>
+                              </Card>
+                        ) : (
+                              filterData.map((location) => {
+                                    return <BadgerSearchResult key={location.name} {...location} />
+                              }
+                              ))
                         }
                   </Card.Body>
             </Card>

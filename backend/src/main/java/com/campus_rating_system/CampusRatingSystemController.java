@@ -236,6 +236,27 @@ public class CampusRatingSystemController {
     }
 
     /**
+    * Endpoint to edit an existing review for a location by the authenticated user.
+    *
+    * @param locationName the name of the location whose review is to be edited
+    * @param newRating    the updated rating for the location
+    * @param newComment   the updated comment describing the user's experience
+    * @param newTitle     the updated title of the review
+    * @return a ResponseEntity containing the updated Review and an OK status
+    */
+    @PutMapping("/review/editReview")
+    public ResponseEntity<Review> editReview(
+            @RequestParam String locationName,
+            @RequestParam int newRating,
+            @RequestParam String newComment,
+            @RequestParam String newTitle) {
+
+        Review updatedReview = reviewService.editReview(locationName, newRating, 
+              newComment, newTitle);
+        return ResponseEntity.ok(updatedReview);
+    }
+
+    /**
      * Endpoint to add a new task to the system.
      *
      * @param name        the name of the task

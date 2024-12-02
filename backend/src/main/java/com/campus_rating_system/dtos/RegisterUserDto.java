@@ -14,6 +14,12 @@ public class RegisterUserDto {
 
     private String fullName;
 
+    public RegisterUserDto(String email, String password, String fullName) {
+        this.email = email;
+        this.password = password;
+        this.fullName = fullName;
+    }
+
     // getters and setters here...
 
     public String getEmail() {
