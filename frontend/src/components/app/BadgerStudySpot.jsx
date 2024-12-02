@@ -61,6 +61,7 @@ export default function BadgerStudySpot() {
       var { state } = useLocation();
       if (state != null) {
             localStorage.setItem("locState", JSON.stringify(state));
+
       } else {
             state = JSON.parse(localStorage.getItem("locState"));
             // if no local location is stored, redirect to home page
@@ -69,6 +70,8 @@ export default function BadgerStudySpot() {
             }
             // console.log(state);
       }
+      const location = JSON.parse(localStorage.getItem("locState"));
+      const locationName = location.name;
       // on page load
       useEffect(() => {
             // const run = loadHolder;
@@ -86,7 +89,7 @@ export default function BadgerStudySpot() {
       const fetchReviews = async () => {
             setLoading(true);
             try {
-                  const response = await fetch('http://localhost:8080/review/getAllReviews');
+                  const response = await fetch(`http://localhost:8080/review/getReviewsForLocation?locationName=${locationName}`);
                   if (response.ok) {
                         setLoading(false);
                         const reviewsData = await response.json();
