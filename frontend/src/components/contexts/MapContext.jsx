@@ -15,6 +15,7 @@ const MapContextProvider = ({ children }) => {
             { name: 'amet', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
             { name: 'asdf', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
       ]
+      const [locationList, setLocationList] = useState([]);
 
       const testBuildings = [
             { name: 'Building A', longitude: -89.4013, latitude: 43.0767 },
@@ -23,19 +24,29 @@ const MapContextProvider = ({ children }) => {
             { name: 'Building D', longitude: -89.4110, latitude: 43.0755 },
             { name: 'Building E', longitude: -89.3985, latitude: 43.0723 },
             { name: 'Building F', longitude: -89.4070, latitude: 43.0753 },
+            { name: 'Fake Building', longitude: -89.404, latitude: 43.076 },
       ]
 
       useEffect(() => {
             fetchLocations();
-      }, []); 
+      }, []);
 
-      // create API call for locations
       const fetchLocations = async () => {
             try {
                   const response = await fetch('http://localhost:8080/location/getLocations');
                   if (response.ok) {
                         const locationsData = await response.json();
-                        console.log(locationsData);
+                        const formattedLocations = locationsData.map((loc) => ({
+                              name: loc.name || "Unknown Location",
+                              distance: loc.distance || 0,
+                              description: loc.description || "No description available",
+                              rating: loc.rating || 0, 
+                              reviews: loc.reviews || 0, 
+                              building: loc.buildingName || "Unknown Building",
+                              tags: loc.tags || [] 
+                          }));
+              
+                          setLocationList(formattedLocations);
                   } else {
                         throw new Error('Failed to fetch locations');
                   }
@@ -43,26 +54,27 @@ const MapContextProvider = ({ children }) => {
                   console.error(error);
             }
       };
-      /*
-            // create API call for buildings
-            const fetchBuildings = async () => {
-                  try {
-                        const response = await fetch('http://localhost:8080/building/getBuildings');
-                        if (response.ok) {
-                              const buildingsData = await response.json();
-                              //setBuildings(buildingsData);
-                        } else {
-                              throw new Error('Failed to fetch buildings');
-                        }
-                  } catch (error) {
-                        console.error(error);
+    
+/** 
+      // create API call for buildings
+      const fetchBuildings = async () => {
+            try {
+                  const response = await fetch('http://localhost:8080/building/getBuildings');
+                  if (response.ok) {
+                        const buildingsData = await response.json();
+                        console.log(buildingsData);
+                        //setBuildings(buildingsData);
+                  } else {
+                        throw new Error('Failed to fetch buildings');
                   }
-            };
-      
-            */
+            } catch (error) {
+                  console.error(error);
+            }
+      };
+*/
+
       // initialize states
       const [userLocation, setUserLocation] = useState(null);
-      const [locationList, setLocationList] = useState(testLocations);
       const [buildings, setBuildings] = useState(testBuildings);
       const [distMatrix, setDistMatrix] = useState([]);
       const apiKey = 'AIzaSyCl9i1askwfTLHo-e1cERhPl58O8bEjuzU';
