@@ -1,5 +1,8 @@
 package com.campus_rating_system.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -13,10 +16,12 @@ public class LocationTask {
 
     @ManyToOne
     @JoinColumn(name = "location_id", nullable = false)
+    @JsonBackReference
     private Location location;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
+    @JsonManagedReference
     private Task task;
 
     // Getters and setters

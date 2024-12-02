@@ -4,12 +4,16 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "User")
+@JsonIgnoreProperties({"reviews"}) 
+// Added to prevent infinite recursive calls between user and reviews
 public class User implements UserDetails {
 
     @Id

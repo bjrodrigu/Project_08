@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Form, Spinner } from 'react-bootstrap';
 import { Star, StarFill } from 'react-bootstrap-icons';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLocation, useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext';
 
-
-
 const BadgerAddReviewPage = () => {
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [reviewTitle, setReviewTitle] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
+
 
     // create a navigate object
     let navigate = useNavigate();
@@ -24,8 +24,18 @@ const BadgerAddReviewPage = () => {
 
     const locationHook = useLocation();
     const location = locationHook.state?.location || {};
+    const existingReview = locationHook.state?.review || null; 
 
     const { user, setUser, login, setLogin } = useLoginState();
+
+    // Pre-populate the form with the existing review if editing
+    useEffect(() => {
+        if (existingReview) {
+            setReview(existingReview.comment);
+            setRating(existingReview.rating);
+            setReviewTitle(existingReview.title);
+        }
+    }, [existingReview]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -33,21 +43,27 @@ const BadgerAddReviewPage = () => {
             alert('Please select a rating before submitting your review.');
             return;
         }
+        console.log('Submitting review:', review, rating, reviewTitle);
 
         setIsSubmitting(true);
-
         const queryParams = new URLSearchParams({
-            email: user, // user email, hardcoded for now
-            locationName: 'Union South', // location name, hardcoded for now
+            locationName: location.name,
             rating: rating,
             comment: review,
+            title: reviewTitle
         });
 
         const token = localStorage.getItem("token");
-        console.log(token)
+        console.log(token);
 
-        fetch(`http://localhost:8080/review/addReview?${queryParams.toString()}`, {
-            method: 'POST',
+        // Determine whether it's an add or edit request
+        const method = existingReview ? 'PUT' : 'POST'; 
+        const url = existingReview
+            ? `http://localhost:8080/review/editReview?${queryParams.toString()}`  
+            : `http://localhost:8080/review/addReview?${queryParams.toString()}`;  
+
+        fetch(url, {
+            method: method,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -70,6 +86,39 @@ const BadgerAddReviewPage = () => {
                 console.error('Error submitting review:', error);
                 alert('There was an error submitting your review.');
                 setIsSubmitting(false);
+            });
+    };
+
+    const handleDeleteReview = () => {
+        if (!window.confirm('Are you sure you want to delete your review?')) {
+            return;
+        }
+
+        setIsDeleting(true);
+        const queryParams = new URLSearchParams({
+            locationName: location.name
+        });
+
+        const token = localStorage.getItem("token");
+
+        fetch(`http://localhost:8080/review/deleteReview?${queryParams.toString()}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to delete the review');
+                }
+                alert('Review deleted successfully!');
+                routeChange();  
+            })
+            .catch((error) => {
+                console.error('Error deleting review:', error);
+                alert('There was an error deleting your review.');
+                setIsDeleting(false);
             });
     };
 
@@ -156,9 +205,24 @@ const BadgerAddReviewPage = () => {
                         {isSubmitting ? (
                             <Spinner animation="border" size="sm" />
                         ) : (
-                            'Submit Review'
+                            existingReview ? 'Update Review' : 'Submit Review'
                         )}
                     </Button>
+
+                    {existingReview && (
+                        <Button
+                            variant="danger"
+                            onClick={handleDeleteReview}
+                            disabled={isDeleting}
+                            style={{ marginLeft: '1rem'}}
+                        >
+                            {isDeleting ? (
+                                <Spinner animation="border" size="sm" />
+                            ) : (
+                                'Delete Review'
+                            )}
+                        </Button>
+                    )}
 
                 </Form>
             </Card.Body>
