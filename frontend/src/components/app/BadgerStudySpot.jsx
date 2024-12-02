@@ -16,6 +16,37 @@ import ReactAddReviewButton from './ReactAddReviewButton';
 
 // Component to display details, images and reviews for a particular location
 export default function BadgerStudySpot() {
+
+      // styles for no reviews message
+      const containerStyle = {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '2rem',
+            border: '2px dashed #ccc',
+            borderRadius: '10px',
+            backgroundColor: '#f9f9f9',
+            color: '#555',
+            textAlign: 'center',
+            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            margin: '2rem auto',
+            width: '80%',
+            maxWidth: '600px',
+      };
+
+      const headingStyle = {
+            fontSize: '1.8rem',
+            color: '#333',
+            marginBottom: '0.5rem',
+      };
+
+      const paragraphStyle = {
+            fontSize: '1rem',
+            color: '#777',
+      };
+
+
       // retrieve the currently selected location via useLocation and save to a state object
       // retrieve and unpack user state
       const { user, setUser, login, setLogin } = useLoginState();
@@ -166,7 +197,10 @@ export default function BadgerStudySpot() {
                                                 />
                                           ))
                                     ) : (
-                                          <p>No reviews available.</p>
+                                          <div style={containerStyle}>
+                                                <h2 style={headingStyle}>No Reviews Yet</h2>
+                                                <p style={paragraphStyle}>Be the first to leave a review and share your experience!</p>
+                                          </div>
                                     )
                               )}
                         </ListGroup>
