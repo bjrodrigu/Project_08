@@ -65,7 +65,7 @@ public class SecurityConfiguration {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/user/login", "/user/signup", "/public/**",
-                      "/review/getAllReviews")
+                      "/location/getLocations", "/review/getAllReviews")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
