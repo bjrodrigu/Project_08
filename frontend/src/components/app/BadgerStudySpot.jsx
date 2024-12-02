@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Card, Carousel, Row, Col, Button, ListGroup} from 'react-bootstrap';
+import { Card, Carousel, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {run} from 'holderjs/holder'
+import { run } from 'holderjs/holder'
 import BadgerReview from '../app/BadgerReview';
-import {ArrowLeft} from 'react-bootstrap-icons';
+import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
 import ReactAddReviewButton from './ReactAddReviewButton';
 // async function loadHolder() {
@@ -18,7 +18,7 @@ import ReactAddReviewButton from './ReactAddReviewButton';
 export default function BadgerStudySpot() {
       // retrieve the currently selected location via useLocation and save to a state object
       // retrieve and unpack user state
-      const {user, setUser, login, setLogin} = useLoginState();
+      const { user, setUser, login, setLogin } = useLoginState();
       const [color, setColor] = useState('light');
       // create a navigate object
       let navigate = useNavigate();
@@ -38,23 +38,67 @@ export default function BadgerStudySpot() {
             }
             // console.log(state);
       }
-      
       // on page load
       useEffect(() => {
             // const run = loadHolder;
             run('image-class-name');
       }, [])
 
-      
+      useEffect(() => {
+            fetchReviews();
+      }, []);
+
+      // function to fetch reviews from the API
+      // TODO: CHANGE TO FETCH REVIEWS FOR SPECIFIC LOCATION NOT ALL REVIEWS
+      const [reviews, setReviews] = useState([]);
+      const [loading, setLoading] = useState(false);
+      const fetchReviews = async () => {
+            setLoading(true);
+            try {
+                  const response = await fetch('http://localhost:8080/review/getAllReviews');
+                  if (response.ok) {
+                        setLoading(false);
+                        const reviewsData = await response.json();
+                        setReviews(reviewsData);
+                  } else {
+                        setLoading(false);
+                        throw new Error('Failed to fetch reviews');
+                  }
+            } catch (error) {
+                  console.error(error);
+            }
+      };
+
+
+      // renders the add review button if the user is logged in, and the user has not already reviewed the location otherwise returns edit review button
+      const renderAddReviewButton = () => {
+            if (login) {
+                  const userReview = reviews.find((review) => review.user.username === user);
+                  return (
+                        <div style={{ margin: '1rem', textAlign: 'right' }}>
+                              <ReactAddReviewButton
+                                    location={state}
+                                    existingReview={userReview || null}
+                                    buttonText={userReview ? "Edit Review" : "Add Review"}
+                              />
+                        </div>
+                  );
+            }
+            return null;
+      };
+
+
 
       // dummy data for reviews
-      const reviews = [
-            { name: 'lorem', rating: 1.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'ipsum', rating: 3.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'dolor', rating: 4.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'sit', rating: 3.8, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
-            { name: 'amet', rating: 0.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' }
-      ]
+      // const reviews = [
+      //       { name: 'lorem', rating: 1.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'ipsum', rating: 3.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'dolor', rating: 4.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'sit', rating: 3.8, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' },
+      //       { name: 'amet', rating: 0.4, review: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' }
+      // ]
+
+
 
       return <>
             <Card key={'Primary'} style={{ height: '90vh', overflowY: 'hidden', borderRadius: '2rem', width: '35rem', position: "absolute", top: '9vh', left: '2vw' }}>
@@ -64,25 +108,23 @@ export default function BadgerStudySpot() {
                                     <Button variant='outline-info' onClick={routeChange} style={{ borderRadius: '50%', height: '3rem', width: '3rem' }}><ArrowLeft /></Button>
                               </Col>
                               <Col sm="4">
-                                    <Card.Title style={{ fontSize: '2rem', marginLeft: '-1.5rem', paddingTop: '0.25rem', paddingBottom: '0.25rem', height: '2.rem'}}>{state.name}</Card.Title>
+                                    <Card.Title style={{ fontSize: '2rem', marginLeft: '-1.5rem', paddingTop: '0.25rem', paddingBottom: '0.25rem', height: '2.rem' }}>{state.name}</Card.Title>
                               </Col>
                               <Col sm="3">
                                     <Card.Subtitle style={{ fontSize: '1.5rem', textAlign: 'right', paddingTop: '0.75rem' }}>{state.distance}mi</Card.Subtitle>
                               </Col>
                               <Col sm="3">
-                                    <Button variant='primary' style={{marginTop: '0.25rem', height: '2.5rem'}}> Navigate</Button>
+                                    <Button variant='primary' style={{ marginTop: '0.25rem', height: '2.5rem' }}> Navigate</Button>
                               </Col>
                         </Row>
                   </Card.Header>
-                  { login &&
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '1rem' }}>
-                        <ReactAddReviewButton location={state} />
-                  </div>
-                  }
-                  <Card.Body style={{overflowY: 'scroll', padding: '1rem'}}>
+
+
+
+                  <Card.Body style={{ overflowY: 'scroll', padding: '1rem' }}>
                         <ListGroup variant='flush'>
                               <ListGroup.Item>
-                                    <Carousel data-bs-theme="dark" style={{paddingBottom: '1rem'}}>
+                                    <Carousel data-bs-theme="dark" style={{ paddingBottom: '1rem' }}>
                                           <Carousel.Item>
                                                 <Card.Img variant='bottom' src='holder.js/75px360' style={{ margin: 'auto', width: 'auto' }} />
                                           </Carousel.Item>
@@ -95,11 +137,38 @@ export default function BadgerStudySpot() {
                                     </Carousel>
                               </ListGroup.Item>
                               <ListGroup.Item>
-                                    <h1>Reviews</h1>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                          <h1>Reviews</h1>
+                                          {renderAddReviewButton()}
+                                    </div>
                               </ListGroup.Item>
-                              {reviews.map((review) => {
-                                    return <BadgerReview key={review.name} {...review}/>
-                              })}
+                              {loading ? (
+                                    <div
+                                          style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                height: '100%',
+                                                paddingTop: '50px'
+                                          }}
+                                    >
+                                          <Spinner animation="border" role="status" />
+
+                                    </div>
+                              ) : (
+                                    reviews.length > 0 ? (
+                                          reviews.map((review) => (
+                                                <BadgerReview
+                                                      key={review.reviewId}
+                                                      name={review.title}
+                                                      review={review.comment}
+                                                      rating={review.rating}
+                                                />
+                                          ))
+                                    ) : (
+                                          <p>No reviews available.</p>
+                                    )
+                              )}
                         </ListGroup>
                   </Card.Body>
             </Card>

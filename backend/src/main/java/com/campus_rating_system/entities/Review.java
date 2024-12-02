@@ -3,6 +3,7 @@ package com.campus_rating_system.entities;
 import jakarta.persistence.*;
 import java.util.Date;
 
+
 @Entity
 @Table(name = "Review")
 public class Review {

@@ -17,11 +17,14 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 
 /**
- * Main controller class for the Campus Rating System API. This class defines endpoints for
- * creating users, locations, reviews, and tasks, each interacting with respective service
+ * Main controller class for the Campus Rating System API. This class defines
+ * endpoints for
+ * creating users, locations, reviews, and tasks, each interacting with
+ * respective service
  * classes to manage business logic and persistence.
  *
- * <p>Bugs: None known
+ * <p>
+ * Bugs: None known
  *
  * @author Rithik Rajaram
  */
@@ -49,33 +52,36 @@ public class CampusRatingSystemController {
     @Autowired
     private final AuthenticationService authenticationService;
 
-
     /**
-     * Constructs a CampusRatingSystemController with services for managing users, locations,
-     * reviews, tasks, locationtasks, and favorites. Each service is injected to support API
+     * Constructs a CampusRatingSystemController with services for managing users,
+     * locations,
+     * reviews, tasks, locationtasks, and favorites. Each service is injected to
+     * support API
      * endpoints that delegate operations to the corresponding service layer.
      *
-     * @param userService             the service for handling user operations
-     * @param buildingService         the service for handling building operations
-     * @param locationService         the service for handling location operations
-     * @param reviewService           the service for handling review operations
-     * @param taskService             the service for handling task operations
-     * @param locationTaskService     the service for handling tasks assigned to each location
-     * @param favoriteService         the service for handling accessing user's favorite locaitons
-     * @param imageService            the service for handling images
-     * @param jwtService              the service for handling jwt token
-     * @param authenticationService   the service for handling user authenticaiton
+     * @param userService           the service for handling user operations
+     * @param buildingService       the service for handling building operations
+     * @param locationService       the service for handling location operations
+     * @param reviewService         the service for handling review operations
+     * @param taskService           the service for handling task operations
+     * @param locationTaskService   the service for handling tasks assigned to each
+     *                              location
+     * @param favoriteService       the service for handling accessing user's
+     *                              favorite locaitons
+     * @param imageService          the service for handling images
+     * @param jwtService            the service for handling jwt token
+     * @param authenticationService the service for handling user authenticaiton
      */
     public CampusRatingSystemController(UserService userService,
-                                        LocationService locationService,
-                                        ReviewService reviewService,
-                                        TaskService taskService,
-                                        LocationTaskService locationTaskService,
-                                        FavoriteService favoriteService,
-                                        ImageService imageService,
-                                        JwtService jwtService,
-                                        AuthenticationService authenticationService,
-                                        BuildingService buildingService) {
+            LocationService locationService,
+            ReviewService reviewService,
+            TaskService taskService,
+            LocationTaskService locationTaskService,
+            FavoriteService favoriteService,
+            ImageService imageService,
+            JwtService jwtService,
+            AuthenticationService authenticationService,
+            BuildingService buildingService) {
 
         this.userService = userService;
         this.buildingService = buildingService;
@@ -92,8 +98,10 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new user to the system.
      *
-     * @param registerUserDto takes in the input of Email, Password and Name of the user
-     * @return a ResponseEntity containing the newly created User and a CREATED status
+     * @param registerUserDto takes in the input of Email, Password and Name of the
+     *                        user
+     * @return a ResponseEntity containing the newly created User and a CREATED
+     *         status
      */
     @PostMapping("/user/signup")
     public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
@@ -106,7 +114,8 @@ public class CampusRatingSystemController {
      * Endpoint to add a new user to the system.
      *
      * @param loginUserDto takes in the input of Email and Password of the user
-     * @return a ResponseEntity containing the newly created User and a CREATED status
+     * @return a ResponseEntity containing the newly created User and a CREATED
+     *         status
      */
     @PostMapping("/user/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
@@ -124,15 +133,15 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new building.
      *
-     * @param name the name of the building
+     * @param name      the name of the building
      * @param longitude the longitude of the building
-     * @param latitude the latitude of the building
+     * @param latitude  the latitude of the building
      * @return the added Building entity as a response
      */
     @PostMapping("/building/addBuilding")
     public ResponseEntity<Building> addBuilding(@RequestParam String name,
-                                                @RequestParam Float longitude,
-                                                @RequestParam Float latitude) {
+            @RequestParam Float longitude,
+            @RequestParam Float latitude) {
 
         Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude);
         return new ResponseEntity<>(newBuilding, HttpStatus.CREATED);
@@ -141,12 +150,13 @@ public class CampusRatingSystemController {
     /**
      * Endpoint to add a new location to the system.
      *
-     * @param name        the name of the location
-     * @param description a brief description of the location
-     * @param address     the physical address of the location
-     * @param category    the category or type of location (e.g., library, park)
+     * @param name         the name of the location
+     * @param description  a brief description of the location
+     * @param address      the physical address of the location
+     * @param category     the category or type of location (e.g., library, park)
      * @param buildingName the name of the building associated with the location
-     * @return a ResponseEntity containing the newly created Location and a CREATED status
+     * @return a ResponseEntity containing the newly created Location and a CREATED
+     *         status
      */
     @PostMapping("/location/addLocation")
     public ResponseEntity<Location> addNewLocation(
@@ -165,12 +175,11 @@ public class CampusRatingSystemController {
         return new ResponseEntity<>(newLocation, HttpStatus.CREATED);
     }
 
-
-
     /**
      * Endpoint to get all locations along with their tasks.
      *
-     * @return a dto containing all location data and all tasks associated with each location
+     * @return a dto containing all location data and all tasks associated with each
+     *         location
      */
     @GetMapping("/location/getLocations")
     public List<LocationWithTasksDTO> getLocations() {
@@ -184,7 +193,8 @@ public class CampusRatingSystemController {
      * @param locationName the name of the location being reviewed
      * @param rating       an integer rating for the location
      * @param comment      a textual comment describing the user's experience
-     * @return a ResponseEntity containing the newly created Review and a CREATED status
+     * @return a ResponseEntity containing the newly created Review and a CREATED
+     *         status
      */
     @PostMapping("/review/addReview")
     public ResponseEntity<Review> addReview(
@@ -198,11 +208,12 @@ public class CampusRatingSystemController {
     }
 
     /**
-    * Endpoint to delete a review for a specified location by the authenticated user.
-    *
-    * @param locationName the name of the location whose review is to be deleted
-    * @return a ResponseEntity indicating the status of the deletion request
-    */
+     * Endpoint to delete a review for a specified location by the authenticated
+     * user.
+     *
+     * @param locationName the name of the location whose review is to be deleted
+     * @return a ResponseEntity indicating the status of the deletion request
+     */
     @DeleteMapping("/review/deleteReview")
     public ResponseEntity<String> deleteReview(@RequestParam String locationName) {
         try {
@@ -211,7 +222,18 @@ public class CampusRatingSystemController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
-    }   
+    }
+
+    /**
+     * Endpoint to get all reviews.
+     *
+     * @return a ResponseEntity containing a list of all reviews and an OK status
+     */
+    @GetMapping("/review/getAllReviews")
+    public ResponseEntity<List<Review>> getAllReviews() {
+        List<Review> reviews = reviewService.getAllReviews();
+        return ResponseEntity.ok(reviews);
+    }
 
     /**
     * Endpoint to edit an existing review for a location by the authenticated user.
@@ -239,7 +261,8 @@ public class CampusRatingSystemController {
      *
      * @param name        the name of the task
      * @param description a description of the task's purpose
-     * @return a ResponseEntity containing the newly created Task and a CREATED status
+     * @return a ResponseEntity containing the newly created Task and a CREATED
+     *         status
      */
     @PostMapping("/task/addTask")
     public ResponseEntity<Task> addTask(
@@ -251,11 +274,13 @@ public class CampusRatingSystemController {
     }
 
     /**
-     * Endpoint to add a new LocationTask, associating a task with a location by their names.
+     * Endpoint to add a new LocationTask, associating a task with a location by
+     * their names.
      *
      * @param taskName     the name of the task to associate with the location
      * @param locationName the name of the location to associate with the task
-     * @return a ResponseEntity containing the newly created LocationTask and a CREATED status
+     * @return a ResponseEntity containing the newly created LocationTask and a
+     *         CREATED status
      */
     @PostMapping("/locationTask/addLocationTask")
     public ResponseEntity<LocationTask> addLocationTask(
@@ -267,11 +292,13 @@ public class CampusRatingSystemController {
     }
 
     /**
-     * Endpoint to add a new Favorite, associating a user and location by their respective
+     * Endpoint to add a new Favorite, associating a user and location by their
+     * respective
      * email and name.
      *
      * @param locationName the name of the location to be marked as favorite
-     * @return a ResponseEntity containing the newly created Favorite and a CREATED status
+     * @return a ResponseEntity containing the newly created Favorite and a CREATED
+     *         status
      */
     @PostMapping("/favorite/addFavorite")
     public ResponseEntity<Favorite> addFavorite(
@@ -297,7 +324,8 @@ public class CampusRatingSystemController {
      *
      * @param imageUrl     the URL of the image to store
      * @param locationName the name of the location to associate with the image
-     * @return a ResponseEntity containing the saved Image entity and a CREATED status
+     * @return a ResponseEntity containing the saved Image entity and a CREATED
+     *         status
      */
     @PostMapping("/image/addImage")
     public ResponseEntity<Image> addImageUrl(

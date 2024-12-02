@@ -8,7 +8,6 @@ public class LocationWithTasksDTO {
     private String name;
     private String description;
     private String category;
-    private String address;
     private Date createdAt;
     private Date updatedAt;
     private String buildingName;
@@ -45,14 +44,6 @@ public class LocationWithTasksDTO {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public Date getCreatedAt() {
