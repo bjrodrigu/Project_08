@@ -150,7 +150,19 @@ public class ReviewService {
         return reviewRepository.findByLocation(location);
     }
 
-    
+    /**
+     * Retrieves all reviews by a specific user.
+     * @param userName
+     * 
+     * @return a list of reviews by the specified user
+     */
+    public List<Review> getReviewsForUser(String userName) {
+        User user = userRepository.findByEmail(userName)
+              .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return reviewRepository.findByUser(user);
+    }
+
     /**
     * Updates an existing review for a specific location by the currently authenticated user.
     * This method retrieves the user based on the current authentication context, verifies the

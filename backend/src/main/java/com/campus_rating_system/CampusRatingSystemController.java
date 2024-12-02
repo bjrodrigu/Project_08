@@ -250,6 +250,11 @@ public class CampusRatingSystemController {
      * @param userName the name of the user to retrieve reviews for
      * @return a ResponseEntity containing a list of reviews for the specified user
      */
+    @GetMapping("/review/getReviewsForUser")
+    public ResponseEntity<List<Review>> getReviewsForUser(@RequestParam String userName) {
+        List<Review> reviews = reviewService.getReviewsForUser(userName); 
+        return ResponseEntity.ok(reviews);
+    } 
 
     /**
     * Endpoint to edit an existing review for a location by the authenticated user.
