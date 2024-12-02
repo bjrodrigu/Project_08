@@ -65,7 +65,6 @@ public class LocationService {
         Location location = new Location();
         location.setName(name);
         location.setDescription(description);
-        location.setAddress(address);
         location.setCategory(category);
         location.setCreatedAt(new Date());
         location.setUpdatedAt(new Date());
@@ -95,7 +94,6 @@ public class LocationService {
             dto.setName(location.getName());
             dto.setDescription(location.getDescription());
             dto.setCategory(location.getCategory());
-            dto.setAddress(location.getAddress());
             dto.setCreatedAt(location.getCreatedAt());
             dto.setUpdatedAt(location.getUpdatedAt());
             dto.setBuildingName(location.getBuilding().getName());
