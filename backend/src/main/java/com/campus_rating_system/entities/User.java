@@ -21,9 +21,6 @@ public class User implements UserDetails {
     @Column(name = "user_id")
     private Integer userId;
 
-    @Column(name = "google_id", unique = true)
-    private String googleId;
-
     @Column(name = "name")
     private String fullName;
 
@@ -55,14 +52,6 @@ public class User implements UserDetails {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
     }
 
     public String getName() {
