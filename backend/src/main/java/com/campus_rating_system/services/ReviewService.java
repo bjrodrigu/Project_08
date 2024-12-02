@@ -136,6 +136,7 @@ public class ReviewService {
      */
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
+    }
     
     /**
     * Updates an existing review for a specific location by the currently authenticated user.
