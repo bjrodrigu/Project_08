@@ -137,6 +137,19 @@ public class ReviewService {
     public List<Review> getAllReviews() {
         return reviewRepository.findAll();
     }
+
+    /**
+     * Retrieves all reviews for a specific location.
+     * 
+     * @param locationName
+     * @return a list of reviews for the specified location
+     */
+    public List<Review> getReviewsForLocation(String locationName) {
+        Location location = locationRepository.findByName(locationName)
+                .orElseThrow(() -> new RuntimeException("Location not found"));
+        return reviewRepository.findByLocation(location);
+    }
+
     
     /**
     * Updates an existing review for a specific location by the currently authenticated user.

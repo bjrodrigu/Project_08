@@ -233,6 +233,25 @@ public class CampusRatingSystemController {
     }
 
     /**
+     * Endpoint to get all reviews for a specific location.
+     * 
+     * @param locationName the name of the location to retrieve reviews for
+     * @return a ResponseEntity containing a list of reviews for the specified location
+     */
+    @GetMapping("/review/getReviewsForLocation")
+    public ResponseEntity<List<Review>> getReviewsForLocation(@RequestParam String locationName) {
+        List<Review> reviews = reviewService.getReviewsForLocation(locationName); 
+        return ResponseEntity.ok(reviews);
+    } 
+
+    /**
+     * Endpoint to get all reviews for a specific user.
+     * 
+     * @param userName the name of the user to retrieve reviews for
+     * @return a ResponseEntity containing a list of reviews for the specified user
+     */
+
+    /**
     * Endpoint to edit an existing review for a location by the authenticated user.
     *
     * @param locationName the name of the location whose review is to be edited

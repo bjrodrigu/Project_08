@@ -24,7 +24,7 @@ const BadgerAddReviewPage = () => {
 
     const locationHook = useLocation();
     const location = locationHook.state?.location || {};
-    const existingReview = locationHook.state?.review || null; 
+    const existingReview = locationHook.state?.review || null;
 
     const { user, setUser, login, setLogin } = useLoginState();
 
@@ -46,21 +46,29 @@ const BadgerAddReviewPage = () => {
         console.log('Submitting review:', review, rating, reviewTitle);
 
         setIsSubmitting(true);
+
+        // Constructs appropriate query parameters for the request (either add or edit review)
         const queryParams = new URLSearchParams({
             locationName: location.name,
-            rating: rating,
-            comment: review,
-            title: reviewTitle
+            ...(existingReview ? {
+                newRating: rating,
+                newComment: review,
+                newTitle: reviewTitle
+            } : {
+                rating: rating,
+                comment: review,
+                title: reviewTitle
+            })
         });
 
         const token = localStorage.getItem("token");
         console.log(token);
 
         // Determine whether it's an add or edit request
-        const method = existingReview ? 'PUT' : 'POST'; 
+        const method = existingReview ? 'PUT' : 'POST';
         const url = existingReview
-            ? `http://localhost:8080/review/editReview?${queryParams.toString()}`  
-            : `http://localhost:8080/review/addReview?${queryParams.toString()}`;  
+            ? `http://localhost:8080/review/editReview?${queryParams.toString()}`
+            : `http://localhost:8080/review/addReview?${queryParams.toString()}`;
 
         fetch(url, {
             method: method,
@@ -113,7 +121,7 @@ const BadgerAddReviewPage = () => {
                     throw new Error('Failed to delete the review');
                 }
                 alert('Review deleted successfully!');
-                routeChange();  
+                routeChange();
             })
             .catch((error) => {
                 console.error('Error deleting review:', error);
@@ -214,7 +222,7 @@ const BadgerAddReviewPage = () => {
                             variant="danger"
                             onClick={handleDeleteReview}
                             disabled={isDeleting}
-                            style={{ marginLeft: '1rem'}}
+                            style={{ marginLeft: '1rem' }}
                         >
                             {isDeleting ? (
                                 <Spinner animation="border" size="sm" />
