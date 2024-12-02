@@ -152,7 +152,6 @@ public class CampusRatingSystemController {
      *
      * @param name         the name of the location
      * @param description  a brief description of the location
-     * @param address      the physical address of the location
      * @param category     the category or type of location (e.g., library, park)
      * @param buildingName the name of the building associated with the location
      * @return a ResponseEntity containing the newly created Location and a CREATED
@@ -162,13 +161,11 @@ public class CampusRatingSystemController {
     public ResponseEntity<Location> addNewLocation(
             @RequestParam String name,
             @RequestParam String description,
-            @RequestParam String address,
             @RequestParam String category,
             @RequestParam String buildingName) {
         Location newLocation = locationService.addNewLocation(
                 name,
                 description,
-                address,
                 category,
                 buildingName);
 

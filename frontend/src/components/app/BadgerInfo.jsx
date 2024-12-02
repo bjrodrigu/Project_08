@@ -37,7 +37,7 @@ export default function BadgerInfo({ user, onSave }) {
         setFormData((prev) => ({ ...prev, [field]: user[field] })); // Reset to initial value
         toggleEditMode(field); // Exit edit mode
     };
-}
+
 
 
 return (
@@ -192,4 +192,5 @@ return (
         </Card.Body>
     </Card>
 );
+
 }
