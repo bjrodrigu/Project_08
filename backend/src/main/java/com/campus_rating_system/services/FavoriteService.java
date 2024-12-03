@@ -99,7 +99,7 @@ public class FavoriteService {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new RuntimeException("User not found"));
         // Find the favorite place by user(email) and favorite id
-        Favorite favorite = favoriteRepository.findByUserAndFavoriteID(email, favorite_id)
+        Favorite favorite = favoriteRepository.findByFavoriteIdAndUser(favorite_id, currentUser)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
         favoriteRepository.delete(favorite);
