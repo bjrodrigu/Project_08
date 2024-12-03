@@ -29,18 +29,7 @@ const userInfoStyle = {
 }
 
 
-let test_reviews = [
-    { id: 1, location: 'Library - Studyspot 1', userRating: 4.5, totalScore: 5, comment: 'Great place to study.' },
-    { id: 2, location: 'Library - Studyspot 2', userRating: 4.0, totalScore: 5, comment: 'A bit noisy sometimes.' },
-    { id: 3, location: 'Library - Studyspot 3', userRating: 3.5, totalScore: 5, comment: 'Small but cozy.' },
-    { id: 4, location: 'Library - Studyspot 4', userRating: 4.8, totalScore: 5, comment: 'Very quiet.' },
-    { id: 5, location: 'Library - Studyspot 5', userRating: 3.0, totalScore: 5, comment: 'Not enough outlets.' },
-    { id: 6, location: 'Library - Studyspot 6', userRating: 4.2, totalScore: 5, comment: 'Good ambiance.' },
-    { id: 7, location: 'Library - Studyspot 7', userRating: 4.7, totalScore: 5, comment: 'Spacious and quiet.' },
-    { id: 8, location: 'Library - Studyspot 8', userRating: 3.8, totalScore: 5, comment: 'A bit cramped.' },
-    { id: 9, location: 'Library - Studyspot 9', userRating: 4.1, totalScore: 5, comment: 'Good lighting.' },
-    { id: 10, location: 'Library - Studyspot 10', userRating: 4.6, totalScore: 5, comment: 'Ideal for studying.' },
-];
+
 
 let test_fav_locations = [
     { id: 1, location: 'Library - Studyspot 1' },
@@ -57,14 +46,17 @@ let test_fav_locations = [
 
 export default function UserComments() {
     //userinfo
-    const [user, setUser] = useState({
+    const [userTemp, setUserTemp] = useState({
         username: 'JohnDoe',
         email: 'user@example.com',
         password: 'test123',
     });
+    //extract username
+    const { user, setUser, login, setLogin } = useLoginState();
+
     // comments
     const [editIndex, setEditIndex] = useState(null); // current review in edition mode
-    const [reviews, setReviews] = useState(test_reviews); // all reviews
+    const [reviews, setReviews] = useState([]); // all reviews
     const [editedRating, setEditedRating] = useState('');
     const [editedComment, setEditedComment] = useState(''); // edited single review
     const passwordInput = useRef();
@@ -81,7 +73,36 @@ export default function UserComments() {
     const [currentFavCount, setCurrentFavCount] = useState(5); // The current number of displayed favorites
     const [loadingFavorites, setLoadingFavorites] = useState(false); // Loading state for favorites
     const [currentFavorites, setCurrentFavorites] = useState([]); // Favorite list for the current page
+    // get current user's review.
+    // Fetch user reviews when the component loads
+    useEffect(() => {
+        const fetchUserReviews = async () => {
+            setLoading(true); // Start loading
+            try {
+                console.log(user);
+                const response = await fetch(`http://localhost:8080/review/getReviewsForUser?userName=${user}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch reviews');
+                }
+                const data = await response.json(); // Parse JSON response
+                setReviews(data); // Update reviews state
+                console.log(data);
+                setCurrentReviews(data.slice(0, currentCount)); // Display the initial number of reviews
+            } catch (error) {
+                console.error('Error fetching user reviews:', error);
+                alert('Failed to load reviews. Please try again later.');
+            } finally {
+                setLoading(false); // Stop loading
+            }
+        };
 
+        fetchUserReviews(); // Call the function to fetch reviews
+    }, []);
 
     //inifite scrolling for reviews.
     useEffect(() => {
@@ -124,7 +145,7 @@ export default function UserComments() {
 
             const { scrollTop, scrollHeight, clientHeight } = favRef.current;
 
-           // Load more when scrolled to the bottom
+            // Load more when scrolled to the bottom
             if (scrollTop + clientHeight >= scrollHeight - 10 && !loadingFavorites && currentFavCount < favorites.length) {
                 loadMoreFavorites();
             }
@@ -162,7 +183,7 @@ export default function UserComments() {
     const handleSaveUserInfo = (updatedUser) => {
         console.log('Updated user info:', updatedUser);
 
-        setUser(updatedUser);
+        setUserTemp(updatedUser);
 
         // fetch('/api/update-user', {
         //     method: 'POST',
@@ -300,8 +321,13 @@ export default function UserComments() {
                                 >
                                     {currentReviews.map((review) => (
                                         <BadgerMessage
-                                            key={review.id}
-                                            {...review}
+                                            key={review.reviewId}
+                                            id={review.reviewId}
+                                            locationName={review.location?.name || "Unknown Location"}
+                                            locationDescription={review.location?.description || "No Description"}
+                                            title={review.title}
+                                            rating={review.rating}
+                                            comment={review.comment}
                                             handleSaveEdit={handleSaveEdit}
                                             handleRemove={handleRemove}
                                         />
