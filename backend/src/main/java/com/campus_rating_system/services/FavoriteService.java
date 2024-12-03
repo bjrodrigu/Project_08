@@ -90,7 +90,7 @@ public class FavoriteService {
      * @return the saved Favorite entity containing the user and location association
      * @throws RuntimeException if the user or location is not found in the system
      */
-    public Favorite deleteFavorite(int favorite_id) {
+    public void deleteFavorite(int favorite_id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
         String email = currentUser.getEmail();
@@ -103,8 +103,6 @@ public class FavoriteService {
                 .orElseThrow(() -> new RuntimeException("Review not found"));
 
         favoriteRepository.delete(favorite);
-
-        return favoriteRepository.save(favorite);
     }
 
     /**

@@ -342,7 +342,7 @@ public class CampusRatingSystemController {
             @RequestParam int favorite_id)
     {
         try {
-            Favorite newFavorite = favoriteService.deleteFavorite(favorite_id);
+            favoriteService.deleteFavorite(favorite_id);
             return ResponseEntity.ok("Review deleted successfully.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(404).body(e.getMessage());
