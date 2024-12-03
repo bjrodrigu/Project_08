@@ -75,32 +75,32 @@ export default function UserComments() {
     const [currentFavorites, setCurrentFavorites] = useState([]); // Favorite list for the current page
     // get current user's review.
     // Fetch user reviews when the component loads
-    useEffect(() => {
-        const fetchUserReviews = async () => {
-            setLoading(true); // Start loading
-            try {
-                console.log(user);
-                const response = await fetch(`http://localhost:8080/review/getReviewsForUser?userName=${user}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch reviews');
-                }
-                const data = await response.json(); // Parse JSON response
-                setReviews(data); // Update reviews state
-                console.log(data);
-                setCurrentReviews(data.slice(0, currentCount)); // Display the initial number of reviews
-            } catch (error) {
-                console.error('Error fetching user reviews:', error);
-                alert('Failed to load reviews. Please try again later.');
-            } finally {
-                setLoading(false); // Stop loading
+    const fetchUserReviews = async () => {
+        setLoading(true); // Start loading
+        try {
+            console.log(user);
+            const response = await fetch(`http://localhost:8080/review/getReviewsForUser?userName=${user}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch reviews');
             }
-        };
+            const data = await response.json(); // Parse JSON response
+            setReviews(data); // Update reviews state
+            console.log(data);
+            setCurrentReviews(data.slice(0, currentCount)); // Display the initial number of reviews
+        } catch (error) {
+            console.error('Error fetching user reviews:', error);
+            alert('Failed to load reviews. Please try again later.');
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
 
+    useEffect(() => {
         fetchUserReviews(); // Call the function to fetch reviews
     }, []);
 
@@ -204,45 +204,45 @@ export default function UserComments() {
 
 
     // store saved edition
-    const handleSaveEdit = (key, rating, comment) => {
-        // fetch(`/api/reviews/${review.id}`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ ...review, comment: editedComment }) // update review
-        // })
-        //     .then(response => response.json())
-        //     .then(updatedReview => {
-        //         const updatedReviews = reviewList.map((r, index) =>
-        //             index === editIndex ? { ...r, comment: editedComment } : r
-        //         );
-        //         setReviewList(updatedReviews); // display updated review
-        //         setEditIndex(null); // quit the edition mode
-        //         alert('Review updated successfully');
-        //     })
-        //     .catch(error => {
-        //         console.error('Error updating review:', error);
-        //         alert(`Error: ${error.message}`);
-        //     });
+    const handleSaveEdit = (id, rating, comment, title) => {
+        const token = localStorage.getItem("token");
 
-        //template
+        const queryParams = new URLSearchParams({
+            locationName: reviews.find((r) => r.reviewId === id)?.location?.name || "",
+            newRating: rating,
+            newComment: comment,
+            newTitle: title,
+        });
+        console.log(queryParams.toString());
 
-
-        const updatedReviews = reviews.map(review =>
-            review.id === key ? { ...review, comment: comment, userRating: rating } : review
-        );
-        setReviews(updatedReviews); // update review.
-        setEditIndex(null); // exit edition mode.
-        setCurrentReviews(updatedReviews.slice(0, currentCount)); // Synchronized Updates currentReviews
+        fetch(`http://localhost:8080/review/editReview?${queryParams.toString()}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to update review");
+                }
+                alert("Review updated successfully!");
+                // Re-fetch reviews after successful update
+                fetchUserReviews();
+            })
+            .catch((error) => {
+                console.error("Error updating review:", error);
+                alert("Failed to update review on the server.");
+            });
     };
+
 
     const handleRemove = (key) => {
         //template
         const isConfirmed = window.confirm("Are you sure you want to delete this review?");
         if (!isConfirmed) return;
 
-        const updatedReviews = reviews.filter(review => review.id !== key);
+        const updatedReviews = reviews.filter(review => review.reviewId !== key);
         setReviews(updatedReviews);
     }
 
