@@ -5,8 +5,11 @@ import com.campus_rating_system.entities.Review;
 import com.campus_rating_system.entities.User;
 import com.campus_rating_system.entities.Location;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
     Optional<Review> findByUserAndLocation(User user, Location location);
+    List<Review> findByLocation(Location location);
+    List<Review> findByUser(User user);
 }

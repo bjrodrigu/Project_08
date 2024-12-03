@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "Building")
 public class Building {
@@ -31,6 +34,7 @@ public class Building {
     private Date updatedAt;
 
     @OneToMany(mappedBy = "building", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Location> locations;
 
     // Getters and setters
