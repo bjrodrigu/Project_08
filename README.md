@@ -48,9 +48,7 @@ Specific customers informing this document include:
 
 #### Technology Stack
 
-Mapping will be handled via OpenStreetMaps using Leaflet.
-
-A <-->|"REST API"| B
+Mapping will be handled via Google Maps.
 
 ```mermaid
 flowchart RL
@@ -67,9 +65,8 @@ subgraph Database
 end
 
 A <-->|REST API| B
-B <--> C
+B <--> | JDBC | C
 ```
-
 #### Database
 
 ```mermaid
@@ -84,6 +81,7 @@ erDiagram
       VARCHAR email
       DATETIME created_at
       DATETIME updated_at
+      VARCHAR password
     }
 
     Location {
@@ -96,6 +94,17 @@ erDiagram
       VARCHAR address
       DATETIME created_at
       DATETIME updated_at
+      VARCHAR category
+      INT building_id FK
+    }
+
+    Building {
+      INT building_id PK
+      VARCHAR name
+      FLOAT longitude
+      FLOAT latitude
+      VARCHAR created_at
+      VARCHAR updated_at
     }
 
     Review {
@@ -106,6 +115,7 @@ erDiagram
       TEXT comment
       DATETIME created_at
       DATETIME updated_at
+      VARCHAR title
     }
 
     Task {
@@ -141,8 +151,8 @@ erDiagram
     User ||--o{ Favorite : favorites
     Location ||--o{ Favorite : is_favorited
     Location ||--o{ Image : has
+    Location ||--o{ Building: contains
 ```
-
 
 #### Class Diagram
 
@@ -155,13 +165,23 @@ classDiagram
         - private int user_id;
         - private CHAR google_id;
         - private String name;
+        - private String password;
         - private String email;
         - private String password;
         - private String created_at;
-        - private String updated_at
+        - private String updated_at;
+        - private List<Review> reviews;
+        - private List<Favorites> favorites;
         
         + get all variables()
         + set all variables()
+
+        + public String getUsername()
+        + public Collection<? extends GrantedAuthority> getAuthorities()
+        + public boolean isAccountNonExpired()
+        + public boolean isAccountNonLocked()
+        + public boolean isCredentialsNonExpired()
+        + public boolean isEnabled()
     }
     class Location {
         - private int location_id
@@ -172,6 +192,7 @@ classDiagram
         - private CHAR address
         - private String created_at
         - private String updated_at
+        - private int building_id
         
         + get all variables()
         + set all variables()
@@ -210,30 +231,91 @@ classDiagram
         + get all variables()
         + set all variables()
     }
-    class MainController {
-        @PostMapping("/registerUser")
-        + Boolean addNewUser(@RequestBody User newUser)
-        @GetMapping("/login")
-        + Boolean loginAttempt(String userEmail, String userPassword)
-        @GetMapping("/getUser")
-        + List<String> userDetails()
-        @GetMapping("/locationInformation")
-        + Location getLocationInformation(String placeName)
-        @PostMapping("/addReview") return review id in someway 
-        + Boolean addReview(String placeName, int rating, String review)
-        @PostMapping("/removeReview")
-        + Boolean removeReview(String reviewID)
-        @PostMapping("/addFavorite")
-        + Boolean addFavoritePlace(String placeName)
-         @GetMapping("/favoriteLocations")
-        + List<Location> getFavoriteLocations()
+        class Building{
+        - private int building_id;
+        - private String name;
+        - private FLOAT longitude;
+        - private FLOAT latitude;
+        - private String created_at;
+        - private String updated_at;
+        
+        + get all variables()
+        + set all variables()
     }
+        class Review{
+        - private Integer reviewId;
+        - private User user;
+        - private Location location;
+        - private String comment;
+        - private String created_at;
+        - private String updated_at;
+        - private String title;
+
+        + get all variables()
+        + set all variables()
+    }
+    class MainController {
+        @PostMapping("/user/signup")
+        + public ResponseEntity<User> register(@RequestBody registerUserDto)
+        @PostMapping("/user/login")
+        + public ResponseEntity<LoginResponse> authenticate(@RequestBody loginUserDto)
+        @PostMapping("/building/addBuilding")
+        + public ResponseEntity<Building> addBuilding(String name, Float longitude, Float latitude)
+        @PostMapping("/location/addLocation")
+        + public ResponseEntity<Location> addNewLocation(String name, String description, String address, String category, String buildingName)
+        @GetMapping("/location/getLocations")
+        + public List<LocationWithTasksDTO> getLocations()
+        @PostMapping("/review/addReview")
+        + public ResponseEntity<Review> addReview(String locationName, int rating, String comment, String title)
+        @DeleteMapping("/review/deleteReview")
+        + public ResponseEntity<String> deleteReview(String locationName)
+        @PostMapping("/task/addTask")
+        + public ResponseEntity<Task> addTask(String name, String description)
+        @PostMapping("/locationTask/addLocationTask")
+        + public ResponseEntity<LocationTask> addLocationTask(String taskName, String locationName)
+        @PostMapping("/favorite/addFavorite")
+        + public ResponseEntity<Favorite> addFavorite(String locationName)
+        @GetMapping("/favorite/getFavorites")
+        + public ResponseEntity<List<Location>> getFavoriteLocations()
+        @PostMapping("/image/addImage")
+        + public ResponseEntity<Image> addImageUrl(String imageUrl, String locationName)
+    }
+
+    class ServiceClasses {
+        UserService
+        LocationService
+        FavoriteService
+        ImageService
+        TaskService
+        LocationTaskService
+        BuildingService
+        ReviewService
+        JwtService
+    }
+    class dtosClasses {
+        LocationWithTasksDTO
+        LoginResponse
+        LoginUserDto
+        RegisterUserDto
+    }
+    class configClasses{
+        ApplicationConfiguration
+        AuthenticationService
+        JwtAuthenticationFilter
+        SecurityConfig
+    }
+    
     MainController <|-- User
     MainController <|-- Location
     MainController <|-- Favorites
     MainController <|-- Image
     MainController <|-- Task
     MainController <|-- Location_Task
+    MainController <|-- Building
+    MainController <|-- Review
+    ServiceClasses <|-- MainController
+    dtosClasses <|-- MainController
+    configClasses <|-- dtosClasses
 ```
 
 #### Flowchart
@@ -299,6 +381,28 @@ sequenceDiagram
     Database -->> Backend: Confirm update
     Backend -->> Frontend: Confirm successful update
     Frontend -->> User: Display new comment and rating
+
+    User ->> Frontend: Edit personal information
+    Frontend ->> Backend: Send updated personal information
+    Backend ->> Database: Update user information
+    Database -->> Backend: Confirm information update
+    Backend -->> Frontend: Confirm successful update
+    Frontend -->> User: Display updated personal information
+
+    User ->> Frontend: Add favorite location from main page
+    Frontend ->> Backend: Send favorite location request (location ID)
+    Backend ->> Database: Add location to user's favorite list
+    Database -->> Backend: Confirm favorite location added
+    Backend -->> Frontend: Confirm successful addition
+    Frontend -->> User: Display favorite location added
+
+    User ->> Frontend: Remove favorite location from profile
+    Frontend ->> Backend: Send remove favorite location request (location ID)
+    Backend ->> Database: Remove location from user's favorite list
+    Database -->> Backend: Confirm favorite location removed
+    Backend -->> Frontend: Confirm successful removal
+    Frontend -->> User: Display favorite location removed
+
 
 ```
 

@@ -18,7 +18,6 @@ export default function BadgerSearchResult(location) {
       // hook to re-render on hover
       let [color, setColor] = useState('Light');
 
-
       return <Card border={color.toLowerCase()} onMouseEnter={() => { setColor('Info'); }} onMouseLeave={() => { setColor('Light'); }} onClick={routeChange} style={{ height: 'auto', borderRadius: '1.5rem', cursor: 'pointer', marginTop: '2rem' }}>
             <Card.Header style={{ paddingLeft: '1rem', paddingTop: '1rem' }}>
                   <Card.Title >{location.name}</Card.Title>
