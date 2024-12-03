@@ -237,14 +237,46 @@ export default function UserComments() {
     };
 
 
-    const handleRemove = (key) => {
-        //template
+    const handleRemove = (id) => {
+        
         const isConfirmed = window.confirm("Are you sure you want to delete this review?");
         if (!isConfirmed) return;
 
-        const updatedReviews = reviews.filter(review => review.reviewId !== key);
-        setReviews(updatedReviews);
-    }
+      
+        const reviewToDelete = reviews.find((review) => review.reviewId === id);
+        if (!reviewToDelete) {
+            alert("Review not found.");
+            return;
+        }
+
+        const queryParams = new URLSearchParams({
+            locationName: reviewToDelete.location?.name || "",
+        });
+
+        const token = localStorage.getItem("token");
+
+        
+        fetch(`http://localhost:8080/review/deleteReview?${queryParams.toString()}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to delete the review");
+                }
+                alert("Review deleted successfully!");
+                fetchUserReviews();
+               
+            })
+            .catch((error) => {
+                console.error("Error deleting review:", error);
+                alert("There was an error deleting your review.");
+            });
+    };
+
 
     // remove fav locations
     const handleRemoveFavorite = (location) => {
