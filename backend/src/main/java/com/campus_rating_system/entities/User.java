@@ -4,21 +4,22 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "User")
+@JsonIgnoreProperties({"reviews"}) 
+// Added to prevent infinite recursive calls between user and reviews
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Integer userId;
-
-    @Column(name = "google_id", unique = true)
-    private String googleId;
 
     @Column(name = "name")
     private String fullName;
@@ -51,14 +52,6 @@ public class User implements UserDetails {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
-    }
-
-    public String getGoogleId() {
-        return googleId;
-    }
-
-    public void setGoogleId(String googleId) {
-        this.googleId = googleId;
     }
 
     public String getName() {

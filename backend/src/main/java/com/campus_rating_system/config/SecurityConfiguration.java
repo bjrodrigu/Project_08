@@ -64,7 +64,9 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/user/login", "/user/signup", "/public/**")
+                .requestMatchers("/user/login", "/user/signup", "/public/**",
+                      "/location/getLocations", "/review/getAllReviews", 
+                      "/review/getReviewsForLocation", "/review/getReviewsForUser")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -90,7 +92,7 @@ public class SecurityConfiguration {
 
         // allowed sites to make requests
         configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("GET", "POST"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
         // credentials: Indicates whether user credentials should be included.
         // "include": Specifies that credentials (such as Cookies) should be included

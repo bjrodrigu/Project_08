@@ -52,20 +52,17 @@ public class LocationService {
      *
      * @param name the name of the location (e.g., "Central Library")
      * @param description a description of the location (e.g., "A large library with study rooms")
-     * @param address the physical address of the location
      * @param category the category or type of location (e.g., "Library")
      * @param buildingName the name of the building associated with the location
      * @return the saved Location entity containing the newly added location information
      */
     public Location addNewLocation(String name,
                                    String description,
-                                   String address,
                                    String category,
                                    String buildingName) {
         Location location = new Location();
         location.setName(name);
         location.setDescription(description);
-        location.setAddress(address);
         location.setCategory(category);
         location.setCreatedAt(new Date());
         location.setUpdatedAt(new Date());
@@ -95,7 +92,6 @@ public class LocationService {
             dto.setName(location.getName());
             dto.setDescription(location.getDescription());
             dto.setCategory(location.getCategory());
-            dto.setAddress(location.getAddress());
             dto.setCreatedAt(location.getCreatedAt());
             dto.setUpdatedAt(location.getUpdatedAt());
             dto.setBuildingName(location.getBuilding().getName());
