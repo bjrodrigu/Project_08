@@ -29,18 +29,7 @@ const userInfoStyle = {
 }
 
 
-let test_reviews = [
-    { id: 1, location: 'Library - Studyspot 1', userRating: 4.5, totalScore: 5, comment: 'Great place to study.' },
-    { id: 2, location: 'Library - Studyspot 2', userRating: 4.0, totalScore: 5, comment: 'A bit noisy sometimes.' },
-    { id: 3, location: 'Library - Studyspot 3', userRating: 3.5, totalScore: 5, comment: 'Small but cozy.' },
-    { id: 4, location: 'Library - Studyspot 4', userRating: 4.8, totalScore: 5, comment: 'Very quiet.' },
-    { id: 5, location: 'Library - Studyspot 5', userRating: 3.0, totalScore: 5, comment: 'Not enough outlets.' },
-    { id: 6, location: 'Library - Studyspot 6', userRating: 4.2, totalScore: 5, comment: 'Good ambiance.' },
-    { id: 7, location: 'Library - Studyspot 7', userRating: 4.7, totalScore: 5, comment: 'Spacious and quiet.' },
-    { id: 8, location: 'Library - Studyspot 8', userRating: 3.8, totalScore: 5, comment: 'A bit cramped.' },
-    { id: 9, location: 'Library - Studyspot 9', userRating: 4.1, totalScore: 5, comment: 'Good lighting.' },
-    { id: 10, location: 'Library - Studyspot 10', userRating: 4.6, totalScore: 5, comment: 'Ideal for studying.' },
-];
+
 
 let test_fav_locations = [
     { id: 1, location: 'Library - Studyspot 1' },
@@ -57,14 +46,17 @@ let test_fav_locations = [
 
 export default function UserComments() {
     //userinfo
-    const [user, setUser] = useState({
+    const [userTemp, setUserTemp] = useState({
         username: 'JohnDoe',
         email: 'user@example.com',
         password: 'test123',
     });
+    //extract username
+    const { user, setUser, login, setLogin } = useLoginState();
+
     // comments
     const [editIndex, setEditIndex] = useState(null); // current review in edition mode
-    const [reviews, setReviews] = useState(test_reviews); // all reviews
+    const [reviews, setReviews] = useState([]); // all reviews
     const [editedRating, setEditedRating] = useState('');
     const [editedComment, setEditedComment] = useState(''); // edited single review
     const passwordInput = useRef();
@@ -81,7 +73,36 @@ export default function UserComments() {
     const [currentFavCount, setCurrentFavCount] = useState(5); // The current number of displayed favorites
     const [loadingFavorites, setLoadingFavorites] = useState(false); // Loading state for favorites
     const [currentFavorites, setCurrentFavorites] = useState([]); // Favorite list for the current page
+    // get current user's review.
+    // Fetch user reviews when the component loads
+    const fetchUserReviews = async () => {
+        setLoading(true); // Start loading
+        try {
+            console.log(user);
+            const response = await fetch(`http://localhost:8080/review/getReviewsForUser?userName=${user}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch reviews');
+            }
+            const data = await response.json(); // Parse JSON response
+            setReviews(data); // Update reviews state
+            console.log(data);
+            setCurrentReviews(data.slice(0, currentCount)); // Display the initial number of reviews
+        } catch (error) {
+            console.error('Error fetching user reviews:', error);
+            alert('Failed to load reviews. Please try again later.');
+        } finally {
+            setLoading(false); // Stop loading
+        }
+    };
 
+    useEffect(() => {
+        fetchUserReviews(); // Call the function to fetch reviews
+    }, []);
 
     //inifite scrolling for reviews.
     useEffect(() => {
@@ -124,7 +145,7 @@ export default function UserComments() {
 
             const { scrollTop, scrollHeight, clientHeight } = favRef.current;
 
-           // Load more when scrolled to the bottom
+            // Load more when scrolled to the bottom
             if (scrollTop + clientHeight >= scrollHeight - 10 && !loadingFavorites && currentFavCount < favorites.length) {
                 loadMoreFavorites();
             }
@@ -162,7 +183,7 @@ export default function UserComments() {
     const handleSaveUserInfo = (updatedUser) => {
         console.log('Updated user info:', updatedUser);
 
-        setUser(updatedUser);
+        setUserTemp(updatedUser);
 
         // fetch('/api/update-user', {
         //     method: 'POST',
@@ -183,47 +204,79 @@ export default function UserComments() {
 
 
     // store saved edition
-    const handleSaveEdit = (key, rating, comment) => {
-        // fetch(`/api/reviews/${review.id}`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({ ...review, comment: editedComment }) // update review
-        // })
-        //     .then(response => response.json())
-        //     .then(updatedReview => {
-        //         const updatedReviews = reviewList.map((r, index) =>
-        //             index === editIndex ? { ...r, comment: editedComment } : r
-        //         );
-        //         setReviewList(updatedReviews); // display updated review
-        //         setEditIndex(null); // quit the edition mode
-        //         alert('Review updated successfully');
-        //     })
-        //     .catch(error => {
-        //         console.error('Error updating review:', error);
-        //         alert(`Error: ${error.message}`);
-        //     });
+    const handleSaveEdit = (id, rating, comment, title) => {
+        const token = localStorage.getItem("token");
 
-        //template
+        const queryParams = new URLSearchParams({
+            locationName: reviews.find((r) => r.reviewId === id)?.location?.name || "",
+            newRating: rating,
+            newComment: comment,
+            newTitle: title,
+        });
+        console.log(queryParams.toString());
 
-
-        const updatedReviews = reviews.map(review =>
-            review.id === key ? { ...review, comment: comment, userRating: rating } : review
-        );
-        setReviews(updatedReviews); // update review.
-        setEditIndex(null); // exit edition mode.
-        setCurrentReviews(updatedReviews.slice(0, currentCount)); // Synchronized Updates currentReviews
+        fetch(`http://localhost:8080/review/editReview?${queryParams.toString()}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to update review");
+                }
+                alert("Review updated successfully!");
+                // Re-fetch reviews after successful update
+                fetchUserReviews();
+            })
+            .catch((error) => {
+                console.error("Error updating review:", error);
+                alert("Failed to update review on the server.");
+            });
     };
 
-    const handleRemove = (key) => {
-        //template
+
+    const handleRemove = (id) => {
+        
         const isConfirmed = window.confirm("Are you sure you want to delete this review?");
         if (!isConfirmed) return;
 
-        const updatedReviews = reviews.filter(review => review.id !== key);
-        setReviews(updatedReviews);
-    }
+      
+        const reviewToDelete = reviews.find((review) => review.reviewId === id);
+        if (!reviewToDelete) {
+            alert("Review not found.");
+            return;
+        }
+
+        const queryParams = new URLSearchParams({
+            locationName: reviewToDelete.location?.name || "",
+        });
+
+        const token = localStorage.getItem("token");
+
+        
+        fetch(`http://localhost:8080/review/deleteReview?${queryParams.toString()}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to delete the review");
+                }
+                alert("Review deleted successfully!");
+                fetchUserReviews();
+               
+            })
+            .catch((error) => {
+                console.error("Error deleting review:", error);
+                alert("There was an error deleting your review.");
+            });
+    };
+
 
     // remove fav locations
     const handleRemoveFavorite = (location) => {
@@ -300,8 +353,13 @@ export default function UserComments() {
                                 >
                                     {currentReviews.map((review) => (
                                         <BadgerMessage
-                                            key={review.id}
-                                            {...review}
+                                            key={review.reviewId}
+                                            id={review.reviewId}
+                                            locationName={review.location?.name || "Unknown Location"}
+                                            locationDescription={review.location?.description || "No Description"}
+                                            title={review.title}
+                                            rating={review.rating}
+                                            comment={review.comment}
                                             handleSaveEdit={handleSaveEdit}
                                             handleRemove={handleRemove}
                                         />
