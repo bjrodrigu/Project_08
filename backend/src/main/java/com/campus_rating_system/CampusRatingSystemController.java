@@ -162,8 +162,7 @@ public class CampusRatingSystemController {
             @RequestParam String name,
             @RequestParam String description,
             @RequestParam String category,
-            @RequestParam String buildingName)
-    {
+            @RequestParam String buildingName) {
         Location newLocation = locationService.addNewLocation(
                 name,
                 description,
