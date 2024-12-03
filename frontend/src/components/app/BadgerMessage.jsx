@@ -2,47 +2,60 @@ import React, { useState } from "react";
 import { Card, Button, Modal, Form } from "react-bootstrap";
 
 export default function BadgerMessage(props) {
-    const [showModal, setShowModal] = useState(false); 
-    const [editedRating, setEditedRating] = useState(props.userRating); 
-    const [editedComment, setEditedComment] = useState(props.comment); 
+    const [showModal, setShowModal] = useState(false);
+    const [editedRating, setEditedRating] = useState(props.userRating);
+    const [editedComment, setEditedComment] = useState(props.comment);
 
-    
+
     const handleShowModal = () => setShowModal(true);
     const handleCloseModal = () => setShowModal(false);
 
     const handleSubmit = () => {
-        
+
         props.handleSaveEdit(props.id, editedRating, editedComment);
-        handleCloseModal(); 
+        handleCloseModal();
     };
 
     const handleRemove = () => {
-       
+
         props.handleRemove(props.id);
-        handleCloseModal(); 
+        handleCloseModal();
     };
 
     return (
         <>
-           
+
             <Card
                 style={{ margin: "1rem 0", padding: '1rem', borderRadius: '1rem', cursor: "pointer" }}
-                onClick={handleShowModal} 
+                onClick={handleShowModal}
             >
                 <Card.Body>
-                    <Card.Title>{props.location}</Card.Title>
-                    <Card.Text>Rating: {props.userRating} / 5</Card.Text>
-                    <Card.Text>{props.comment}</Card.Text>
+                    {/* Display Location Name as Title */}
+                    <Card.Title>{props.locationName}</Card.Title>
+                    {/* Display Location Description as Subtext */}
+                    <Card.Text style={{ fontSize: "0.9rem", color: "gray" }}>
+                        {props.locationDescription}
+                    </Card.Text>
+                    {/* Display Editable Fields */}
+                    <Card.Text>
+                        <strong>Title:</strong> {props.title}
+                    </Card.Text>
+                    <Card.Text>
+                        <strong>Rating:</strong> {props.rating} / 5
+                    </Card.Text>
+                    <Card.Text>
+                        <strong>Comment:</strong> {props.comment}
+                    </Card.Text>
                 </Card.Body>
             </Card>
 
-            
+
             <Modal show={showModal} onHide={handleCloseModal}>
                 <Modal.Header closeButton>
                     <Modal.Title>Edit Details for {props.location}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                   
+
                     <Form.Group>
                         <Form.Label>Rating</Form.Label>
                         <Form.Control
