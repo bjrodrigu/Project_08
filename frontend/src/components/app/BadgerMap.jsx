@@ -23,7 +23,7 @@ export default function BadgerMap() {
     const [google, setGoogle] = useState(null);
     const [destinations, setDestinations] = useState([]);
     const [distances, setDistances] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     const loader = new Loader({
         apiKey: apiKey,
