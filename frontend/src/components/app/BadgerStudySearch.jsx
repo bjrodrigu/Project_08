@@ -4,6 +4,7 @@ import { Form, Card, Col, Row, ListGroup, ListGroupItem, Spinner } from 'react-b
 import BadgerSearchResult from './BadgerSearchResult';
 import { useLocationState } from '../contexts/MapContext';
 import { Filter, ArrowDown, ArrowUp } from 'react-bootstrap-icons';
+import { useLoginState } from '../contexts/LoginContext';
 
 
 // dummy values for testing
@@ -50,6 +51,41 @@ export default function BadgerStudySearch() {
       const [sort, setSort] = useState(0);
       const [chosenTags, setChosenTags] = useState([]);
       const [loading, setLoading] = useState(false);
+      //jy
+      const [favLocationList, setFavLocationList] = useState([]);
+      const { user, setUser, login, setLogin } = useLoginState();
+
+      const fetchFavLocations = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                  const response = await fetch('http://localhost:8080/favorite/getFavorites', {
+                        method: 'GET',
+                        headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${token}`,
+                        },
+                  });
+
+                  if (response.ok) {
+                        const data = await response.json();
+                        console.log("fav LOcation");
+                        console.log(data);
+                        setFavLocationList(data.map(loc => loc.name));
+                  } else {
+                        console.error('Failed to fetch favorite locations');
+                  }
+            } catch (error) {
+                  console.error('Error fetching favorite locations:', error);
+            }
+      };
+
+      //load
+      useEffect(() => {
+            if (login) {
+                  fetchFavLocations();
+            }
+      }, [login]);
+
 
       // tester
       // useEffect(() => {console.log(chosenTags)}, [chosenTags]);

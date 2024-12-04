@@ -206,7 +206,7 @@ export default function UserComments() {
     // store saved edition
     const handleSaveEdit = (id, rating, comment, title) => {
         const token = localStorage.getItem("token");
-
+        console.log(token);
         const queryParams = new URLSearchParams({
             locationName: reviews.find((r) => r.reviewId === id)?.location?.name || "",
             newRating: rating,
