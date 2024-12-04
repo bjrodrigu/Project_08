@@ -3,6 +3,8 @@ package com.campus_rating_system.entities;
 import jakarta.persistence.*;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 
 @Entity
 @Table(name = "Review")
@@ -18,6 +20,7 @@ public class Review {
     private User user;
 
     @ManyToOne
+    @JsonIgnoreProperties("favorites")
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 

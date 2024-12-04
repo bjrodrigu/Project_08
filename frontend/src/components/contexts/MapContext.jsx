@@ -2,20 +2,20 @@ import React, { useContext, createContext, useState, useEffect, useCallback } fr
 import { APIProvider } from "@vis.gl/react-google-maps";
 
 
-
 const MapContext = createContext();
 const MapContextProvider = ({ children }) => {
       // TODO: remove dummy location data
-      const testLocations = [
-            { name: 'Bascom Hall Lounge', distance: 0, description: 'Quiet spot with lots of chairs and tables. Outlets are everywhere. Rarely occupied', rating: 4.3, reviews: 5, building: 'Building A', tags: ['Outlets', 'Tables', 'Groups', 'Cabins'] },
-            { name: 'lorem', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.6, reviews: 12, building: 'Building B', tags: ['Quiet', 'Sofas'] },
-            { name: 'ipsum', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 2.2, reviews: 23, building: 'Building C', tags: ['Groups', 'Loud', 'Food'] },
-            { name: 'dolor', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 1.1, reviews: 24, building: 'Building D', tags: ['Tables', 'Cabins', 'Quiet'] },
-            { name: 'sit', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 4.8, reviews: 1, building: 'Building E', tags: ['Wiscard', 'Reservations', 'Loud'] },
-            { name: 'amet', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
-            { name: 'asdf', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
-      ]
+      // const testLocations = [
+      //       { name: 'Bascom Hall Lounge', distance: 0, description: 'Quiet spot with lots of chairs and tables. Outlets are everywhere. Rarely occupied', rating: 4.3, reviews: 5, building: 'Building A', tags: ['Outlets', 'Tables', 'Groups', 'Cabins'] },
+      //       { name: 'lorem', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.6, reviews: 12, building: 'Building B', tags: ['Quiet', 'Sofas'] },
+      //       { name: 'ipsum', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 2.2, reviews: 23, building: 'Building C', tags: ['Groups', 'Loud', 'Food'] },
+      //       { name: 'dolor', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 1.1, reviews: 24, building: 'Building D', tags: ['Tables', 'Cabins', 'Quiet'] },
+      //       { name: 'sit', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 4.8, reviews: 1, building: 'Building E', tags: ['Wiscard', 'Reservations', 'Loud'] },
+      //       { name: 'amet', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
+      //       { name: 'asdf', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
+      // ]
       const [locationList, setLocationList] = useState([]);
+      let callCount = 0;
 
       const testBuildings = [
             { name: 'Building A', longitude: -89.4013, latitude: 43.0767 },
@@ -31,6 +31,13 @@ const MapContextProvider = ({ children }) => {
             fetchLocations();
       }, []);
 
+      useEffect(() => {
+            if (callCount != 1) {
+                  fetchReviews();
+                  callCount = 1;
+            }
+      }, [locationList])
+      
       const fetchLocations = async () => {
             try {
                   const response = await fetch('http://localhost:8080/location/getLocations');
@@ -43,12 +50,58 @@ const MapContextProvider = ({ children }) => {
                               rating: loc.rating || 0, 
                               reviews: loc.reviews || 0, 
                               building: loc.buildingName,
-                              tags: loc.tags || [] 
+                              tags: loc.tags || []
                           }));
               
                           setLocationList(formattedLocations);
                   } else {
                         throw new Error('Failed to fetch locations');
+                  }
+            } catch (error) {
+                  console.error(error);
+            }
+      };
+
+
+      const fetchReviews = async() => {
+            try {
+                  const response = await fetch('http://localhost:8080/review/getAllReviews');
+                  if (response.ok) {
+                        const reviewData = await response.json()
+                        const tempLocList = locationList;
+                        // iterate through all locations
+                        for(let i = 0; i < tempLocList.length; i++) {
+                              let avg = 0;
+                              let count = 0;
+                              // iterate through all reviews
+                              for(let j = 0; j < reviewData.length; j++) {
+                                    // check if review is relevant
+                                    if(reviewData[j].location.name == tempLocList[i].name) {
+                                          avg += reviewData[j].rating;
+                                          count += 1;
+                                    }
+                              }
+                              // calculate total average
+                              avg = avg / count;
+                              // set avg
+                              tempLocList[i].rating = avg;
+                              // set rating
+                              tempLocList[i].reviews = count;
+                              console.log('tll', tempLocList);
+                              setLocationList(tempLocList);
+                        }
+                        // const locationsData = await response.json();
+                        // const formattedLocations = locationsData.map((loc) => ({
+                        //       name: loc.name,
+                        //       distance: loc.distance || 0,
+                        //       description: loc.description,
+                        //       rating: loc.rating || 0, 
+                        //       reviews: loc.reviews || 0, 
+                        //       building: loc.buildingName,
+                        //       tags: loc.tags || [] 
+                        //   }));
+                  } else {
+                        throw new Error('Failed to fetch reviews');
                   }
             } catch (error) {
                   console.error(error);

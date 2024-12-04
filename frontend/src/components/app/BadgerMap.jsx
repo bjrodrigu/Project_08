@@ -113,7 +113,7 @@ export default function BadgerMap() {
     function matrixCallback(response, status) {
         console.log('matrix status', status);
         if (status == 'OK') {
-            console.log('response', response);
+            // console.log('response', response);
         }
     }
 
