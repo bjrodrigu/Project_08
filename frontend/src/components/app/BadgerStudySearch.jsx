@@ -68,7 +68,6 @@ export default function BadgerStudySearch() {
       useEffect(() => {
             setLoading(true);
             let temp = [...locationList];
-            console.log(temp);
             // console.log(temp);
 
             // filter data first
