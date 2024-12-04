@@ -23,6 +23,36 @@ build:
       - build
       - .gradle
 
+backend-test:
+  stage: test
+  script:
+    - cd backend
+    - GRADLE_USER_HOME="$(pwd)/.gradle"
+    - export GRADLE_USER_HOME
+    - gradle test
+  coverage: '/Line Coverage: ([0-9.]+)%/'
+  artifacts:
+    when: always
+    reports:
+      junit: backend/build/test-results/test/TEST-*.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: backend/build/reports/cobertura/coverage.xml
+    paths:
+      - backend/build/reports/
+      - backend/build/test-results/
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
 frontend-test:
   image: node:18-alpine
   stage: test
