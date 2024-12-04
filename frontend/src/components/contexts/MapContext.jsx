@@ -40,13 +40,13 @@ const MapContextProvider = ({ children }) => {
                               name: loc.name,
                               distance: loc.distance || 0,
                               description: loc.description,
-                              rating: loc.rating || 0, 
-                              reviews: loc.reviews || 0, 
+                              rating: loc.rating || 0,
+                              reviews: loc.reviews || 0,
                               building: loc.buildingName,
-                              tags: loc.tags || [] 
-                          }));
-              
-                          setLocationList(formattedLocations);
+                              tags: loc.tags || []
+                        }));
+
+                        setLocationList(formattedLocations);
                   } else {
                         throw new Error('Failed to fetch locations');
                   }
@@ -54,24 +54,26 @@ const MapContextProvider = ({ children }) => {
                   console.error(error);
             }
       };
-    
-/** 
-      // create API call for buildings
-      const fetchBuildings = async () => {
-            try {
-                  const response = await fetch('http://localhost:8080/building/getBuildings');
-                  if (response.ok) {
-                        const buildingsData = await response.json();
-                        console.log(buildingsData);
-                        //setBuildings(buildingsData);
-                  } else {
-                        throw new Error('Failed to fetch buildings');
+      
+
+
+      /** 
+            // create API call for buildings
+            const fetchBuildings = async () => {
+                  try {
+                        const response = await fetch('http://localhost:8080/building/getBuildings');
+                        if (response.ok) {
+                              const buildingsData = await response.json();
+                              console.log(buildingsData);
+                              //setBuildings(buildingsData);
+                        } else {
+                              throw new Error('Failed to fetch buildings');
+                        }
+                  } catch (error) {
+                        console.error(error);
                   }
-            } catch (error) {
-                  console.error(error);
-            }
-      };
-*/
+            };
+      */
 
       // initialize states
       const [userLocation, setUserLocation] = useState(null);

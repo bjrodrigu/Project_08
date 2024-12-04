@@ -30,7 +30,7 @@ export default function BadgerSearchResult(location) {
                         </Col>
                         <Col>
                               <Card.Text style={{ textAlign: 'right' }}>{location.distance}mi</Card.Text>
-                        </Col>
+                        </Col> 
                   </Row>
                   {location.tags.map((tag, index) => {
                         return <Badge pill key={tag} bg={variations[index%variations.length]} style={{marginRight: '10px'}}>{tag}</Badge>

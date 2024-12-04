@@ -46,9 +46,9 @@ export default function ReactRegisterButton() {
                                     onClick={() => { navigate("/userProfile") }}>
                                     Your Profile
                               </Dropdown.Item>
-                              <Dropdown.Item variant="outline-secondary" >
+                              {/* <Dropdown.Item variant="outline-secondary" >
                                     Favorites
-                              </Dropdown.Item>
+                              </Dropdown.Item> */}
                               <Dropdown.Item
                                     variant="outline-danger"
                                     onClick={handleLogout}>
