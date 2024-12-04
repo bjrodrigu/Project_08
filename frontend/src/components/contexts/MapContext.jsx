@@ -1,6 +1,6 @@
 import React, { useContext, createContext, useState, useEffect, useCallback } from "react";
 import { APIProvider } from "@vis.gl/react-google-maps";
-
+import { useRef } from "react";
 
 const MapContext = createContext();
 const MapContextProvider = ({ children }) => {
@@ -15,7 +15,6 @@ const MapContextProvider = ({ children }) => {
       //       { name: 'asdf', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
       // ]
       const [locationList, setLocationList] = useState([]);
-      let callCount = 0;
 
       const testBuildings = [
             { name: 'Building A', longitude: -89.4013, latitude: 43.0767 },
@@ -31,13 +30,15 @@ const MapContextProvider = ({ children }) => {
             fetchLocations();
       }, []);
 
+      // Fetch reviews only once after the component mounts or remounts
+      const callCountRef = useRef(0);
       useEffect(() => {
-            if (callCount != 1) {
+            if (callCountRef.current === 0) {
                   fetchReviews();
-                  callCount = 1;
+                  callCountRef.current++;
             }
-      }, [locationList])
-      
+      }, [locationList]);
+
       const fetchLocations = async () => {
             try {
                   const response = await fetch('http://localhost:8080/location/getLocations');
@@ -47,13 +48,13 @@ const MapContextProvider = ({ children }) => {
                               name: loc.name,
                               distance: loc.distance || 0,
                               description: loc.description,
-                              rating: loc.rating || 0, 
-                              reviews: loc.reviews || 0, 
+                              rating: loc.rating || 0,
+                              reviews: loc.reviews || 0,
                               building: loc.buildingName,
                               tags: loc.tags || []
-                          }));
-              
-                          setLocationList(formattedLocations);
+                        }));
+
+                        setLocationList(formattedLocations);
                   } else {
                         throw new Error('Failed to fetch locations');
                   }
@@ -63,20 +64,20 @@ const MapContextProvider = ({ children }) => {
       };
 
 
-      const fetchReviews = async() => {
+      const fetchReviews = async () => {
             try {
                   const response = await fetch('http://localhost:8080/review/getAllReviews');
                   if (response.ok) {
                         const reviewData = await response.json()
                         const tempLocList = locationList;
                         // iterate through all locations
-                        for(let i = 0; i < tempLocList.length; i++) {
+                        for (let i = 0; i < tempLocList.length; i++) {
                               let avg = 0;
                               let count = 0;
                               // iterate through all reviews
-                              for(let j = 0; j < reviewData.length; j++) {
+                              for (let j = 0; j < reviewData.length; j++) {
                                     // check if review is relevant
-                                    if(reviewData[j].location.name == tempLocList[i].name) {
+                                    if (reviewData[j].location.name == tempLocList[i].name) {
                                           avg += reviewData[j].rating;
                                           count += 1;
                                     }
@@ -107,24 +108,24 @@ const MapContextProvider = ({ children }) => {
                   console.error(error);
             }
       };
-    
-/** 
-      // create API call for buildings
-      const fetchBuildings = async () => {
-            try {
-                  const response = await fetch('http://localhost:8080/building/getBuildings');
-                  if (response.ok) {
-                        const buildingsData = await response.json();
-                        console.log(buildingsData);
-                        //setBuildings(buildingsData);
-                  } else {
-                        throw new Error('Failed to fetch buildings');
+
+      /** 
+            // create API call for buildings
+            const fetchBuildings = async () => {
+                  try {
+                        const response = await fetch('http://localhost:8080/building/getBuildings');
+                        if (response.ok) {
+                              const buildingsData = await response.json();
+                              console.log(buildingsData);
+                              //setBuildings(buildingsData);
+                        } else {
+                              throw new Error('Failed to fetch buildings');
+                        }
+                  } catch (error) {
+                        console.error(error);
                   }
-            } catch (error) {
-                  console.error(error);
-            }
-      };
-*/
+            };
+      */
 
       // initialize states
       const [userLocation, setUserLocation] = useState(null);
