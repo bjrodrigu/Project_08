@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.util.Collection;
 import java.util.Date;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "User")
-@JsonIgnoreProperties({"reviews"}) 
+@JsonIgnoreProperties({ "reviews" })
 // Added to prevent infinite recursive calls between user and reviews
 public class User implements UserDetails {
 
@@ -38,11 +39,11 @@ public class User implements UserDetails {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
-    @JsonIgnoreProperties("location")
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
-    
-    @JsonIgnoreProperties("favorites")
+
+    @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorites;
 
