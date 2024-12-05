@@ -132,7 +132,8 @@ const MapContextProvider = ({ children }) => {
       const [buildings, setBuildings] = useState(testBuildings);
       const [distMatrix, setDistMatrix] = useState([]);
       const apiKey = 'AIzaSyCl9i1askwfTLHo-e1cERhPl58O8bEjuzU';
-
+      
+      //  LINES 138 - 151 POTENTIALLY CAUSING MAXIMUM UPDATE DEPTH EXCEEDED ERROR 
       // get user location
       if (navigator.geolocation) {
             // get location if available
