@@ -1,5 +1,7 @@
 package com.campus_rating_system.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class Favorite {
     private Integer favoriteId;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
