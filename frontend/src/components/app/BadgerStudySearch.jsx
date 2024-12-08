@@ -4,7 +4,7 @@ import { Form, Card, Col, Row, ListGroup, ListGroupItem, Spinner } from 'react-b
 import BadgerSearchResult from './BadgerSearchResult';
 import { useLocationState } from '../contexts/MapContext';
 import { Filter, ArrowDown, ArrowUp } from 'react-bootstrap-icons';
-
+import { useLoginState } from '../contexts/LoginContext';
 
 // dummy values for testing
 // const testData = [
@@ -51,6 +51,73 @@ export default function BadgerStudySearch() {
       const [chosenTags, setChosenTags] = useState([]);
       const [loading, setLoading] = useState(false);
 
+      //jy
+      const [favLocationList, setFavLocationList] = useState([]);
+      const { user, setUser, login, setLogin } = useLoginState();
+
+      const fetchFavLocations = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                  const response = await fetch('http://localhost:8080/favorite/getFavorites', {
+                        method: 'GET',
+                        headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${token}`,
+                        },
+                  });
+
+                  if (response.ok) {
+
+                        const data = await response.json();
+                        console.log("fav LOcation");
+                        console.log(data);
+                        setFavLocationList(data.map(loc => loc.name));
+                  } else {
+                        console.error('Failed to fetch favorite locations');
+                  }
+            } catch (error) {
+                  console.error('Error fetching favorite locations:', error);
+            }
+      };
+
+      //load
+      useEffect(() => {
+            console.log(login);
+            if (login) {
+                  fetchFavLocations();
+            }
+      }, [login]);
+
+      const handleFavoriteChange = async (locationName, shouldFavorite) => {
+            const API_BASE_URL = "http://localhost:8080/favorite";
+            const token = localStorage.getItem("token");
+
+            try {
+                  if (shouldFavorite) {
+                        // 添加收藏
+                        await fetch(`${API_BASE_URL}/add`, {
+                              method: "POST",
+                              headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                              },
+                              body: JSON.stringify({ locationName }),
+                        });
+                  } else {
+                        // 取消收藏
+                        await fetch(`${API_BASE_URL}/remove`, {
+                              method: "DELETE",
+                              headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                              },
+                              body: JSON.stringify({ locationName }),
+                        });
+                  }
+            } catch (error) {
+                  console.error("Failed to update favorite status:", error);
+            }
+      };
       // tester
       // useEffect(() => {console.log(chosenTags)}, [chosenTags]);
 
@@ -192,9 +259,10 @@ export default function BadgerStudySearch() {
                               </Card>
                         ) : (
                               filterData.map((location) => {
-                                    return <BadgerSearchResult key={location.name} {...location} />
-                              }
-                              ))
+                                    const isFavorite = favLocationList.includes(location.name);
+                                    return <BadgerSearchResult key={location.name} {...location} isFavorite={isFavorite} onFavoriteChange={handleFavoriteChange}/>;
+                              })
+                        )
                         }
                   </Card.Body>
             </Card>
