@@ -330,6 +330,25 @@ public class CampusRatingSystemController {
     }
 
     /**
+     * Endpoint to remove a user's Favorite, associating a user and favorite place by their
+     * respective email and favorite id.
+     *
+     * @param favorite_id the id of the user's favorite place
+     * @return a ResponseEntity containing if the operation was successful
+     */
+    @PostMapping("/favorite/deleteFavorite")
+    public ResponseEntity<String> deleteFavorite(
+            @RequestParam int favorite_id)
+    {
+        try {
+            favoriteService.deleteFavorite(favorite_id);
+            return ResponseEntity.ok("Review deleted successfully.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    /**
      * Endpoint to get a list of Favorite places.
      *
      * @return a List of Location objects that the user has marked as favorite
