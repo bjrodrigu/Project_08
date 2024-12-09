@@ -30,20 +30,6 @@ const userInfoStyle = {
 
 
 
-
-let test_fav_locations = [
-    { id: 1, location: 'Library - Studyspot 1' },
-    { id: 2, location: 'Library - Studyspot 2' },
-    { id: 3, location: 'Library - Studyspot 3' },
-    { id: 4, location: 'Library - Studyspot 4' },
-    { id: 5, location: 'Library - Studyspot 5' },
-    { id: 6, location: 'Library - Studyspot 6' },
-    { id: 7, location: 'Library - Studyspot 7' },
-    { id: 8, location: 'Library - Studyspot 8' },
-    { id: 9, location: 'Library - Studyspot 9' },
-    { id: 10, location: 'Library - Studyspot 10' },
-];
-
 export default function UserComments() {
     //userinfo
     const [userTemp, setUserTemp] = useState({
@@ -69,7 +55,7 @@ export default function UserComments() {
     const [currentReviews, setCurrentReviews] = useState([]);
 
     //fav-locations
-    const [favorites, setFavorites] = useState(test_fav_locations);
+    const [favorites, setFavorites] = useState([]);
     const [currentFavCount, setCurrentFavCount] = useState(5); // The current number of displayed favorites
     const [loadingFavorites, setLoadingFavorites] = useState(false); // Loading state for favorites
     const [currentFavorites, setCurrentFavorites] = useState([]); // Favorite list for the current page
@@ -103,6 +89,45 @@ export default function UserComments() {
     useEffect(() => {
         fetchUserReviews(); // Call the function to fetch reviews
     }, []);
+    // fetch fav location
+
+    const fetchFavLocations = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('http://localhost:8080/favorite/getFavorites', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+
+                const data = await response.json();
+                // console.log("fav Location", data);
+                setFavorites(data.map(loc => ({
+                    description: loc.description,
+                    favoriteId: loc.favorites[0].favoriteId,
+                    locationId: loc.locationId,
+                    name: loc.name,
+                })));
+
+
+
+            } else {
+                console.error('Failed to fetch favorite locations');
+            }
+        } catch (error) {
+            console.error('Error fetching favorite locations:', error);
+        }
+    };
+
+    //load
+    useEffect(() => {
+        fetchFavLocations();
+    }, []);
+
 
     //inifite scrolling for reviews.
     useEffect(() => {
@@ -238,11 +263,11 @@ export default function UserComments() {
 
 
     const handleRemove = (id) => {
-        
+
         const isConfirmed = window.confirm("Are you sure you want to delete this review?");
         if (!isConfirmed) return;
 
-      
+
         const reviewToDelete = reviews.find((review) => review.reviewId === id);
         if (!reviewToDelete) {
             alert("Review not found.");
@@ -255,7 +280,7 @@ export default function UserComments() {
 
         const token = localStorage.getItem("token");
 
-        
+
         fetch(`http://localhost:8080/review/deleteReview?${queryParams.toString()}`, {
             method: "DELETE",
             headers: {
@@ -269,7 +294,7 @@ export default function UserComments() {
                 }
                 alert("Review deleted successfully!");
                 fetchUserReviews();
-               
+
             })
             .catch((error) => {
                 console.error("Error deleting review:", error);
@@ -278,19 +303,30 @@ export default function UserComments() {
     };
 
 
-    // remove fav locations
-    const handleRemoveFavorite = (location) => {
-        //temp, will be removed when integration.
-        setFavorites((prevFavorites) =>
-            prevFavorites.filter((fav) => fav.location !== location)
-        );
-        console.log(`Removing favorite location: ${location}`);
-        // fetch(`/api/remove-favorite`, {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({ location }),
-        // }).then(response => console.log("API response:", response));
+    const handleRemoveFavorite = async (favoriteId) => {
+        const API_BASE_URL = "http://localhost:8080/favorite"; 
+        const token = localStorage.getItem("token"); 
+
+        try {
+            
+            const response = await fetch(`${API_BASE_URL}/deleteFavorite?favorite_id=${favoriteId}`, {
+                method: "POST", 
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, 
+                },
+            });
+            if (response.ok) {
+                console.log(`Favorite with ID ${favoriteId} removed.`);
+                await fetchFavLocations();
+            } else {
+                console.error("Failed to remove favorite.");
+            }
+        } catch (error) {
+            console.error("Error removing favorite:", error);
+        }
     };
+
 
     return (
         <div>
@@ -404,8 +440,10 @@ export default function UserComments() {
                                     {favorites.map((fav) => (
 
                                         <BadgerFavoriteLocations
-                                            key={fav.id}
-                                            location={fav.location}
+                                            key={fav.locationId}
+                                            location={fav.name}
+                                            description={fav.description}
+                                            favId={fav.favoriteId}
                                             isStarred={true}
                                             onRemoveFavorite={handleRemoveFavorite}
                                         />
