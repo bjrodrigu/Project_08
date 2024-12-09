@@ -4,7 +4,7 @@ import { Form, Card, Col, Row, ListGroup, ListGroupItem, Spinner } from 'react-b
 import BadgerSearchResult from './BadgerSearchResult';
 import { useLocationState } from '../contexts/MapContext';
 import { Filter, ArrowDown, ArrowUp } from 'react-bootstrap-icons';
-
+import { useLoginState } from '../contexts/LoginContext';
 
 // dummy values for testing
 // const testData = [
@@ -50,6 +50,97 @@ export default function BadgerStudySearch() {
       const [sort, setSort] = useState(0);
       const [chosenTags, setChosenTags] = useState([]);
       const [loading, setLoading] = useState(false);
+
+      //jy
+      const [favLocationList, setFavLocationList] = useState([]);
+      const { user, setUser, login, setLogin } = useLoginState();
+
+      const fetchFavLocations = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                  const response = await fetch('http://localhost:8080/favorite/getFavorites', {
+                        method: 'GET',
+                        headers: {
+                              'Content-Type': 'application/json',
+                              'Authorization': `Bearer ${token}`,
+                        },
+                  });
+
+                  if (response.ok) {
+
+                        const data = await response.json();
+                        console.log("fav Location", data);
+                        setFavLocationList(data.map(loc => ({
+                              favoriteId: loc.favorites[0].favoriteId,
+                              locationId: loc.locationId,
+                              name: loc.name,
+                        })));
+
+
+
+                  } else {
+                        console.error('Failed to fetch favorite locations');
+                  }
+            } catch (error) {
+                  console.error('Error fetching favorite locations:', error);
+            }
+      };
+
+      //load
+      useEffect(() => {
+
+            if (login) {
+                  fetchFavLocations();
+            }
+      }, [login]);
+
+
+
+      const handleFavoriteChange = async (locationName, shouldFavorite, favoriteId = null) => {
+            const API_BASE_URL = "http://localhost:8080/favorite"; 
+            const token = localStorage.getItem("token");
+
+            try {
+                  if (shouldFavorite) {
+                        
+                        const response = await fetch(`${API_BASE_URL}/addFavorite?locationName=${locationName}`, {
+                              method: "POST",
+                              headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`, 
+                              },
+                        });
+
+                        if (response.ok) {
+                              const newFavorite = await response.json();
+                              console.log(`${locationName} added to favorites.`, newFavorite);
+                              await fetchFavLocations();
+                              
+                        } else {
+                              console.error("Failed to add favorite.");
+                        }
+                  } else {
+                        
+                        const response = await fetch(`${API_BASE_URL}/deleteFavorite?favorite_id=${favoriteId}`, {
+                              method: "POST", 
+                              headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: `Bearer ${token}`,
+                              },
+                        });
+
+                        if (response.ok) {
+                              console.log(`Favorite with ID ${favoriteId} removed.`);
+                              await fetchFavLocations();
+                             
+                        } else {
+                              console.error("Failed to remove favorite.");
+                        }
+                  }
+            } catch (error) {
+                  console.error("Error updating favorite:", error);
+            }
+      };
 
       // tester
       // useEffect(() => {console.log(chosenTags)}, [chosenTags]);
@@ -191,10 +282,23 @@ export default function BadgerStudySearch() {
                                     </div>
                               </Card>
                         ) : (
+                              // console.log("FilterData: ", filterData),
+                              // console.log("favLocations", favLocationList),
+                              // didn't find locationId in locationList. Assume each building's name is unique
                               filterData.map((location) => {
-                                    return <BadgerSearchResult key={location.name} {...location} />
-                              }
-                              ))
+                                    const isFavorite = favLocationList.some(fav => fav.name === location.name);
+                                    const favoriteId = favLocationList.find(fav => fav.name === location.name)?.favoriteId;
+
+                                    // console.log(isFavorite);
+                                    // console.log("----");
+                                    // console.log(favoriteId);
+                                    return <BadgerSearchResult key={location.name}
+                                          location={location}
+                                          isFavorite={isFavorite}
+                                          favoriteId={favoriteId}
+                                          onFavoriteChange={(name, shouldFavorite) => handleFavoriteChange(name, shouldFavorite, favoriteId)} />;
+                              })
+                        )
                         }
                   </Card.Body>
             </Card>
