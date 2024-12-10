@@ -162,6 +162,15 @@ public class CampusRatingSystemController {
     }
 
     /**
+     * Endpoint to get all buildings.
+     *
+     * @return a ResponseEntity containing a list of all buildings and an OK status
+     */
+    @GetMapping("/building/getBuildings")
+    public List<Building> getBuildings() {
+        return buildingService.getBuildings();
+    }
+    /**
      * Endpoint to add a new location to the system.
      *
      * @param name         the name of the location
