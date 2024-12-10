@@ -1,14 +1,18 @@
 package com.campus_rating_system.services;
 
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.campus_rating_system.entities.Building;
+import com.campus_rating_system.entities.Location;
 import com.campus_rating_system.repositories.BuildingRepository;
 
 /**
- * Service class responsible for handling operations related to buildings within the
+ * Service class responsible for handling operations related to buildings within
+ * the
  * campus rating system.
  *
  */
@@ -21,20 +25,23 @@ public class BuildingService {
     /**
      * Constructor for BuildingService, injecting the BuildingRepository dependency.
      *
-     * @param buildingRepository the repository interface for accessing building data
+     * @param buildingRepository the repository interface for accessing building
+     *                           data
      */
     public BuildingService(BuildingRepository buildingRepository) {
         this.buildingRepository = buildingRepository;
     }
 
     /**
-     * Adds a new building to the system by creating a Building entity with the provided details and
+     * Adds a new building to the system by creating a Building entity with the
+     * provided details and
      * saving it to the database.
      *
-     * @param name the name of the building
+     * @param name      the name of the building
      * @param longitude the longitude of the building
-     * @param latitude the latitude of the building
-     * @return the saved Building entity containing the newly added building information
+     * @param latitude  the latitude of the building
+     * @return the saved Building entity containing the newly added building
+     *         information
      */
     public Building addNewBuilding(String name, Float longitude, Float latitude) {
         Building building = new Building();
@@ -45,5 +52,16 @@ public class BuildingService {
         building.setUpdatedAt(new Date());
 
         return buildingRepository.save(building);
+    }
+
+    /**
+     * Retrieves all buildings stored in the database.
+     * 
+     * @return a list of all buildings stored in the database
+     */
+    public List<Building> getBuildings() {
+        List<Building> buildings = buildingRepository.findAll();
+
+        return buildings;
     }
 }
