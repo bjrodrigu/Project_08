@@ -39,15 +39,16 @@ public class BuildingService {
      *
      * @param name      the name of the building
      * @param longitude the longitude of the building
-     * @param latitude  the latitude of the building
-     * @return the saved Building entity containing the newly added building
-     *         information
+     * @param latitude the latitude of the building
+     * @param address the physical address of the location
+     * @return the saved Building entity containing the newly added building information
      */
-    public Building addNewBuilding(String name, Float longitude, Float latitude) {
+    public Building addNewBuilding(String name, Float longitude, Float latitude, String address) {
         Building building = new Building();
         building.setName(name);
         building.setLongitude(longitude);
         building.setLatitude(latitude);
+        building.setAddress(address);
         building.setCreatedAt(new Date());
         building.setUpdatedAt(new Date());
 

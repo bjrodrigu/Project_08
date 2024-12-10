@@ -131,20 +131,33 @@ public class CampusRatingSystemController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    @PutMapping("/user/update")
+    public ResponseEntity<String> updateUser(@RequestBody UpdateUserRequestDto updateUserRequest) {
+        try {
+            User updatedUser = authenticationService.updateUserInfo(updateUserRequest);
+
+            return ResponseEntity.ok("User updated successfully: " + updatedUser.getEmail());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(e.getMessage());
+        }
+    }
+
     /**
      * Endpoint to add a new building.
      *
      * @param name      the name of the building
      * @param longitude the longitude of the building
      * @param latitude  the latitude of the building
+     * @param address the physical address of the location
      * @return the added Building entity as a response
      */
     @PostMapping("/building/addBuilding")
     public ResponseEntity<Building> addBuilding(@RequestParam String name,
             @RequestParam Float longitude,
-            @RequestParam Float latitude) {
+            @RequestParam Float latitude,
+            @RequestParam String address) {
 
-        Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude);
+        Building newBuilding = buildingService.addNewBuilding(name, longitude, latitude, address);
         return new ResponseEntity<>(newBuilding, HttpStatus.CREATED);
     }
 
