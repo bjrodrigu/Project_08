@@ -161,6 +161,29 @@ const MapContextProvider = ({ children }) => {
                   console.error(error);
             }
       };
+      
+      // // create API call for buildings
+      // const fetchTasks = async () => {
+      //       try {
+      //             console.log('fetching tasks');
+      //             const response = await fetch('http://localhost:8080/task/getTasks');
+      //             if (response.ok) {
+      //                   const taskData = await response.json();
+      //                   console.log('taskData', taskData);
+      //                   const formattedTasks = taskData.map((task) => ({
+      //                         name: building.name,
+      //                         longitude: building.longitude,
+      //                         latitude: building.latitude
+      //                   }));
+      //                   console.log('formattedBuildings', formattedBuildings);
+      //                   setBuildings(formattedBuildings);
+      //             } else {
+      //                   throw new Error('Failed to fetch buildings');
+      //             }
+      //       } catch (error) {
+      //             console.error(error);
+      //       }
+      // };
 
       useEffect(() => {
             console.log('buildings updated:', buildings);
