@@ -318,6 +318,17 @@ public class CampusRatingSystemController {
     }
 
     /**
+     * Endpoint to get all tasks.
+     * 
+     * @return a ResponseEntity containing a list of all tasks and an OK status
+     */
+    @GetMapping("/task/getTasks")
+    public List<Task> getTasks() {
+        List<Task> tasks = taskService.getTasks();
+        return tasks;
+    }
+
+    /**
      * Endpoint to add a new LocationTask, associating a task with a location by
      * their names.
      *
