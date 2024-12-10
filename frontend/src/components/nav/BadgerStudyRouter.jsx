@@ -11,6 +11,8 @@ import BadgerStudySpot from '../app/BadgerStudySpot';
 import BadgerLogin from "../auth/BadgerLogin";
 import BadgerUser from "../app/BadgerUser";
 import BadgerAddReviewPage from "../app/BadgerAddReviewPage";
+import AdminDashboard from "../admin_dashboard/AdminDashboard";
+import AdminButton from "../admin_dashboard/AdminButton";
 
 import { useState, useEffect } from "react"
 import { LoginContext } from "../contexts/LoginContext";
@@ -29,6 +31,7 @@ export default function BadgerStudyRouter() {
       return (
             <LoginContext.Provider value={[loginStatus, setLoginStatus]}>
                   <Router>
+                        <AdminButton /> {/* Admin Button placed here */}
                         <Routes>
                               <Route path='/' element={<BadgerStudy />}>
                                     <Route index element={<BadgerStudySearch />} />
@@ -38,6 +41,7 @@ export default function BadgerStudyRouter() {
                                     <Route path='location' element={<BadgerStudySpot />} /> {/**Location page */}
                                     <Route path='review' /> {/** review page */}
                                     <Route path='addReview' element={<BadgerAddReviewPage />} /> {/** add review page */}
+                                    <Route path="admin-dashboard" element={<AdminDashboard />} /> {/** admin dashboard */}
                                     <Route path='*' element={<BadgerNoMatch />} /> {/** 404 page */}
                               </Route>
                         </Routes>

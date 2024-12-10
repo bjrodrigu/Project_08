@@ -34,4 +34,15 @@ public class UserService {
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
     }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+    }
+
+    public boolean isAdmin(String email) {
+        User user = getUserByEmail(email);
+        return user.isAdmin();
+    }
+
 }

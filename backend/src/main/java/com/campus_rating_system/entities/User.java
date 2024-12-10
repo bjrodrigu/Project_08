@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 
+    @Column(name = "admin")
+    private boolean admin;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
@@ -109,6 +112,14 @@ public class User implements UserDetails {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+    
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 
     public List<Favorite> getFavorites() {
