@@ -2,12 +2,16 @@ package com.campus_rating_system.config;
 
 import com.campus_rating_system.dtos.LoginUserDto;
 import com.campus_rating_system.dtos.RegisterUserDto;
+import com.campus_rating_system.dtos.UpdateUserRequestDto;
 import com.campus_rating_system.entities.User;
 import com.campus_rating_system.repositories.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 import java.util.Date;
 
@@ -81,5 +85,42 @@ public class AuthenticationService {
 
         return userRepository.findByEmail(input.getEmail())
                 .orElseThrow();
+    }
+    /**
+     * Updates user information such as name and password.
+     *
+     * @param input is the new name, new email, and new password
+     * 
+     * @return an Optional containing the updated user if found, or empty otherwise
+     */
+    public User updateUserInfo(UpdateUserRequestDto input) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+
+        User user = userRepository.findByEmail(email)
+              .orElseThrow(() -> new IllegalArgumentException("User not found."));
+
+        // Update the name if provided
+        if (input.getName() != null && !input.getName().isEmpty()) {
+            user.setName(input.getName());
+        }
+        
+        // Update the password if provided
+        if (input.getPassword() != null && !input.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(input.getPassword())); // Encode the password
+        }
+
+        // Update the email if provided and unique
+        if (input.getNewEmail() != null && !input.getNewEmail().isEmpty()) {
+            if (userRepository.findByEmail(input.getNewEmail()).isPresent()) {
+                throw new IllegalArgumentException("Email already in use.");
+            }
+            user.setEmail(input.getNewEmail());
+        }
+
+        user.setUpdatedAt(new Date()); // Update the modification timestamp
+        return userRepository.save(user); // Save and return the updated user
     }
 }

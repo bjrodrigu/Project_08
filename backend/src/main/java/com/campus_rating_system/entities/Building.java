@@ -25,6 +25,9 @@ public class Building {
     @Column(name = "latitude")
     private Float latitude;
 
+    @Column(name = "address")
+    private String address;
+
     @Column(name = "created_at", updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -68,6 +71,14 @@ public class Building {
 
     public void setLatitude(Float latitude) {
         this.latitude = latitude;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public Date getCreatedAt() {

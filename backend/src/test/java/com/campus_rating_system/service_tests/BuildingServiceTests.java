@@ -45,12 +45,14 @@ public class BuildingServiceTests {
         String name = "Engineering Hall";
         Float longitude = -89.4125f;
         Float latitude = 43.0739f;
+        String address = "123 Library Lane";
 
         // Mocked result of repository save
         Building savedBuilding = new Building();
         savedBuilding.setName(name);
         savedBuilding.setLongitude(longitude);
         savedBuilding.setLatitude(latitude);
+        savedBuilding.setAddress(address);
         savedBuilding.setCreatedAt(new Date());
         savedBuilding.setUpdatedAt(new Date());
 
@@ -58,7 +60,7 @@ public class BuildingServiceTests {
         when(buildingRepository.save(any(Building.class))).thenReturn(savedBuilding);
 
         // Act
-        Building result = buildingService.addNewBuilding(name, longitude, latitude);
+        Building result = buildingService.addNewBuilding(name, longitude, latitude, address);
 
         // Assert
         // Verify that the repository's save method was called once
@@ -82,6 +84,7 @@ public class BuildingServiceTests {
         String name = null;
         Float longitude = null;
         Float latitude = null;
+        String address = null;
 
         // Mock the repository save behavior
         when(buildingRepository.save(any(Building.class))).thenAnswer(invocation -> {
@@ -90,7 +93,7 @@ public class BuildingServiceTests {
         });
 
         // Act
-        Building result = buildingService.addNewBuilding(name, longitude, latitude);
+        Building result = buildingService.addNewBuilding(name, longitude, latitude, address);
 
         // Assert
         verify(buildingRepository, times(1)).save(any(Building.class));

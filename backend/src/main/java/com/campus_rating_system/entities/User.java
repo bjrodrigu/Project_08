@@ -87,10 +87,6 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    public void setUser(String user) {
-        this.email = email;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
