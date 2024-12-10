@@ -32,11 +32,11 @@ const userInfoStyle = {
 
 export default function UserComments() {
     //userinfo
-    const [userTemp, setUserTemp] = useState({
-        username: 'JohnDoe',
-        email: 'user@example.com',
-        password: 'test123',
-    });
+    // const [userTemp, setUserTemp] = useState({
+    //     username: 'JohnDoe',
+    //     email: 'user@example.com',
+    //     password: 'test123',
+    // });
     //extract username
     const { user, setUser, login, setLogin } = useLoginState();
 
@@ -61,6 +61,39 @@ export default function UserComments() {
     const [currentFavorites, setCurrentFavorites] = useState([]); // Favorite list for the current page
     // get current user's review.
     // Fetch user reviews when the component loads
+    const [userInfo, setUserInfo] = useState({});
+
+    const fetchUserInfo = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await fetch('http://localhost:8080/user/info', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.ok) {
+                const userInfoArray = await response.json();
+                
+                const userInfo = {
+                    name: userInfoArray[0],
+                    email: userInfoArray[1],
+                };
+
+                setUserInfo(userInfo);
+                console.log('User Info:', userInfo);
+
+            } else {
+                console.error('Failed to fetch user info:', response.status);
+            }
+        } catch (error) {
+            console.error('Error fetching user info:', error);
+        }
+    };
+
+
     const fetchUserReviews = async () => {
         setLoading(true); // Start loading
         try {
@@ -86,9 +119,7 @@ export default function UserComments() {
         }
     };
 
-    useEffect(() => {
-        fetchUserReviews(); // Call the function to fetch reviews
-    }, []);
+  
     // fetch fav location
 
     const fetchFavLocations = async () => {
@@ -123,9 +154,10 @@ export default function UserComments() {
         }
     };
 
-    //load
     useEffect(() => {
-        fetchFavLocations();
+        fetchUserInfo(); 
+        fetchUserReviews(); 
+        fetchFavLocations(); 
     }, []);
 
 
@@ -206,9 +238,9 @@ export default function UserComments() {
     const logout = useLogout();
 
     const handleSaveUserInfo = (updatedUser) => {
-        console.log('Updated user info:', updatedUser);
+        // console.log('Updated user info:', updatedUser);
 
-        setUserTemp(updatedUser);
+        // setUserTemp(updatedUser);
 
         // fetch('/api/update-user', {
         //     method: 'POST',
@@ -304,16 +336,16 @@ export default function UserComments() {
 
 
     const handleRemoveFavorite = async (favoriteId) => {
-        const API_BASE_URL = "http://localhost:8080/favorite"; 
-        const token = localStorage.getItem("token"); 
+        const API_BASE_URL = "http://localhost:8080/favorite";
+        const token = localStorage.getItem("token");
 
         try {
-            
+
             const response = await fetch(`${API_BASE_URL}/deleteFavorite?favorite_id=${favoriteId}`, {
-                method: "POST", 
+                method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, 
+                    Authorization: `Bearer ${token}`,
                 },
             });
             if (response.ok) {
@@ -355,7 +387,7 @@ export default function UserComments() {
                     {/* First row: User Info */}
                     <div className="row g-4">
                         <div className="col-12">
-                            <BadgerInfo user={user} onSave={handleSaveUserInfo} />
+                            <BadgerInfo userInfo={userInfo} onSave={handleSaveUserInfo} />
                         </div>
                     </div>
 
