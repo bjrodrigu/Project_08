@@ -14,7 +14,11 @@ const MapContextProvider = ({ children }) => {
       //       { name: 'amet', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
       //       { name: 'asdf', distance: 0, description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.', rating: 3.2, reviews: 4, building: 'Building F', tags: ['Lorem', 'Ipsum', 'Dolor'] },
       // ]
+
+      // initialize states
       const [locationList, setLocationList] = useState([]);
+      const [buildings, setBuildings] = useState([]);
+
 
       const testBuildings = [
             { name: 'Building A', longitude: -89.4013, latitude: 43.0767 },
@@ -114,15 +118,17 @@ const MapContextProvider = ({ children }) => {
       // create API call for buildings
       const fetchBuildings = async () => {
             try {
+                  console.log('fetching buildings');
                   const response = await fetch('http://localhost:8080/building/getBuildings');
                   if (response.ok) {
                         const buildingsData = await response.json();
+                        console.log('buildingsData', buildingsData);
                         const formattedBuildings = buildingsData.map((building) => ({
                               name: building.name,
                               longitude: building.longitude,
                               latitude: building.latitude
                         }));
-
+                        console.log('formattedBuildings', formattedBuildings);
                         setBuildings(formattedBuildings);
                   } else {
                         throw new Error('Failed to fetch buildings');
@@ -132,10 +138,13 @@ const MapContextProvider = ({ children }) => {
             }
       };
 
+      useEffect(() => {
+            console.log('buildings updated:', buildings);
+        }, [buildings]);
+
 
       // initialize states
       const [userLocation, setUserLocation] = useState(null);
-      const [buildings, setBuildings] = useState([]);
       const [distMatrix, setDistMatrix] = useState([]);
       const apiKey = 'AIzaSyCl9i1askwfTLHo-e1cERhPl58O8bEjuzU';
 
