@@ -36,13 +36,13 @@ const MapContextProvider = ({ children }) => {
       }, []);
 
       // Fetch reviews only once after the component mounts or remounts
-      const callCountRef = useRef(0);
+     /** const callCountRef = useRef(0);
       useEffect(() => {
             if (callCountRef.current === 0) {
                   fetchReviews();
                   callCountRef.current++;
             }
-      }, [locationList]);
+      }, [locationList]); */
 
       const fetchLocations = async () => {
             try {
@@ -58,8 +58,31 @@ const MapContextProvider = ({ children }) => {
                               building: loc.buildingName,
                               tags: loc.tags || []
                         }));
-
                         setLocationList(formattedLocations);
+                        const reviewResponse = await fetch('http://localhost:8080/review/getAllReviews');
+                        if (reviewResponse.ok) {
+                              const reviewData = await reviewResponse.json();
+                              // Iterate through locations and update with review data
+                              const updatedLocations = formattedLocations.map((location) => {
+                                    let avg = 0;
+                                    let count = 0;
+                                    // Calculate the average rating for this location based on reviews
+                                    reviewData.forEach((review) => {
+                                          if (review.location.name === location.name) {
+                                                avg += review.rating;
+                                                count += 1;
+                                          }
+                                    });
+                                    avg = count > 0 ? avg / count : 0; 
+                                    location.rating = avg;
+                                    location.reviews = count;
+                                    return location;
+                              });
+
+                              setLocationList(updatedLocations);
+                        } else {
+                              throw new Error('Failed to fetch reviews');
+                        }
                   } else {
                         throw new Error('Failed to fetch locations');
                   }
@@ -68,7 +91,7 @@ const MapContextProvider = ({ children }) => {
             }
       };
 
-
+      /** 
       const fetchReviews = async () => {
             try {
                   const response = await fetch('http://localhost:8080/review/getAllReviews');
@@ -112,7 +135,7 @@ const MapContextProvider = ({ children }) => {
             } catch (error) {
                   console.error(error);
             }
-      };
+      };*/
 
 
       // create API call for buildings
@@ -140,7 +163,7 @@ const MapContextProvider = ({ children }) => {
 
       useEffect(() => {
             console.log('buildings updated:', buildings);
-        }, [buildings]);
+      }, [buildings]);
 
 
       // initialize states
@@ -170,7 +193,7 @@ const MapContextProvider = ({ children }) => {
 
       // store user location
       return (
-            <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings }}>
+            <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, fetchLocations}}>
                   {children}
             </MapContext.Provider>
       );
