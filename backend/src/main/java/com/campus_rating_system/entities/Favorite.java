@@ -1,6 +1,7 @@
 package com.campus_rating_system.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -40,6 +41,7 @@ public class Favorite {
         this.user = user;
     }
 
+    @JsonIgnoreProperties("favorites")
     public Location getLocation() {
         return location;
     }

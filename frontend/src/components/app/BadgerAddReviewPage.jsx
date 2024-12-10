@@ -148,6 +148,7 @@ const BadgerAddReviewPage = () => {
             <Card.Body>
                 <div style={{ display: 'flex' }}>
                     <Button
+                        data-testid="back-button"
                         variant='outline-info'
                         onClick={routeChange}
                         style={{ borderRadius: '50%', height: '3rem', width: '3rem' }}>
