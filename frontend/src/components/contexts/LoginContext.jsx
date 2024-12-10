@@ -6,7 +6,16 @@ const LoginContextProvider = ({ children }) => {
       const [user, setUser] = useState(null);
       const [login, setLogin] = useState(false);
 
-
+      useEffect(() => {
+            const storedUser = localStorage.getItem("isLoggedIn");
+            const isAdmin = JSON.parse(localStorage.getItem("isAdmin")) || false;
+    
+            if (storedUser) {
+                setUser({ username: storedUser, isAdmin });
+                setLogin(true);
+            }
+        }, []);
+        
       // TODO: fetch user & set login state via useEffect
 
       return (

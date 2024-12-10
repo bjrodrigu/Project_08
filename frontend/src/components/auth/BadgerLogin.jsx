@@ -39,6 +39,27 @@ export default function BadgerLogin() {
     }
   }, [navigate, setLogin, setUser]);
 
+  useEffect(() => {
+    if (login) {
+        fetch('http://localhost:8080/user/isAdmin', {
+            method: "GET",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+        })
+            .then((res) => res.json())
+            .then((isAdmin) => {
+                console.log("Admin status:", isAdmin);
+                localStorage.setItem("isAdmin", isAdmin);
+                setUser((prevUser) => ({ ...prevUser, isAdmin }));
+            })
+            .catch((err) => {
+                console.error("Error checking admin status:", err);
+                localStorage.setItem("isAdmin", false);
+                setUser((prevUser) => ({ ...prevUser, isAdmin: false }));
+            });
+    }
+  }, [login, setUser]);
+
 
   // create routeChange function to redirect to home
   const routeChange = () => {
@@ -81,20 +102,17 @@ export default function BadgerLogin() {
         if (data && data.token && data.expiresIn) {
           //get expiration time
 
-
           const expirationTime = Date.now() + data.expiresIn;
           localStorage.setItem("tokenExpiration", expirationTime);
-
-
           localStorage.setItem("token", data.token);
-
-
-
           alert("Your login is successful");
+
           setLogin(true);
           setUser(usernameInput.current.value);
+
           localStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
           console.log("Storing username:", usernameInput.current.value);
+
           navigate('/');
         }
       })
@@ -104,7 +122,6 @@ export default function BadgerLogin() {
       .finally(() => {
         setLoading(false);
       });
-
   }
 
   if (redirecting) {

@@ -131,6 +131,14 @@ public class CampusRatingSystemController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    /**
+     * Endpoint to add a new user to the system.
+     *
+     * @param updateUserRequest takes in the input of new Email and new Password and new Name 
+     * of the user
+     * @return a ResponseEntity containing the newly updated User email
+     *  
+     */
     @PutMapping("/user/update")
     public ResponseEntity<String> updateUser(@RequestBody UpdateUserRequestDto updateUserRequest) {
         try {
@@ -141,6 +149,22 @@ public class CampusRatingSystemController {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
+
+    /**
+     * Endpoint to check if a user is an admin
+     *
+     * @return a ResponseEntity containing an ok status signifying success
+     */
+    @GetMapping("/user/isAdmin")
+    public ResponseEntity<Boolean> isAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        String email = currentUser.getEmail();
+
+        boolean isAdmin = userService.isAdmin(email);
+        return new ResponseEntity<>(isAdmin, HttpStatus.OK);
+    }
+
 
     /**
      * Endpoint to add a new building.
