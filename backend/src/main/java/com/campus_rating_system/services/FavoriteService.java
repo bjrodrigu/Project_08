@@ -87,7 +87,6 @@ public class FavoriteService {
      * either entity cannot be found by the provided identifiers.
      *
      * @param favorite_id the name of the location to be marked as favorite
-     * @return the saved Favorite entity containing the user and location association
      * @throws RuntimeException if the user or location is not found in the system
      */
     public void deleteFavorite(int favorite_id) {

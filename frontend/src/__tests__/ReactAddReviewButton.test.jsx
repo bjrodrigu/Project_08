@@ -1,50 +1,56 @@
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import { BrowserRouter } from "react-router-dom";
-import ReactAddReviewButton from "../components/app/ReactAddReviewButton";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { BrowserRouter } from 'react-router-dom';
+import ReactAddReviewButton from '../components/app/ReactAddReviewButton';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router-dom';
 
-// Mock for the navigate function from react-router-dom
-jest.mock("react-router-dom", () => ({
-    ...jest.requireActual("react-router-dom"),
-    useNavigate: () => jest.fn(),
-}));
+describe('ReactAddReviewButton Component', () => {
+    it('renders the button with correct text', () => {
+        render(
+            <BrowserRouter>
+                <ReactAddReviewButton location="Library" />
+            </BrowserRouter>
+        );
 
-// Test that button renders when user is logged in
-test("renders Add Review button when user is logged in", () => {
-    render(
-        <BrowserRouter>
-            <ReactAddReviewButton location="Location A" />
-        </BrowserRouter>
-    );
-    expect(screen.getByRole("button", { name: /Add Review/i })).toBeInTheDocument();
-});
+        // Check if the button is rendered
+        const button = screen.getByRole('button', { name: /add review/i });
+        expect(button).toBeInTheDocument();
+    });
 
-// Test that button does not render when user is not logged in
-test("does not render Add Review button when user is not logged in", () => {
-    // Assuming 'isLoggedIn' prop or context will control rendering of the button
-    const { queryByRole } = render(
-        <BrowserRouter>
-            {/* Button should not render when user is not logged in */}
-            {false && <ReactAddReviewButton location="Location A" />}
-        </BrowserRouter>
-    );
-    expect(queryByRole("button", { name: /Add Review/i })).not.toBeInTheDocument();
-});
+    it('navigates to /addReview with the correct state on click', () => {
+        const history = createMemoryHistory();
+        const locationMock = "Library";
 
-// Test that button redirects to add review page when clicked
-test("redirects to add review page when button is clicked", () => {
-    const navigate = jest.fn();
-    jest.spyOn(require("react-router-dom"), "useNavigate").mockImplementation(() => navigate);
+        render(
+            <Router location={history.location} navigator={history}>
+                <ReactAddReviewButton location={locationMock} />
+            </Router>
+        );
 
-    render(
-        <BrowserRouter>
-            <ReactAddReviewButton location="Location A" />
-        </BrowserRouter>
-    );
+        // Simulate clicking the button
+        const button = screen.getByRole('button', { name: /add review/i });
+        fireEvent.click(button);
 
-    const button = screen.getByRole("button", { name: /add review/i });
-    userEvent.click(button);
+        // Check the navigation
+        expect(history.location.pathname).toBe('/addReview');
+        expect(history.location.state).toEqual({ location: locationMock });
+    });
 
-    expect(navigate).toHaveBeenCalledWith("/addReview", { state: { location: "Location A" } });
+    it('applies correct styles to the button', () => {
+        render(
+            <BrowserRouter>
+                <ReactAddReviewButton location="Library" />
+            </BrowserRouter>
+        );
+
+        const button = screen.getByRole('button', { name: /add review/i });
+
+        // Check inline styles
+        expect(button).toHaveStyle({
+            width: 'fit-content',
+            padding: '0.5rem 1rem',
+            textAlign: 'right',
+        });
+    });
 });

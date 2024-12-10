@@ -12,6 +12,7 @@ import com.campus_rating_system.services.*;
 import com.campus_rating_system.entities.*;
 import com.campus_rating_system.dtos.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -147,6 +148,15 @@ public class CampusRatingSystemController {
         return new ResponseEntity<>(newBuilding, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint to get all buildings.
+     *
+     * @return a ResponseEntity containing a list of all buildings and an OK status
+     */
+    @GetMapping("/building/getBuildings")
+    public List<Building> getBuildings() {
+        return buildingService.getBuildings();
+    }
     /**
      * Endpoint to add a new location to the system.
      *
@@ -374,5 +384,20 @@ public class CampusRatingSystemController {
 
         Image savedImage = imageService.addImageUrl(imageUrl, locationName);
         return new ResponseEntity<>(savedImage, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint to get user info for the user profile page
+     *
+     * @return info about the user such as their name and email
+     */
+    @GetMapping("/user/info")
+    public ResponseEntity<List<String>> getUserInfo(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+        List<String> userInfo = new ArrayList<>();
+        userInfo.add(currentUser.getName());
+        userInfo.add(currentUser.getEmail());
+        return ResponseEntity.ok(userInfo);
     }
 }
