@@ -1,10 +1,13 @@
 package com.campus_rating_system.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.campus_rating_system.entities.User;
 import com.campus_rating_system.repositories.UserRepository;
+
+import java.util.Optional;
 
 /**
  * Service class for managing user operations within the campus rating system.
@@ -13,23 +16,22 @@ import com.campus_rating_system.repositories.UserRepository;
  *
  * <p>Bugs: Not currently in use. Jwt service is being used for user services.
  *
- * @author Rithik Rajaram
+ * @author Rithik
  */
 @Service
 public class UserService {
 
-    @Autowired
     private final UserRepository userRepository;
 
     /**
-     * Constructs a UserService with the specified repository for handling user data.
-     * The repository dependency is injected to allow persistence and retrieval of
-     * user information from the data layer.
+     * Constructs a UserService with the specified repository and password encoder
+     * for handling user data and securely managing passwords.
      *
      * @param userRepository the repository interface for accessing user data
+     * @param passwordEncoder the encoder for hashing passwords
      */
-    public UserService(UserRepository userRepository) {
+    @Autowired
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
     }
-
 }
