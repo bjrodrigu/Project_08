@@ -4,6 +4,7 @@ import { Star, StarFill } from 'react-bootstrap-icons';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLocation, useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext';
+import { useLocationState } from '../contexts/MapContext';
 
 const BadgerAddReviewPage = () => {
     const [review, setReview] = useState('');
@@ -11,6 +12,7 @@ const BadgerAddReviewPage = () => {
     const [reviewTitle, setReviewTitle] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const {fetchLocations} = useLocationState();
 
 
     // create a navigate object
@@ -82,10 +84,11 @@ const BadgerAddReviewPage = () => {
                     throw new Error('Failed to submit the review');
                 }
             })
-            .then(() => {
+            .then(async () => {
                 setRating(0);
                 setReview('');
                 setReviewTitle('');
+                await fetchLocations();
                 setIsSubmitting(false);
                 alert('Review submitted successfully!');
                 routeChange();
@@ -116,10 +119,11 @@ const BadgerAddReviewPage = () => {
                 'Authorization': `Bearer ${token}`
             },
         })
-            .then((response) => {
+            .then(async (response) => {
                 if (!response.ok) {
                     throw new Error('Failed to delete the review');
                 }
+                await fetchLocations();
                 alert('Review deleted successfully!');
                 routeChange();
             })

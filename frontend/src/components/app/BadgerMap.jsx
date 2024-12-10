@@ -23,7 +23,7 @@ export default function BadgerMap() {
     const [google, setGoogle] = useState(null);
     const [destinations, setDestinations] = useState([]);
     const [distances, setDistances] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const loader = new Loader({
         apiKey: apiKey,
         version: "weekly",
@@ -144,7 +144,6 @@ export default function BadgerMap() {
                 travelMode: 'WALKING',
                 unitSystem: google.maps.UnitSystem.IMPERIAL,
             }, matrixCallback);
-        setLoading(false);
     }, [distMatrix, destinations, userPlaceId]);
 
 
@@ -165,6 +164,7 @@ export default function BadgerMap() {
             } else {
                 console.warn(`Building data currently not loaded for: ${loc.building}`);
             }
+            setLoading(false);
             return acc;
         }, []))
     }, [locationList]);
