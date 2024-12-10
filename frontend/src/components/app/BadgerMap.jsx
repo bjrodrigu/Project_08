@@ -24,7 +24,6 @@ export default function BadgerMap() {
     const [destinations, setDestinations] = useState([]);
     const [distances, setDistances] = useState([]);
     const [loading, setLoading] = useState(false);
-
     const loader = new Loader({
         apiKey: apiKey,
         version: "weekly",
@@ -57,13 +56,29 @@ export default function BadgerMap() {
         if (!buildings || !locationList || !userLocation) return;
 
         let newList = locationList.reduce((acc, curr) => {
-            let tempb = buildings.find((building) => { return curr.building == building.name })
-            let dist = haversineDistance(userLocation.lat, userLocation.lng, tempb.latitude, tempb.longitude);
-            let el = { ...curr }
-            el['distance'] = dist;
-            return [...acc, el];
-        }, [])
-        setLocationList(newList)
+            // Find the corresponding building
+            let tempb = buildings.find((building) => building.name === curr.building);
+
+            // If the building exists, calculate the distance
+            if (tempb && tempb.latitude && tempb.longitude) {
+                let dist = haversineDistance(
+                    userLocation.lat,
+                    userLocation.lng,
+                    tempb.latitude,
+                    tempb.longitude
+                );
+
+                // Add distance to the current location object
+                let el = { ...curr, distance: dist };
+                acc.push(el);
+            } else {
+                // Log a warning if the building is missing or incomplete
+                console.warn(`Building data currently not loaded for: ${curr.building}`);
+            }
+            return acc;
+        }, []);
+
+        setLocationList(newList);
     }, [userLocation]);
 
     // get distances
@@ -141,10 +156,14 @@ export default function BadgerMap() {
             var first = locationList.find(location => { return location.building == loc.building });
             var building = buildings.find(building => { return building.name == loc.building });
             // get number of instances
-            var instances = locationList.filter(location => { return location.building == loc.building }).length;
-            // check if this is the first instance
-            if (first == loc) {
-                acc.push({ name: loc.building, instances: instances.toString(), latitude: building.latitude, longitude: building.longitude });
+            if (building) {
+                var instances = locationList.filter(location => { return location.building == loc.building }).length;
+                // check if this is the first instance
+                if (first == loc) {
+                    acc.push({ name: loc.building, instances: instances.toString(), latitude: building.latitude, longitude: building.longitude });
+                }
+            } else {
+                console.warn(`Building data currently not loaded for: ${loc.building}`);
             }
             return acc;
         }, []))
