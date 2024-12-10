@@ -56,7 +56,7 @@ const MapContextProvider = ({ children }) => {
                               rating: loc.rating || 0,
                               reviews: loc.reviews || 0,
                               building: loc.buildingName,
-                              tags: loc.tags || []
+                              tags: loc.taskNames || []
                         }));
                         setLocationList(formattedLocations);
                         const reviewResponse = await fetch('http://localhost:8080/review/getAllReviews');
@@ -80,6 +80,7 @@ const MapContextProvider = ({ children }) => {
                               });
 
                               setLocationList(updatedLocations);
+                              console.log('Locations:', updatedLocations);
                         } else {
                               throw new Error('Failed to fetch reviews');
                         }
