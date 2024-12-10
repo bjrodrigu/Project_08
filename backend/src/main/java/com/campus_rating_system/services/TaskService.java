@@ -1,8 +1,11 @@
 package com.campus_rating_system.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.campus_rating_system.entities.Location;
 import com.campus_rating_system.entities.Task;
 import com.campus_rating_system.repositories.TaskRepository;
 
@@ -45,5 +48,15 @@ public class TaskService {
         task.setDescription(description);
 
         return taskRepository.save(task);
+    }
+
+    /**
+     * Gets all tasks in the system by querying the task repository.
+     * 
+     * @return a list of all tasks in the system
+     */
+    public List<Task> getTasks() {
+        List<Task> tasks = taskRepository.findAll();
+        return tasks;
     }
 }
