@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function AdminButton() {
     const { user } = useContext(LoginContext);
-    const navigate = useNavigate(); // Hook moved to the top
+    const navigate = useNavigate();
 
     const isAdmin = user?.isAdmin || JSON.parse(localStorage.getItem("isAdmin"));
 
     if (!isAdmin) {
-        return null; // Early return after hook is called
+        return null;
     }
 
     return (
