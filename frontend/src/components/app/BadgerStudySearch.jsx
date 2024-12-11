@@ -17,18 +17,18 @@ import { useLoginState } from '../contexts/LoginContext';
 // ]
 
 
-let tags = ['Loud', 'Quiet', 'Wiscard', 'Outlets', 'Group', 'Cabins', 'Reservations', 'Lorem', 'Ipsum', 'Dolor', 'Tables', 'Sofas'];
+// let tags = ['Loud', 'Quiet', 'Wiscard', 'Outlets', 'Group', 'Cabins', 'Reservations', 'Lorem', 'Ipsum', 'Dolor', 'Tables', 'Sofas'];
 
 // TODO: Remove once we actually scrape API
 // Convenience script to conver a simple placeholder list to appropriate form for react select
-tags = tags.reduce((prev, curr) => {
-      let acc = [...prev]
-      let n = {};
-      n['value'] = curr;
-      n['label'] = curr;
-      acc.push(n);
-      return acc;
-}, []);
+// tags = tags.reduce((prev, curr) => {
+//       let acc = [...prev]
+//       let n = {};
+//       n['value'] = curr;
+//       n['label'] = curr;
+//       acc.push(n);
+//       return acc;
+// }, []);
 
 // 0 descending, 1 ascending
 const options = [
@@ -50,10 +50,32 @@ export default function BadgerStudySearch() {
       const [sort, setSort] = useState(0);
       const [chosenTags, setChosenTags] = useState([]);
       const [loading, setLoading] = useState(false);
+      const [tags, setTags] = useState([]);
 
       //jy
       const [favLocationList, setFavLocationList] = useState([]);
       const { user, setUser, login, setLogin } = useLoginState();
+
+      const fetchTags = async () => {
+            const response = await fetch('http://localhost:8080/task/getTasks');
+            if (response.ok) {
+                  const data = await response.json();
+                  console.log('tags', data);
+                  setTags(data.map(tag => {
+                        return {
+                              value : tag.name,
+                              label : tag.name
+                        }
+                  }));
+            }
+            else{
+                  console.error('Failed to fetch tags');
+            }
+      }
+
+      useEffect(() => {
+            fetchTags();
+      }, []);
 
       const fetchFavLocations = async () => {
             const token = localStorage.getItem('token');
@@ -69,7 +91,6 @@ export default function BadgerStudySearch() {
                   if (response.ok) {
 
                         const data = await response.json();
-                        console.log("fav Location", data);
                         setFavLocationList(data.map(loc => ({
                               favoriteId: loc.favorites[0].favoriteId,
                               locationId: loc.locationId,
