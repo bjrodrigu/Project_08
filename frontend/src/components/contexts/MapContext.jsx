@@ -31,6 +31,20 @@ const MapContextProvider = ({ children }) => {
       ]
 
       useEffect(() => {
+            if (navigator.geolocation) {
+                  // get location if available
+                  // TODO: implement context
+                  navigator.geolocation.getCurrentPosition((position) => {
+                        // get coordinates
+                        let lat = position.coords.latitude.toFixed(5);
+                        let long = position.coords.longitude.toFixed(5);
+                        let lobj = { lat: lat, lng: long };
+                        // pass to map context
+                        setUserLocation(lobj);
+                  });
+            } else {
+                  // TODO: pop up for locations
+            }
             fetchLocations();
             fetchBuildings();
       }, []);
@@ -80,7 +94,6 @@ const MapContextProvider = ({ children }) => {
                               });
 
                               setLocationList(updatedLocations);
-                              console.log('Locations:', updatedLocations);
                         } else {
                               throw new Error('Failed to fetch reviews');
                         }
@@ -92,67 +105,18 @@ const MapContextProvider = ({ children }) => {
             }
       };
 
-      /** 
-      const fetchReviews = async () => {
-            try {
-                  const response = await fetch('http://localhost:8080/review/getAllReviews');
-                  if (response.ok) {
-                        const reviewData = await response.json()
-                        const tempLocList = locationList;
-                        // iterate through all locations
-                        for (let i = 0; i < tempLocList.length; i++) {
-                              let avg = 0;
-                              let count = 0;
-                              // iterate through all reviews
-                              for (let j = 0; j < reviewData.length; j++) {
-                                    // check if review is relevant
-                                    if (reviewData[j].location.name == tempLocList[i].name) {
-                                          avg += reviewData[j].rating;
-                                          count += 1;
-                                    }
-                              }
-                              // calculate total average
-                              avg = avg / count;
-                              // set avg
-                              tempLocList[i].rating = avg;
-                              // set rating
-                              tempLocList[i].reviews = count;
-                              console.log('tll', tempLocList);
-                              setLocationList(tempLocList);
-                        }
-                        // const locationsData = await response.json();
-                        // const formattedLocations = locationsData.map((loc) => ({
-                        //       name: loc.name,
-                        //       distance: loc.distance || 0,
-                        //       description: loc.description,
-                        //       rating: loc.rating || 0, 
-                        //       reviews: loc.reviews || 0, 
-                        //       building: loc.buildingName,
-                        //       tags: loc.tags || [] 
-                        //   }));
-                  } else {
-                        throw new Error('Failed to fetch reviews');
-                  }
-            } catch (error) {
-                  console.error(error);
-            }
-      };*/
-
 
       // create API call for buildings
       const fetchBuildings = async () => {
             try {
-                  console.log('fetching buildings');
                   const response = await fetch('http://localhost:8080/building/getBuildings');
                   if (response.ok) {
                         const buildingsData = await response.json();
-                        console.log('buildingsData', buildingsData);
                         const formattedBuildings = buildingsData.map((building) => ({
                               name: building.name,
                               longitude: building.longitude,
                               latitude: building.latitude
                         }));
-                        console.log('formattedBuildings', formattedBuildings);
                         setBuildings(formattedBuildings);
                   } else {
                         throw new Error('Failed to fetch buildings');
@@ -161,56 +125,12 @@ const MapContextProvider = ({ children }) => {
                   console.error(error);
             }
       };
-      
-      // // create API call for buildings
-      // const fetchTasks = async () => {
-      //       try {
-      //             console.log('fetching tasks');
-      //             const response = await fetch('http://localhost:8080/task/getTasks');
-      //             if (response.ok) {
-      //                   const taskData = await response.json();
-      //                   console.log('taskData', taskData);
-      //                   const formattedTasks = taskData.map((task) => ({
-      //                         name: building.name,
-      //                         longitude: building.longitude,
-      //                         latitude: building.latitude
-      //                   }));
-      //                   console.log('formattedBuildings', formattedBuildings);
-      //                   setBuildings(formattedBuildings);
-      //             } else {
-      //                   throw new Error('Failed to fetch buildings');
-      //             }
-      //       } catch (error) {
-      //             console.error(error);
-      //       }
-      // };
-
-      useEffect(() => {
-            console.log('buildings updated:', buildings);
-      }, [buildings]);
 
 
       // initialize states
       const [userLocation, setUserLocation] = useState(null);
       const [distMatrix, setDistMatrix] = useState([]);
       const apiKey = 'AIzaSyCl9i1askwfTLHo-e1cERhPl58O8bEjuzU';
-
-      //  LINES 138 - 151 POTENTIALLY CAUSING MAXIMUM UPDATE DEPTH EXCEEDED ERROR 
-      // get user location
-      if (navigator.geolocation) {
-            // get location if available
-            // TODO: implement context
-            navigator.geolocation.getCurrentPosition((position) => {
-                  // get coordinates
-                  let lat = position.coords.latitude.toFixed(5);
-                  let long = position.coords.longitude.toFixed(5);
-                  let lobj = { lat: lat, lng: long };
-                  // pass to map context
-                  setUserLocation(lobj);
-            });
-      } else {
-            // TODO: pop up for locations
-      }
 
       // TODO: integrate location retrieval from backend API
       // TODO: fallback Haversine Formula
