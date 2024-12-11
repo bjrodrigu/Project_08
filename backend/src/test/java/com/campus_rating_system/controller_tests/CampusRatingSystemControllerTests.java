@@ -388,4 +388,11 @@ public class CampusRatingSystemControllerTests {
 
         verify(favoriteService, times(1)).getFavoriteLocations();
     }
+
+    @Test
+    public void testGetBuildingsIsSuccess() throws Exception {
+
+        mockMvc.perform(get("/building/getBuildings"))
+                .andExpect(status().isOk());
+    }
 }

@@ -67,7 +67,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/user/login", "/user/signup", "/public/**",
                       "/location/getLocations", "/review/getAllReviews", 
                       "/review/getReviewsForLocation", "/review/getReviewsForUser",
-                      "/building/getBuildings")
+                      "/building/getBuildings", "task/getTasks")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

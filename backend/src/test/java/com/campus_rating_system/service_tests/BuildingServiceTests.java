@@ -1,11 +1,14 @@
 package com.campus_rating_system.service_tests;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Date;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -100,5 +103,21 @@ public class BuildingServiceTests {
         assertEquals(name, result.getName(), "Building name should match null input");
         assertEquals(longitude, result.getLongitude(), "Longitude should match null input");
         assertEquals(latitude, result.getLatitude(), "Latitude should match null input");
+    }
+
+    @Test
+    public void testGetBuildings() {
+
+        List<Building> buildingList = buildingService.getBuildings();
+
+        for (Building building : buildingList) {
+            assertNotNull(building.getBuildingId());
+            assertNotNull(building.getName());
+            assertNotNull(building.getLongitude());
+            assertNotNull(building.getLatitude());
+            assertNotNull(building.getAddress());
+            assertNotNull(building.getCreatedAt());
+            assertNotNull(building.getUpdatedAt());
+        }
     }
 }
