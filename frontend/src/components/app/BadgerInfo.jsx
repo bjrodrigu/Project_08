@@ -10,7 +10,7 @@ export default function BadgerInfo({ userInfo, onSave }) {
 
     // Local state to manage user information
     const [editMode, setEditMode] = useState({
-        username: false,
+        name: false,
         email: false,
     });
 
@@ -31,9 +31,18 @@ export default function BadgerInfo({ userInfo, onSave }) {
         console.log(`Saving ${field}:`, formData[field]);
         toggleEditMode(field); // Exit edit mode
 
-        // Trigger the parent's save callback
         if (onSave) {
-            onSave({ ...formData }); // Pass the entire updated object
+            
+            const updatedField = {};
+            if (field === "name") {
+                updatedField.newName = formData[field]; 
+            } else if (field === "email") {
+                updatedField.newEmail = formData[field]; 
+                
+            }
+
+            console.log("updated info in Badgerinfo:",updatedField);
+            onSave(updatedField);
         }
     };
 
@@ -68,31 +77,31 @@ export default function BadgerInfo({ userInfo, onSave }) {
                     {/* Username Field */}
                     <Row className="mb-3 align-items-center">
                         <Col sm={4}>
-                            <Form.Label>Username</Form.Label>
+                            <Form.Label>Name</Form.Label>
                         </Col>
                         <Col sm={6}>
-                            {editMode.username ? (
+                            {editMode.name ? (
                                 <Form.Control
                                     type="text"
                                     value={formData.name}
-                                    onChange={(e) => handleInputChange('username', e.target.value)}
+                                    onChange={(e) => handleInputChange('name', e.target.value)}
                                 />
                             ) : (
                                 <span>{formData.name}</span>
                             )}
                         </Col>
                         <Col sm={2}>
-                            {editMode.username ? (
+                            {editMode.name ? (
                                 <>
                                     <Button
                                         variant="link"
-                                        onClick={() => handleSave('username')}
+                                        onClick={() => handleSave('name')}
                                     >
                                         Save
                                     </Button>
                                     <Button
                                         variant="link"
-                                        onClick={() => handleCancel('username')}
+                                        onClick={() => handleCancel('name')}
                                     >
                                         Cancel
                                     </Button>
@@ -100,7 +109,7 @@ export default function BadgerInfo({ userInfo, onSave }) {
                             ) : (
                                 <Button
                                     variant="link"
-                                    onClick={() => toggleEditMode('username')}
+                                    onClick={() => toggleEditMode('name')}
                                 >
                                     Edit
                                 </Button>

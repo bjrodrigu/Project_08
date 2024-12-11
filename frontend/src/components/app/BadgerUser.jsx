@@ -76,7 +76,7 @@ export default function UserComments() {
 
             if (response.ok) {
                 const userInfoArray = await response.json();
-                
+
                 const userInfo = {
                     name: userInfoArray[0],
                     email: userInfoArray[1],
@@ -119,7 +119,7 @@ export default function UserComments() {
         }
     };
 
-  
+
     // fetch fav location
 
     const fetchFavLocations = async () => {
@@ -155,9 +155,9 @@ export default function UserComments() {
     };
 
     useEffect(() => {
-        fetchUserInfo(); 
-        fetchUserReviews(); 
-        fetchFavLocations(); 
+        fetchUserInfo();
+        fetchUserReviews();
+        fetchFavLocations();
     }, []);
 
 
@@ -238,24 +238,49 @@ export default function UserComments() {
     const logout = useLogout();
 
     const handleSaveUserInfo = (updatedUser) => {
-        // console.log('Updated user info:', updatedUser);
+        console.log("Updated user received in handleSaveUserInfo:", updatedUser);
+        const requestBody = {};
 
-        // setUserTemp(updatedUser);
+        if (updatedUser.newName) {
+            requestBody.newName = updatedUser.newName;
+        }
+        if (updatedUser.newEmail) {
+            requestBody.newEmail = updatedUser.newEmail;
+        }
+        if (updatedUser.newPassword) {
+            requestBody.newPassword = updatedUser.newPassword;
+        }
 
-        // fetch('/api/update-user', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(updatedUser),
-        // })
-        //     .then((response) => {
-        //         if (response.ok) {
-        //             console.log('User info updated successfully');
-        //         } else {
-        //             console.error('Failed to update user info');
-        //         }
-        //     });
 
-        //logout();
+        if (Object.keys(requestBody).length === 0) {
+            console.error('No fields to update');
+            return;
+        }
+        const token = localStorage.getItem('token');
+
+        fetch('http://localhost:8080/user/update', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log('User info updated successfully');
+                    alert("Information changed successfully!");
+                    logout();
+
+                } else {
+                    console.error('Failed to update user info');
+                }
+            })
+            .catch((error) => {
+                console.error('Error updating user info:', error);
+            });
+
+
     };
 
 
