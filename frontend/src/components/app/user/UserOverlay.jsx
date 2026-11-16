@@ -21,23 +21,9 @@ export default function ReactRegisterButton() {
             const username = JSON.parse(localStorage.getItem("isLoggedIn") || '"User"');
             // TODO: button href handling for dropdown
             return (<>
-                  <Dropdown title='User' className='rounded-pill'
-                        style={{
-                              top: '2vh',
-                              left: '91vw',
-                              position: 'fixed',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                        }}>
-                        <Dropdown.Toggle variant="outline-secondary" style={{
-                              width: '5vw',
-                              height: '5vw',
-                              borderRadius: '50%',
-                              display: 'flex',
-                              alignItems: 'center', 
-                              justifyContent: 'center', 
-                              fontSize: '1vw' 
-                        }}>
+                  <Dropdown title='User' align="end">
+                        <Dropdown.Toggle variant="outline-secondary" size="sm" className="rounded-pill px-3"
+                              style={{ maxWidth: '14rem', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                               {username}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>

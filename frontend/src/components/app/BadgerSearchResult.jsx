@@ -56,9 +56,13 @@ export default function BadgerSearchResult({ location, isFavorite, favoriteId, o
             </Card.Header>
             <Card.Body>
                   <Row>
-                        <Col>
-                              <StarRatings rating={location.rating} numberOfStars={5} starRatedColor='black' starDimension='1.5rem' />
-                              <p style={{ display: 'inline-block', height: '1.5rem', textAlign: 'center', justifyContent: 'center', lineHeight: '1.5rem' }}>({location.reviews})</p>
+                        <Col xs="auto" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}>
+                              <StarRatings rating={location.rating} numberOfStars={5} starRatedColor='#c5050c' starDimension='1.25rem' starSpacing='1px' />
+                              <span className="text-muted" style={{ fontSize: '0.95rem' }}>
+                                    {location.reviews > 0
+                                          ? `${Number(location.rating || 0).toFixed(1)} · ${location.reviews} review${location.reviews === 1 ? '' : 's'}`
+                                          : 'No reviews yet'}
+                              </span>
                         </Col>
                         <Col>
                               {formatMiles(location.distance) && <Card.Text style={{ textAlign: 'right' }}>{formatMiles(location.distance)}</Card.Text>}

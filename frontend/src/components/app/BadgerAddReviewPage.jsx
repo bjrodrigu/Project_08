@@ -140,16 +140,7 @@ const BadgerAddReviewPage = () => {
     };
 
     return (
-        <Card style={{
-            height: '70vh',
-            borderRadius: '2rem',
-            width: '40rem',
-            position: "absolute",
-            top: '20vh',
-            margin: 'auto',
-            padding: '3rem',
-            left: '2vw'
-        }}>
+        <Card className="side-panel" style={{ padding: '1.5rem' }}>
             <Card.Body>
                 <div style={{ display: 'flex' }}>
                     <Button

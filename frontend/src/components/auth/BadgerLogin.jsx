@@ -119,7 +119,7 @@ export default function BadgerLogin() {
           <Button
             variant='outline-info'
             onClick={routeChange}
-            style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
+            className="page-back-button" style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
           >
             <ArrowLeft />
           </Button>

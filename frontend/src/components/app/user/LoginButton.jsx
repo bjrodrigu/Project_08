@@ -2,23 +2,13 @@ import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 
 
-// Login Button Component
+// Login Button Component (lives in the header)
 export default function LoginButton() {
       const navigate = useNavigate();
       return (
-            <Button variant="outline-secondary"
-                  style={{
-                        top: '2vh',
-                        left: '91vw',
-                        position: 'fixed',
-                        width: '5vw',
-                        height: '5vw',
-                        borderRadius: '50%',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                  }}
+            <Button variant="outline-secondary" size="sm" className="rounded-pill px-3"
                   onClick={() => navigate('/login')}>
-                  Login
+                  Log in
             </Button>
       );
 }

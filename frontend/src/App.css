@@ -28,9 +28,119 @@
   color: #61dafb;
 }
 
+:root {
+  --header-h: 56px;
+  --brand-red: #c5050c;
+  --brand-ink: #1f3448;
+}
+
+/* Top bar with the logo and the login / user menu */
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-h);
+  z-index: 1030;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.25rem;
+  background: #fff;
+  border-bottom: 3px solid var(--brand-red);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+.app-header .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--brand-ink);
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.app-header .brand img {
+  height: 38px;
+  width: 38px;
+}
+
+.app-header .brand span em {
+  color: var(--brand-red);
+  font-style: normal;
+}
+
+/* Everything below the header */
+.app-main {
+  padding-top: var(--header-h);
+}
+
 .map {
-  height: 100vh;
-  width: 100%;
+  position: fixed;
+  top: var(--header-h);
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Floating card over the map (search list, spot details, review form) */
+.side-panel {
+  position: fixed !important;
+  top: calc(var(--header-h) + 1rem);
+  bottom: 1.5rem;
+  left: 1.5rem;
+  width: min(35rem, calc(100vw - 3rem));
+  border-radius: 1.5rem !important;
+  overflow: hidden;
+  z-index: 10;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+.side-panel > .card-body {
+  overflow-y: auto;
+}
+
+.page-back-button {
+  top: calc(var(--header-h) + 1rem) !important;
+}
+
+/* Phones: the panel becomes a bottom sheet so the map stays visible above it */
+@media (max-width: 767.98px) {
+  .app-header {
+    padding: 0 0.75rem;
+  }
+
+  .app-header .brand {
+    font-size: 1.1rem;
+  }
+
+  /* the map only fills the space above the bottom sheet, so its center stays visible */
+  .map {
+    bottom: calc(62vh - 1.25rem);
+  }
+
+  /* .card.side-panel beats Bootstrap's .card { height } which loads after this file */
+  .card.side-panel {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 62vh;
+    border-radius: 1.25rem 1.25rem 0 0 !important;
+  }
+
+  .side-panel > .card-header,
+  .side-panel > .card-body {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  .side-panel > .card-header {
+    padding-top: 1rem !important;
+  }
 }
 
 @keyframes App-logo-spin {
@@ -46,6 +156,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - var(--header-h));
   background-color: rgba(255, 255, 255, 0.9);
 }

@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 import BadgerMap from './app/BadgerMap'
 import { useLocation } from 'react-router-dom';
 import { useContext, useState, useEffect } from 'react';
-import UserOverlay from './app/user/UserOverlay';
+import BadgerHeader from './app/BadgerHeader';
 import { LoginContext, LoginContextProvider } from './contexts/LoginContext';
 import {MapContextProvider} from './contexts/MapContext';
 
@@ -14,10 +14,10 @@ export default function BadgerStudy() {
             <LoginContextProvider>
                   <MapContextProvider>
                   {location.pathname !== '/login' && location.pathname !== '/register' && location.pathname !== '/userProfile' && <BadgerMap />}
-                  <UserOverlay />
-                  <div>
+                  <BadgerHeader />
+                  <main className="app-main">
                         <Outlet />
-                  </div>
+                  </main>
                   </MapContextProvider>
             </LoginContextProvider>
       </>

@@ -44,7 +44,7 @@ const options = [
 // Primary Component of homepage. Has search, and shows results
 // TODO: Implement advanced filtered components, and filtering on updating form state
 export default function BadgerStudySearch() {
-      const { userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings } = useLocationState();
+      const { userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, locationsLoaded = true } = useLocationState();
       const [query, setQuery] = useState('');
       const [filterData, setFilterData] = useState([]);
       const params = ['name', 'distance', 'description', 'rating'];
@@ -247,8 +247,8 @@ export default function BadgerStudySearch() {
 
 
       return <>
-            <Card key={'Primary'} style={{ height: '85vh', overflowY: 'hidden', borderRadius: '2rem', width: '35rem', position: 'absolute', top: '9vh', left: '2vw' }}>
-                  <Card.Header style={{ padding: '2rem', paddingBottom: '1rem' }}>
+            <Card key={'Primary'} className="side-panel">
+                  <Card.Header style={{ padding: '1.5rem 2rem 1rem' }}>
                         <Form>
                               <Form.Group className="search" controlId="exampleForm.ControlInput1">
                                     <Form.Control onInput={e => { setQuery(e.target.value) }} type="text" placeholder="Search for a Location" style={{ height: '3rem', width: 'fit' }} />
@@ -257,14 +257,14 @@ export default function BadgerStudySearch() {
                               <Row>
                                     <Col>
                                           <Select
-                                                placeholder={'Sort Study Spots'}
+                                                placeholder={'Sort by'}
                                                 onChange={e => { setSort(e.value) }}
                                                 options={options}
                                           />
                                     </Col>
                                     <Col>
                                           <Select
-                                                placeholder={'Tags: '}
+                                                placeholder={'Tags'}
                                                 isMulti
                                                 onChange={handleChange}
                                                 options={tags}
@@ -279,8 +279,8 @@ export default function BadgerStudySearch() {
                               </Form.Select> */}
                         </Form>
                   </Card.Header>
-                  <Card.Body style={{ overflowY: 'scroll', paddingLeft: '2rem', paddingRight: '2rem' }}>
-                        {loading ? (
+                  <Card.Body style={{ paddingLeft: '2rem', paddingRight: '2rem', paddingTop: 0 }}>
+                        {loading || !locationsLoaded ? (
                               <div
                                     style={{
                                           display: 'flex',
@@ -293,7 +293,7 @@ export default function BadgerStudySearch() {
 
                               </div>
                         ) : filterData.length === 0 ? (
-                              <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', height: '60vh', margin: '2vh 1.5vw 2vh 1.5vw' }}>
+                              <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', minHeight: '12rem', marginTop: '2rem' }}>
                                     <div style={{
                                           display: 'flex',
                                           alignItems: 'center',

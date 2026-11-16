@@ -1,19 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Card, Carousel, Row, Col, Button, ListGroup, Spinner } from 'react-bootstrap';
+import { Card, Button, ListGroup, Spinner } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { run } from 'holderjs/holder'
 import BadgerReview from '../app/BadgerReview';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
 import ReactAddReviewButton from './ReactAddReviewButton';
 import { API_BASE } from "../../api";
 import { formatMiles } from "../../distance";
-// async function loadHolder() {
-//       // if(typeof window !== undefined) {
-//             const mod = await import('holderjs/holder');
-//             return mod.run;
-//       // }
-// }
 
 
 // Component to display details, images and reviews for a particular location
@@ -72,12 +65,6 @@ export default function BadgerStudySpot() {
       }
       const location = JSON.parse(localStorage.getItem("locState"));
       const locationName = location.name;
-      // on page load
-      useEffect(() => {
-            // const run = loadHolder;
-            run('image-class-name');
-      }, [])
-
       useEffect(() => {
             fetchReviews();
       }, []);
@@ -121,44 +108,26 @@ export default function BadgerStudySpot() {
       };
 
       return <>
-            <Card key={'Primary'} style={{ height: '90vh', overflowY: 'hidden', borderRadius: '2rem', width: '35rem', position: "absolute", top: '9vh', left: '2vw' }}>
-                  <Card.Header style={{ paddingLeft: '2rem', paddingTop: '2rem', paddingBottom: '1rem' }}>
-                        <Row>
-                              <Col sm="2">
-                                    <Button variant='outline-info' onClick={routeChange} style={{ borderRadius: '50%', height: '3rem', width: '3rem' }}><ArrowLeft /></Button>
-                              </Col>
-                              <Col sm="4">
-                                    <Card.Title style={{ fontSize: '2rem', marginLeft: '-1.5rem', paddingTop: '0.25rem', paddingBottom: '0.25rem', height: '2.rem' }}>{state.name}</Card.Title>
-                              </Col>
-                              <Col sm="3">
-                                    <Card.Subtitle style={{ fontSize: '1.5rem', textAlign: 'right', paddingTop: '0.75rem' }}>{formatMiles(state.distance)}</Card.Subtitle>
-                              </Col>
-                              <Col sm="3">
-                                    <Button variant='primary' style={{ marginTop: '0.25rem', height: '2.5rem' }}> Navigate</Button>
-                              </Col>
-                        </Row>
+            <Card key={'Primary'} className="side-panel">
+                  <Card.Header style={{ padding: '1.25rem 1.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <Button variant='outline-info' onClick={routeChange} aria-label="Back to search" style={{ borderRadius: '50%', height: '2.75rem', width: '2.75rem', flexShrink: 0 }}><ArrowLeft /></Button>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                    <Card.Title style={{ fontSize: '1.6rem', margin: 0, lineHeight: 1.2 }}>{state.name}</Card.Title>
+                                    {state.building && <div className="text-muted" style={{ fontSize: '0.95rem' }}>{state.building}</div>}
+                              </div>
+                              {formatMiles(state.distance) && <Card.Subtitle className="text-muted" style={{ fontSize: '1.1rem', margin: 0, whiteSpace: 'nowrap' }}>{formatMiles(state.distance)}</Card.Subtitle>}
+                              <Button variant='primary' style={{ height: '2.5rem', flexShrink: 0 }}> Navigate</Button>
+                        </div>
                   </Card.Header>
 
 
 
-                  <Card.Body style={{ overflowY: 'scroll', padding: '1rem' }}>
+                  <Card.Body style={{ padding: '1rem' }}>
                         <ListGroup variant='flush'>
                               <ListGroup.Item>
-                                    <Carousel data-bs-theme="dark" style={{ paddingBottom: '1rem' }}>
-                                          <Carousel.Item>
-                                                <Card.Img variant='bottom' src='holder.js/75px360' style={{ margin: 'auto', width: 'auto' }} />
-                                          </Carousel.Item>
-                                          <Carousel.Item>
-                                                <Card.Img variant='bottom' src='holder.js/100px360' style={{ margin: 'auto', width: 'auto' }} />
-                                          </Carousel.Item>
-                                          <Carousel.Item>
-                                                <Card.Img variant='bottom' src='holder.js/90px360' style={{ margin: 'auto', width: 'auto' }} />
-                                          </Carousel.Item>
-                                    </Carousel>
-                              </ListGroup.Item>
-                              <ListGroup.Item>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                          <h1>Reviews</h1>
+                                          <h2 style={{ margin: 0 }}>Reviews</h2>
                                           {renderAddReviewButton()}
                                     </div>
                               </ListGroup.Item>
@@ -195,6 +164,5 @@ export default function BadgerStudySpot() {
                         </ListGroup>
                   </Card.Body>
             </Card>
-            <script src='holder.js'></script>
       </>
 }

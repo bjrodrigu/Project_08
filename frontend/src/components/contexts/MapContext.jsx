@@ -61,49 +61,38 @@ const MapContextProvider = ({ children }) => {
             }
       }, [locationList]); */
 
+      // true once the first locations + reviews load has finished (even if it failed),
+      // so the list can show a spinner instead of empty ratings / "No Results".
+      const [locationsLoaded, setLocationsLoaded] = useState(false);
+
+      // Load spots and their reviews together, so ratings never flash as 0 stars.
       const fetchLocations = async () => {
             try {
-                  const response = await fetch(`${API_BASE}/location/getLocations`);
-                  if (response.ok) {
-                        const locationsData = await response.json();
-                        const formattedLocations = locationsData.map((loc) => ({
+                  const [response, reviewResponse] = await Promise.all([
+                        fetch(`${API_BASE}/location/getLocations`),
+                        fetch(`${API_BASE}/review/getAllReviews`),
+                  ]);
+                  if (!response.ok) throw new Error('Failed to fetch locations');
+                  if (!reviewResponse.ok) throw new Error('Failed to fetch reviews');
+                  const [locationsData, reviewData] = await Promise.all([response.json(), reviewResponse.json()]);
+
+                  setLocationList(locationsData.map((loc) => {
+                        const ratings = reviewData
+                              .filter((review) => review.location && review.location.name === loc.name)
+                              .map((review) => review.rating);
+                        return {
                               name: loc.name,
                               description: loc.description,
-                              rating: loc.rating || 0,
-                              reviews: loc.reviews || 0,
+                              rating: ratings.length ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0,
+                              reviews: ratings.length,
                               building: loc.buildingName,
                               tags: loc.taskNames || []
-                        }));
-                        setLocationList(formattedLocations);
-                        const reviewResponse = await fetch(`${API_BASE}/review/getAllReviews`);
-                        if (reviewResponse.ok) {
-                              const reviewData = await reviewResponse.json();
-                              // Iterate through locations and update with review data
-                              const updatedLocations = formattedLocations.map((location) => {
-                                    let avg = 0;
-                                    let count = 0;
-                                    // Calculate the average rating for this location based on reviews
-                                    reviewData.forEach((review) => {
-                                          if (review.location.name === location.name) {
-                                                avg += review.rating;
-                                                count += 1;
-                                          }
-                                    });
-                                    avg = count > 0 ? avg / count : 0; 
-                                    location.rating = avg;
-                                    location.reviews = count;
-                                    return location;
-                              });
-
-                              setLocationList(updatedLocations);
-                        } else {
-                              throw new Error('Failed to fetch reviews');
-                        }
-                  } else {
-                        throw new Error('Failed to fetch locations');
-                  }
+                        };
+                  }));
             } catch (error) {
                   console.error(error);
+            } finally {
+                  setLocationsLoaded(true);
             }
       };
 
@@ -142,7 +131,7 @@ const MapContextProvider = ({ children }) => {
       }), [rawLocationList, buildings, userLocation]);
 
       return (
-            <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, fetchLocations}}>
+            <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, fetchLocations, locationsLoaded }}>
                   {children}
             </MapContext.Provider>
       );

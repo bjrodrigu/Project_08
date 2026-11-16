@@ -368,6 +368,7 @@ export default function UserComments() {
                     <Button
                         variant="outline-info"
                         onClick={routeChange}
+                        className="page-back-button"
                         style={{
                             top: '5vh',
                             left: '5vw',
