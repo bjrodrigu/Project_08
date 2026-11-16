@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Card, Button, Pagination, Form, Row, Col, Spinner } from 'react-bootstrap';
 import { ArrowLeft } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext'
 import useLogout from '../auth/useLogout';
 import BadgerMessage from './BadgerMessage';
 import BadgerFavoriteLocations from './BadgerFavoriteLocations';
 import BadgerInfo from './BadgerInfo';
 import { API_BASE } from "../../api";
+import { useNotify } from '../contexts/ToastContext';
 //style
 const backButtonStyle = {
     display: 'flex',
@@ -48,7 +49,15 @@ export default function UserComments() {
     const [editedComment, setEditedComment] = useState(''); // edited single review
     const passwordInput = useRef();
     const navigate = useNavigate();
+    const notify = useNotify();
+    const { hash } = useLocation();
     const commentRef = useRef();
+    // "Favorites" in the user menu links here with #favorites
+    useEffect(() => {
+        if (hash !== '#favorites') return;
+        const el = document.getElementById('favorites');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, [hash]);
     const favRef = useRef();
     const hasMore = useState(true);
     const [currentCount, setCurrentCount] = useState(10); // Current number of displayed comments
@@ -114,7 +123,7 @@ export default function UserComments() {
             setCurrentReviews(data.slice(0, currentCount)); // Display the initial number of reviews
         } catch (error) {
             console.error('Error fetching user reviews:', error);
-            alert('Failed to load reviews. Please try again later.');
+            notify("Couldn't load your reviews. Try again later.", 'danger');
         } finally {
             setLoading(false); // Stop loading
         }
@@ -284,13 +293,13 @@ export default function UserComments() {
                 if (!response.ok) {
                     throw new Error("Failed to update review");
                 }
-                alert("Review updated successfully!");
+                notify('Review updated');
                 // Re-fetch reviews after successful update
                 fetchUserReviews();
             })
             .catch((error) => {
                 console.error("Error updating review:", error);
-                alert("Failed to update review on the server.");
+                notify("Couldn't update the review. Try again.", 'danger');
             });
     };
 
@@ -303,7 +312,7 @@ export default function UserComments() {
 
         const reviewToDelete = reviews.find((review) => review.reviewId === id);
         if (!reviewToDelete) {
-            alert("Review not found.");
+            notify("Couldn't find that review.", 'danger');
             return;
         }
 
@@ -325,13 +334,13 @@ export default function UserComments() {
                 if (!response.ok) {
                     throw new Error("Failed to delete the review");
                 }
-                alert("Review deleted successfully!");
+                notify('Review deleted');
                 fetchUserReviews();
 
             })
             .catch((error) => {
                 console.error("Error deleting review:", error);
-                alert("There was an error deleting your review.");
+                notify("Couldn't delete the review. Try again.", 'danger');
             });
     };
 
@@ -366,7 +375,7 @@ export default function UserComments() {
             <Row style={{ width: '85vw', marginBottom: '2rem' }}>
                 <Col sm="2">
                     <Button
-                        variant="outline-info"
+                        variant="outline-secondary" aria-label="Back"
                         onClick={routeChange}
                         className="page-back-button"
                         style={{
@@ -386,6 +395,7 @@ export default function UserComments() {
 
             <div>
                 <div className="container my-4">
+                    <h1 className="visually-hidden">Your profile</h1>
                     {/* First row: User Info */}
                     <div className="row g-4">
                         <div className="col-12">
@@ -446,7 +456,7 @@ export default function UserComments() {
                         </div>
 
                         {/* Favorite Location */}
-                        <div className="col-lg-6 col-md-12">
+                        <div className="col-lg-6 col-md-12" id="favorites">
                             <Card
                                 style={{
                                     height: '70vh', // Adjust the height to fit the page layout

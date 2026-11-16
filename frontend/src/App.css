@@ -62,14 +62,26 @@ h1, h2, h3, h4, .card-title {
   letter-spacing: -0.01em;
 }
 
-/* Primary buttons in the logo's navy instead of Bootstrap blue */
-.btn-primary {
+/* Primary buttons in the logo's navy instead of Bootstrap blue
+   (.btn.btn-primary outranks Bootstrap's .btn-primary, which loads after this file) */
+.btn.btn-outline-primary {
+  --bs-btn-color: var(--brand-ink);
+  --bs-btn-border-color: var(--brand-ink);
+  --bs-btn-hover-bg: var(--brand-ink);
+  --bs-btn-hover-border-color: var(--brand-ink);
+  --bs-btn-active-bg: var(--brand-ink);
+  --bs-btn-active-border-color: var(--brand-ink);
+}
+
+.btn.btn-primary {
   --bs-btn-bg: var(--brand-ink);
   --bs-btn-border-color: var(--brand-ink);
   --bs-btn-hover-bg: #0b2335;
   --bs-btn-hover-border-color: #0b2335;
   --bs-btn-active-bg: #0b2335;
   --bs-btn-active-border-color: #0b2335;
+  --bs-btn-disabled-bg: #6b8091;
+  --bs-btn-disabled-border-color: #6b8091;
 }
 
 :focus-visible {
@@ -144,6 +156,62 @@ h1, h2, h3, h4, .card-title {
 
 .side-panel > .card-body {
   overflow-y: auto;
+}
+
+/* ---------- Toasts and inline form messages ---------- */
+.toast-stack {
+  position: fixed;
+  top: calc(var(--header-h) + 0.75rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1040;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+
+.app-toast {
+  padding: 0.6rem 1rem;
+  border-radius: 0.6rem;
+  background: var(--brand-ink);
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(18, 50, 74, 0.25);
+  animation: toast-in 160ms ease-out;
+}
+
+.app-toast--danger {
+  background: var(--brand-red);
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-toast { animation: none; }
+}
+
+.form-error {
+  margin: 0.75rem 0 0;
+  color: var(--brand-red);
+  font-weight: 500;
+}
+
+.star-button {
+  padding: 0 0.15rem;
+  border: 0;
+  background: none;
+  font-size: 2.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.star-button:first-child {
+  padding-left: 0;
 }
 
 /* ---------- Spot list ---------- */
@@ -343,6 +411,14 @@ h1, h2, h3, h4, .card-title {
   margin: 0;
   font-size: 1.02rem;
   font-weight: 600;
+}
+
+.review-byline {
+  display: flex;
+  gap: 0.6rem;
+  margin: 0.4rem 0 0;
+  color: var(--slate);
+  font-size: 0.85rem;
 }
 
 .review-text {

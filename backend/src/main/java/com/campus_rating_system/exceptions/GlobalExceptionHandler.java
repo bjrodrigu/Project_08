@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -50,6 +51,11 @@ public class GlobalExceptionHandler {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatusCode.valueOf(403),
                     exception.getMessage());
             errorDetail.setProperty("description", "The JWT token has expired");
+        }
+
+        if (exception instanceof ResponseStatusException statusException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(statusException.getStatusCode(),
+                    statusException.getReason());
         }
 
         if (errorDetail == null) {

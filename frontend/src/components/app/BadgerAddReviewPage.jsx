@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext';
 import { useLocationState } from '../contexts/MapContext';
 import { API_BASE } from "../../api";
+import { useNotify } from '../contexts/ToastContext';
 
 const BadgerAddReviewPage = () => {
     const [review, setReview] = useState('');
@@ -13,7 +14,9 @@ const BadgerAddReviewPage = () => {
     const [reviewTitle, setReviewTitle] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [formError, setFormError] = useState('');
     const {fetchLocations} = useLocationState();
+    const notify = useNotify();
 
 
     // create a navigate object
@@ -42,8 +45,9 @@ const BadgerAddReviewPage = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setFormError('');
         if (rating === 0) {
-            alert('Please select a rating before submitting your review.');
+            setFormError('Choose a star rating before posting.');
             return;
         }
         console.log('Submitting review:', review, rating, reviewTitle);
@@ -91,12 +95,12 @@ const BadgerAddReviewPage = () => {
                 setReviewTitle('');
                 await fetchLocations();
                 setIsSubmitting(false);
-                alert('Review submitted successfully!');
+                notify(existingReview ? 'Review updated' : 'Review posted');
                 routeChange();
             })
             .catch((error) => {
                 console.error('Error submitting review:', error);
-                alert('There was an error submitting your review.');
+                setFormError("Couldn't save your review. Try again.");
                 setIsSubmitting(false);
             });
     };
@@ -125,12 +129,12 @@ const BadgerAddReviewPage = () => {
                     throw new Error('Failed to delete the review');
                 }
                 await fetchLocations();
-                alert('Review deleted successfully!');
+                notify('Review deleted');
                 routeChange();
             })
             .catch((error) => {
                 console.error('Error deleting review:', error);
-                alert('There was an error deleting your review.');
+                setFormError("Couldn't delete your review. Try again.");
                 setIsDeleting(false);
             });
     };
@@ -142,49 +146,47 @@ const BadgerAddReviewPage = () => {
     return (
         <Card className="side-panel" style={{ padding: '1.5rem' }}>
             <Card.Body>
-                <div style={{ display: 'flex' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.25rem' }}>
                     <Button
                         data-testid="back-button"
-                        variant='outline-info'
+                        aria-label="Back"
+                        variant='outline-secondary'
                         onClick={routeChange}
-                        style={{ borderRadius: '50%', height: '3rem', width: '3rem' }}>
+                        style={{ borderRadius: '50%', height: '2.75rem', width: '2.75rem', flexShrink: 0 }}>
                         <ArrowLeft />
                     </Button>
-                    <Card.Title className="mb-3" style={{ fontSize: '2rem', marginLeft: '1rem', marginTop: '0.25rem' }}>
-                        {user}
-                    </Card.Title>
+                    <div style={{ minWidth: 0 }}>
+                        <h1 className="card-title" style={{ fontSize: '1.5rem', margin: 0 }}>
+                            {existingReview ? 'Edit your review' : 'Review'} {location.name ? `of ${location.name}` : ''}
+                        </h1>
+                        {user && <div className="text-muted" style={{ fontSize: '0.9rem' }}>Posting as {user}</div>}
+                    </div>
                 </div>
 
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="formRating" className="mb-4">
-                        <div className="star-rating">
+                        <Form.Label>Your rating</Form.Label>
+                        <div className="star-rating" role="radiogroup" aria-label="Your rating">
                             {[...Array(5)].map((_, index) => (
-                                index < rating ?
-                                    <StarFill
-                                        key={index}
-                                        data-testid="star"
-                                        onClick={() => handleStarClick(index)}
-                                        style={{
-                                            cursor: 'pointer',
-                                            color: '#2e2e2e',
-                                            fontSize: '3rem'
-                                        }}
-                                    /> :
-                                    <Star
-                                        key={index}
-                                        data-testid="star"
-                                        onClick={() => handleStarClick(index)}
-                                        style={{
-                                            cursor: 'pointer',
-                                            color: '#e4e5e9',
-                                            fontSize: '3rem'
-                                        }}
-                                    />
+                                <button
+                                    type="button"
+                                    key={index}
+                                    data-testid="star"
+                                    role="radio"
+                                    aria-checked={rating === index + 1}
+                                    aria-label={`${index + 1} star${index === 0 ? '' : 's'}`}
+                                    onClick={() => handleStarClick(index)}
+                                    className="star-button"
+                                    style={{ color: index < rating ? '#c5050c' : '#e4e5e9' }}
+                                >
+                                    {index < rating ? <StarFill /> : <Star />}
+                                </button>
                             ))}
                         </div>
                     </Form.Group>
 
                     <Form.Group controlId="formTitle" className="mb-4">
+                        <Form.Label>Title</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={1}
@@ -196,6 +198,7 @@ const BadgerAddReviewPage = () => {
                     </Form.Group>
 
                     <Form.Group controlId="formReview" className="mb-4">
+                        <Form.Label>Review</Form.Label>
                         <Form.Control
                             as="textarea"
                             rows={5}
@@ -210,7 +213,7 @@ const BadgerAddReviewPage = () => {
                         {isSubmitting ? (
                             <Spinner animation="border" size="sm" />
                         ) : (
-                            existingReview ? 'Update Review' : 'Submit Review'
+                            existingReview ? 'Save changes' : 'Post review'
                         )}
                     </Button>
 
@@ -224,11 +227,12 @@ const BadgerAddReviewPage = () => {
                             {isDeleting ? (
                                 <Spinner animation="border" size="sm" />
                             ) : (
-                                'Delete Review'
+                                'Delete review'
                             )}
                         </Button>
                     )}
 
+                    {formError && <p className="form-error" role="alert">{formError}</p>}
                 </Form>
             </Card.Body>
         </Card>

@@ -44,7 +44,13 @@ export default function BadgerStudySpot() {
       }, []);
 
       // highlight this spot's building pin on the map while the page is open
-      const { setSelectedBuilding } = useLocationState();
+      const { setSelectedBuilding, buildings = [] } = useLocationState();
+      // Walking directions in Google Maps (no API key needed), by coordinates when we have them
+      const building = buildings.find((b) => b.name === state.building);
+      const directionsUrl = 'https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + (
+            building && building.latitude != null
+                  ? `${building.latitude},${building.longitude}`
+                  : encodeURIComponent(`${state.building || state.name}, Madison, WI`));
       useEffect(() => {
             if (state && state.building) setSelectedBuilding(state.building);
       }, [state && state.building]);
@@ -79,7 +85,7 @@ export default function BadgerStudySpot() {
                               <ReactAddReviewButton
                                     location={state}
                                     existingReview={userReview || null}
-                                    buttonText={userReview ? "Edit Review" : "Add Review"}
+                                    buttonText={userReview ? "Edit your review" : "Add review"}
                               />
                         </div>
                   );
@@ -91,13 +97,13 @@ export default function BadgerStudySpot() {
             <Card key={'Primary'} className="side-panel">
                   <Card.Header style={{ padding: '1.25rem 1.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                              <Button variant='outline-info' onClick={routeChange} aria-label="Back to search" style={{ borderRadius: '50%', height: '2.75rem', width: '2.75rem', flexShrink: 0 }}><ArrowLeft /></Button>
+                              <Button variant='outline-secondary' onClick={routeChange} aria-label="Back to search" style={{ borderRadius: '50%', height: '2.75rem', width: '2.75rem', flexShrink: 0 }}><ArrowLeft /></Button>
                               <div style={{ flex: 1, minWidth: 0 }}>
-                                    <Card.Title style={{ fontSize: '1.6rem', margin: 0, lineHeight: 1.2 }}>{state.name}</Card.Title>
+                                    <Card.Title as="h1" style={{ fontSize: '1.6rem', margin: 0, lineHeight: 1.2 }}>{state.name}</Card.Title>
                                     {state.building && <div className="text-muted" style={{ fontSize: '0.95rem' }}>{state.building}</div>}
                               </div>
                               {formatMiles(state.distance) && <Card.Subtitle className="text-muted" style={{ fontSize: '1.1rem', margin: 0, whiteSpace: 'nowrap' }}>{formatMiles(state.distance)}</Card.Subtitle>}
-                              <Button variant='primary' style={{ height: '2.5rem', flexShrink: 0 }}> Navigate</Button>
+                              <Button variant='outline-primary' as="a" href={directionsUrl} target="_blank" rel="noopener noreferrer" style={{ height: '2.5rem', flexShrink: 0, display: 'inline-flex', alignItems: 'center' }}>Directions</Button>
                         </div>
                   </Card.Header>
 
@@ -139,6 +145,8 @@ export default function BadgerStudySpot() {
                                                 name={review.title}
                                                 review={review.comment}
                                                 rating={review.rating}
+                                                author={review.user && review.user.name}
+                                                date={review.updatedAt || review.createdAt}
                                           />
                                     ))}
                               </ul>

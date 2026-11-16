@@ -34,8 +34,8 @@ jest.mock('@vis.gl/react-google-maps', () => ({
             {children}
         </div>
     ),
-    AdvancedMarker: ({ position, title, children }) => (
-        <div data-testid="marker" data-position={`${position.lat},${position.lng}`} title={title}>{children}</div>
+    AdvancedMarker: ({ position, children }) => (
+        <div data-testid="marker" data-position={`${position.lat},${position.lng}`}>{children}</div>
     ),
 }));
 
@@ -48,15 +48,16 @@ test("renders one pin per building", () => {
 
 test("pins show the review-weighted average rating", () => {
     renderMap();
+    const pin = (name) => document.querySelector(`.rating-pin[data-building="${name}"]`);
     // B1: (4*1 + 5*3) / 4 = 4.75 -> "4.8", with a spot count of 2
-    expect(screen.getByTitle(/^B1: rated 4\.8, 2 study spots$/)).toHaveTextContent("4.8");
-    expect(screen.getByTitle(/^B4: no reviews yet/)).toHaveTextContent("New");
+    expect(pin("B1")).toHaveTextContent("B1, rated ★4.82 spots");
+    expect(pin("B4")).toHaveTextContent("B4, ★New");
 });
 
 test("the hovered building's pin is highlighted", () => {
     renderMap();
-    expect(screen.getByTitle(/^B2:/).querySelector(".rating-pin")).toHaveClass("is-active");
-    expect(screen.getByTitle(/^B3:/).querySelector(".rating-pin")).not.toHaveClass("is-active");
+    expect(document.querySelector('.rating-pin[data-building="B2"]')).toHaveClass("is-active");
+    expect(document.querySelector('.rating-pin[data-building="B3"]')).not.toHaveClass("is-active");
 });
 
 test("renders map with correct zoom level", () => {

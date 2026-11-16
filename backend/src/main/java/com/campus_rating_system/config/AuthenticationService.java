@@ -10,7 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.Optional;
 
 import java.util.Date;
@@ -59,6 +61,10 @@ public class AuthenticationService {
      * @return the final config to be used by spring boot
      */
     public User signup(RegisterUserDto input) {
+        if (userRepository.findByEmail(input.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "An account with that email already exists");
+        }
         User user = new User();
         user.setName(input.getFullName());
         user.setEmail(input.getEmail());

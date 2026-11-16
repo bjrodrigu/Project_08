@@ -58,7 +58,7 @@ describe('BadgerAddReviewPage Component', () => {
         expect(screen.getByPlaceholderText('Share your opinion on undefined here!')).toBeInTheDocument();
 
         // Check for the submit button
-        expect(screen.getByText('Submit Review')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Post review' })).toBeInTheDocument();
     });
 
     it('allows the user to select a star rating', () => {
@@ -77,29 +77,20 @@ describe('BadgerAddReviewPage Component', () => {
         });
     });
 
-    it('displays an alert if the rating is not selected on submit', async () => {
-        const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
-
+    it('shows an inline error if no rating is selected', async () => {
         render(
             <BrowserRouter>
                 <BadgerAddReviewPage />
             </BrowserRouter>
         );
 
-        fireEvent.click(screen.getByText('Submit Review'));
+        fireEvent.submit(screen.getByRole('button', { name: 'Post review' }).closest('form'));
 
-        await waitFor(() => {
-            expect(alertMock).toHaveBeenCalledWith('Please select a rating before submitting your review.');
-        });
-
-        alertMock.mockRestore(); // Restore the original alert implementation
+        expect(await screen.findByRole('alert')).toHaveTextContent('Choose a star rating before posting.');
     });
-   
 
-    it('handles API errors gracefully', async () => {
+    it('shows an inline error when saving fails', async () => {
         fetch.mockRejectedValueOnce(new Error('Failed to submit the review'));
-        const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => { });
-
 
         render(
             <BrowserRouter>
@@ -107,24 +98,23 @@ describe('BadgerAddReviewPage Component', () => {
             </BrowserRouter>
         );
 
-        const stars = screen.getAllByTestId('star');
-        fireEvent.click(stars[4]); // Select the 5th star
+        fireEvent.click(screen.getAllByTestId('star')[4]); // 5 stars
+        fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Needs improvement' } });
+        fireEvent.change(screen.getByLabelText('Review'), { target: { value: 'It was too noisy.' } });
+        fireEvent.click(screen.getByRole('button', { name: 'Post review' }));
 
-        fireEvent.change(screen.getByPlaceholderText('Title your review here'), {
-            target: { value: 'Needs improvement' },
-        });
+        expect(await screen.findByRole('alert')).toHaveTextContent("Couldn't save your review. Try again.");
+    });
 
-        fireEvent.change(screen.getByPlaceholderText('Share your opinion on undefined here!'), {
-            target: { value: 'It was too noisy.' },
-        });
-
-        fireEvent.click(screen.getByText('Submit Review'));
-
-        await waitFor(() => {
-            expect(alertMock).toHaveBeenCalledWith('There was an error submitting your review.');
-        });
-
-        alertMock.mockRestore(); // Restore the original alert implementation
+    it('star buttons are keyboard-accessible radio options', () => {
+        render(
+            <BrowserRouter>
+                <BadgerAddReviewPage />
+            </BrowserRouter>
+        );
+        const three = screen.getByRole('radio', { name: '3 stars' });
+        fireEvent.click(three);
+        expect(three).toHaveAttribute('aria-checked', 'true');
     });
 
     it('navigates back to the previous page when the back button is clicked', () => {

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { API_BASE } from "../../api";
+import { useNotify } from '../contexts/ToastContext';
 
 export default function BadgerSignup() {
     const { user, setUser, login, setLogin } = useLoginState();
@@ -14,6 +15,7 @@ export default function BadgerSignup() {
     const fullName = useRef();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const notify = useNotify();
 
     //const link = "Backend-Api";
 
@@ -32,14 +34,14 @@ export default function BadgerSignup() {
         e.preventDefault();
         setError("");
         if (!validateEmail(usrEmail.current.value)) {
-            alert("You must provide a valid email!");
+            setError("Enter a valid email address.");
             return;
             //used to test. 
         } else if (passwordInput.current.value === "") {
-            alert("You must provide a password!");
+            setError("Choose a password.");
             return;
         } else if (confirmPasswordInput.current.value !== passwordInput.current.value) {
-            alert("Your passwords do not match!");
+            setError("The passwords don't match.");
             return;
         } 
 
@@ -60,18 +62,33 @@ export default function BadgerSignup() {
             });
 
             if (res.status === 409) {
-                setError("That username has already been taken!");
+                setError("An account with that email already exists. Log in instead.");
             } else if (res.ok) {
-                alert("Your registration is successful");
-                setLogin(true);
-                setUser(usrEmail.current.value);
-                localStorage.setItem("isLoggedIn", JSON.stringify(usrEmail.current.value));
-                navigate('/');
+                // Sign in right away so the new account has a token for reviews and favorites
+                const email = usrEmail.current.value;
+                const loginRes = await fetch(`${API_BASE}/user/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password: passwordInput.current.value })
+                });
+                const data = loginRes.ok ? await loginRes.json() : null;
+                if (data && data.token) {
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("tokenExpiration", Date.now() + data.expiresIn);
+                    localStorage.setItem("isLoggedIn", JSON.stringify(email));
+                    setLogin(true);
+                    setUser(email);
+                    notify("Account created. You're logged in.");
+                    navigate('/');
+                } else {
+                    notify("Account created. Log in to continue.");
+                    navigate('/login');
+                }
             } else {
-                setError("Registration failed, please try again.");
+                setError("Couldn't create the account. Try again.");
             }
         } catch (err) {
-            setError("An error occurred. Please try again later.");
+            setError("Couldn't reach the server. Check that the backend is running and try again.");
         } finally {
             setLoading(false); // turn off loading
         }
@@ -81,7 +98,7 @@ export default function BadgerSignup() {
             <Row style={{ width: '85vw', marginBottom: '2rem' }}>
                 <Col sm='2'>
                     <Button
-                        variant='outline-info'
+                        variant='outline-secondary' aria-label="Back"
                         onClick={routeChange}
                         className="page-back-button" style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
                     >
@@ -96,7 +113,7 @@ export default function BadgerSignup() {
             <div style={styles.pageContainer}>
                 <Card style={styles.card}>
                     <Card.Body>
-                        <h2 className="text-center mb-4">Sign up</h2>
+                        <h1 className="text-center mb-4" style={{ fontSize: '1.75rem' }}>Sign up</h1>
                         <Form onSubmit={handleRegister}>
 
                             <Form.Group controlId="Email" style={styles.formGroup}>
@@ -156,6 +173,7 @@ export default function BadgerSignup() {
                                 )}
                             </Button>
                         </Form>
+                        {error && <p className="form-error" role="alert">{error}</p>}
                     </Card.Body>
                 </Card>
             </div>
@@ -191,7 +209,6 @@ const styles = {
     button: {
         padding: '12px',
         fontSize: '16px',
-        backgroundColor: '#007bff',
         border: 'none',
         borderRadius: '5px',
     },

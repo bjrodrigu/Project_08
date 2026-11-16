@@ -6,7 +6,7 @@ import { MapContext } from '../contexts/MapContext';
 import { formatMiles } from "../../distance";
 
 // One study spot in the search list. The whole row is clickable; the spot name is
-// the real button so it also works from the keyboard and reads as a heading.
+// the real button so it also works from the keyboard and reads as a heading (h2 under the page h1).
 export default function BadgerSearchResult({ location, isFavorite, favoriteId, onFavoriteChange }) {
       const navigate = useNavigate();
       const { login } = useLoginState();
@@ -37,11 +37,11 @@ export default function BadgerSearchResult({ location, isFavorite, favoriteId, o
                   onMouseLeave={() => map.setHoveredBuilding && map.setHoveredBuilding(null)}
             >
                   <div className="spot-row-top">
-                        <h3 className="spot-name">
+                        <h2 className="spot-name">
                               <button type="button" onClick={(e) => { e.stopPropagation(); openSpot(); }}>
                                     {location.name}
                               </button>
-                        </h3>
+                        </h2>
                         {distance && <span className="spot-distance">{distance}</span>}
                         {login && (
                               <div className="spot-fav" onClick={(e) => e.stopPropagation()}

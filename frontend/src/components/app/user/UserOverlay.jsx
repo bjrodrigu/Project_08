@@ -32,7 +32,9 @@ export default function ReactRegisterButton() {
                                     onClick={() => { navigate("/userProfile") }}>
                                     Your Profile
                               </Dropdown.Item>
-                              <Dropdown.Item variant="outline-secondary" >
+                              <Dropdown.Item
+                                    variant="outline-secondary"
+                                    onClick={() => { navigate("/userProfile#favorites") }}>
                                     Favorites
                               </Dropdown.Item>
                               <Dropdown.Item

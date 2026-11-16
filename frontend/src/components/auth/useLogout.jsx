@@ -2,11 +2,13 @@ import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { useLoginState } from '../contexts/LoginContext';
+import { useNotify } from '../contexts/ToastContext';
 
 export default function useLogout() {
     const navigate = useNavigate();
     //const link = "Backend-Api";
     const { user, setUser, login, setLogin } = useLoginState();
+    const notify = useNotify();
 
     const handleLogout = () => {
         // fetch(link, {
@@ -33,7 +35,7 @@ export default function useLogout() {
         localStorage.removeItem("isLoggedIn");
         setLogin(false);
         setUser(null);
-        alert("You have been logged out!");
+        notify("Logged out");
         navigate('/');
 
 

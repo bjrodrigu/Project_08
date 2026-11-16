@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { API_BASE } from "../../api";
+import { useNotify } from '../contexts/ToastContext';
 
 
 export default function BadgerLogin() {
@@ -16,6 +17,7 @@ export default function BadgerLogin() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [redirecting, setRedirecting] = useState(false);
+  const notify = useNotify();
   // check login status
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -51,7 +53,7 @@ export default function BadgerLogin() {
     e.preventDefault();
 
     if (usernameInput.current.value === "" || passwordInput.current.value === "") {
-      alert("You must provide both a username and password!");
+      setError("Enter your email and password.");
       return;
     }
 
@@ -70,8 +72,8 @@ export default function BadgerLogin() {
       })
     })
       .then(res => {
-        if (res.status === 401) {
-          alert("Error: Incorrect email or password, please try again.");
+        if (res.status === 401 || res.status === 403) {
+          setError("That email and password don't match. Try again.");
         } else if (res.ok) {
           return res.json();
         } else {
@@ -91,7 +93,7 @@ export default function BadgerLogin() {
 
 
 
-          alert("Your login is successful");
+          notify("Logged in");
           setLogin(true);
           setUser(usernameInput.current.value);
           localStorage.setItem("isLoggedIn", JSON.stringify(usernameInput.current.value));
@@ -100,7 +102,7 @@ export default function BadgerLogin() {
         }
       })
       .catch(() => {
-        setError("Login failed, please try again later.");
+        setError("Couldn't reach the server. Check that the backend is running and try again.");
       })
       .finally(() => {
         setLoading(false);
@@ -117,7 +119,7 @@ export default function BadgerLogin() {
       <Row style={{ width: '85vw', marginBottom: '2rem' }}>
         <Col sm='2'>
           <Button
-            variant='outline-info'
+            variant='outline-secondary' aria-label="Back"
             onClick={routeChange}
             className="page-back-button" style={{ top: '5vh', left: '5vw', borderRadius: '50%', height: '3rem', width: '3rem', position: 'fixed' }}
           >
@@ -129,15 +131,17 @@ export default function BadgerLogin() {
       <div style={styles.pageContainer}>
         <Card style={styles.card}>
           <Card.Body>
-            <h2 className="text-center mb-4">Login</h2>
+            <h1 className="text-center mb-4" style={{ fontSize: '1.75rem' }}>Log in</h1>
             <Form onSubmit={handleLogin}>
               <Form.Group controlId="userName" style={styles.formGroup}>
-                <Form.Label>Username</Form.Label>
+                <Form.Label>Email</Form.Label>
                 <Form.Control
+                  type="email"
+                  autoComplete="email"
                   ref={usernameInput}
                   isInvalid={usernameInput.current && !usernameInput.current.value}
                   style={{ padding: '10px', borderRadius: '5px' }}
-                  placeholder="Enter your username"
+                  placeholder="you@example.com"
                 />
               </Form.Group>
 
@@ -145,6 +149,7 @@ export default function BadgerLogin() {
                 <Form.Label>Password</Form.Label>
                 <Form.Control
                   type="password"
+                  autoComplete="current-password"
                   ref={passwordInput}
                   isInvalid={passwordInput.current && !passwordInput.current.value}
                   style={{ padding: '10px', borderRadius: '5px' }}
@@ -164,11 +169,11 @@ export default function BadgerLogin() {
                     <Spinner animation="border" size="sm" /> Logging in
                   </>
                 ) : (
-                  'Login'
+                  'Log in'
                 )}
               </Button>
             </Form>
-            {error && <p className="text-danger mt-3">{error}</p>}
+            {error && <p className="form-error" role="alert">{error}</p>}
           </Card.Body>
         </Card>
       </div>
@@ -203,7 +208,6 @@ const styles = {
   button: {
     padding: '12px',
     fontSize: '16px',
-    backgroundColor: '#007bff',
     border: 'none',
     borderRadius: '5px',
   },

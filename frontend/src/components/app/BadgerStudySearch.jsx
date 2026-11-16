@@ -278,6 +278,7 @@ export default function BadgerStudySearch() {
       return <>
             <Card key={'Primary'} className="side-panel">
                   <div className="panel-search">
+                        <h1 className="visually-hidden">Study spots at UW–Madison</h1>
                         <Form onSubmit={(e) => e.preventDefault()} role="search">
                               <Form.Group className="search mb-2" controlId="spot-search">
                                     <Form.Label visuallyHidden>Search study spots</Form.Label>

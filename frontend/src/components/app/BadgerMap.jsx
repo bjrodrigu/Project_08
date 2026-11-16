@@ -77,21 +77,23 @@ export default function BadgerMap() {
                     )}
                     {buildingPins.map((pin) => {
                         const active = pin.name === hoveredBuilding || pin.name === selectedBuilding;
-                        const label = pin.rating != null
-                            ? `${pin.name}: rated ${pin.rating.toFixed(1)}, ${pin.spots} study spot${pin.spots === 1 ? '' : 's'}`
-                            : `${pin.name}: no reviews yet, ${pin.spots} study spot${pin.spots === 1 ? '' : 's'}`;
                         return (
                             <AdvancedMarker
                                 key={pin.name}
                                 position={{ lat: pin.lat, lng: pin.lng }}
-                                title={label}
                                 zIndex={active ? 10 : 1}
                                 onClick={() => selectBuilding(pin.name)}
                             >
-                                <div className={`rating-pin${active ? ' is-active' : ''}${pin.rating == null ? ' is-unrated' : ''}`}>
-                                    <span className="star" aria-hidden="true">★</span>
+                                {/* The accessible name is the visible text plus hidden context,
+                                    e.g. "Memorial Union, rated ★ 4.0, 2 spots" */}
+                                <div className={`rating-pin${active ? ' is-active' : ''}${pin.rating == null ? ' is-unrated' : ''}`}
+                                    data-building={pin.name}>
+                                    <span className="visually-hidden">{pin.name}, {pin.rating != null ? 'rated ' : ''}</span>
+                                    <span className="star">★</span>
                                     {pin.rating != null ? pin.rating.toFixed(1) : 'New'}
-                                    {pin.spots > 1 && <span className="spots">{pin.spots}</span>}
+                                    {pin.spots > 1 && (
+                                        <span className="spots">{pin.spots}<span className="visually-hidden"> spots</span></span>
+                                    )}
                                 </div>
                             </AdvancedMarker>
                         );

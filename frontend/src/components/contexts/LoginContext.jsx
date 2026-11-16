@@ -2,9 +2,19 @@ import React, { useContext, createContext, useState, useEffect } from "react";
 
 const LoginContext = createContext();
 const LoginContextProvider = ({ children }) => {
-      // TODO: Remove test user
-      const [user, setUser] = useState(null);
-      const [login, setLogin] = useState(false);
+      // Restore the session on page load if the stored token hasn't expired
+      const restored = (() => {
+            try {
+                  const token = localStorage.getItem("token");
+                  const expires = Number(localStorage.getItem("tokenExpiration"));
+                  if (token && expires && Date.now() < expires) {
+                        return JSON.parse(localStorage.getItem("isLoggedIn") || "null");
+                  }
+            } catch (e) { /* storage unavailable: start logged out */ }
+            return null;
+      })();
+      const [user, setUser] = useState(restored);
+      const [login, setLogin] = useState(!!restored);
 
 
       // TODO: fetch user & set login state via useEffect

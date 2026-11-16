@@ -5,11 +5,11 @@ import { useNavigate } from 'react-router-dom';
 const ReactAddReviewButton = ({ location, existingReview }) => {
     const navigate = useNavigate();
 
-    const buttonText = existingReview ? 'Edit Review' : 'Add Review';
+    const buttonText = existingReview ? 'Edit your review' : 'Add review';
 
     return (
         <Button
-            variant="secondary"
+            variant="primary"
             onClick={() =>
                 navigate('/addReview', {
                     state: {
