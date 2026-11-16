@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Select from 'react-select';
 import { Form, Card, Col, Row, ListGroup, ListGroupItem, Spinner } from 'react-bootstrap';
 import BadgerSearchResult from './BadgerSearchResult';
@@ -41,10 +41,31 @@ const options = [
       { value: 5, label: "Most Reviews" },
 ];
 
+// react-select styled to match the Bootstrap inputs and the brand colors
+const selectStyles = {
+      control: (base, state) => ({
+            ...base,
+            minHeight: '2.4rem',
+            borderRadius: '0.6rem',
+            borderColor: state.isFocused ? '#12324a' : '#dee2e6',
+            boxShadow: state.isFocused ? '0 0 0 3px rgba(197, 5, 12, 0.2)' : 'none',
+            '&:hover': { borderColor: '#12324a' },
+      }),
+      placeholder: (base) => ({ ...base, color: '#5e6e7c' }),
+      multiValue: (base) => ({ ...base, borderRadius: '999px', background: '#eef1f4' }),
+      option: (base, state) => ({
+            ...base,
+            background: state.isSelected ? '#12324a' : state.isFocused ? '#eef1f4' : '#fff',
+            color: state.isSelected ? '#fff' : '#12324a',
+      }),
+      menu: (base) => ({ ...base, zIndex: 20 }),
+};
+
 // Primary Component of homepage. Has search, and shows results
 // TODO: Implement advanced filtered components, and filtering on updating form state
 export default function BadgerStudySearch() {
-      const { userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, locationsLoaded = true } = useLocationState();
+      const { userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, locationsLoaded = true, selectedBuilding } = useLocationState();
+      const listRef = useRef(null);
       const [query, setQuery] = useState('');
       const [filterData, setFilterData] = useState([]);
       const params = ['name', 'distance', 'description', 'rating'];
@@ -246,82 +267,68 @@ export default function BadgerStudySearch() {
       }, [query, sort, chosenTags, locationList]);
 
 
+      // When a building's pin is clicked, bring its first spot into view.
+      useEffect(() => {
+            if (!selectedBuilding || !listRef.current) return;
+            const row = [...listRef.current.querySelectorAll('[data-building]')]
+                  .find((el) => el.dataset.building === selectedBuilding);
+            if (row) row.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, [selectedBuilding, filterData]);
+
       return <>
             <Card key={'Primary'} className="side-panel">
-                  <Card.Header style={{ padding: '1.5rem 2rem 1rem' }}>
-                        <Form>
-                              <Form.Group className="search" controlId="exampleForm.ControlInput1">
-                                    <Form.Control onInput={e => { setQuery(e.target.value) }} type="text" placeholder="Search for a Location" style={{ height: '3rem', width: 'fit' }} />
+                  <div className="panel-search">
+                        <Form onSubmit={(e) => e.preventDefault()} role="search">
+                              <Form.Group className="search mb-2" controlId="spot-search">
+                                    <Form.Label visuallyHidden>Search study spots</Form.Label>
+                                    <Form.Control onInput={e => { setQuery(e.target.value) }} type="search" placeholder="Search for a Location" />
                               </Form.Group>
-                              <br />
-                              <Row>
+                              <Row className="g-2">
                                     <Col>
                                           <Select
+                                                aria-label="Sort study spots"
                                                 placeholder={'Sort by'}
                                                 onChange={e => { setSort(e.value) }}
                                                 options={options}
+                                                styles={selectStyles}
                                           />
                                     </Col>
                                     <Col>
                                           <Select
+                                                aria-label="Filter by tags"
                                                 placeholder={'Tags'}
                                                 isMulti
                                                 onChange={handleChange}
                                                 options={tags}
-                                          >
-                                          </Select>
+                                                styles={selectStyles}
+                                          />
                                     </Col>
                               </Row>
-                              {/* <Form.Select size='sm' style={{width: '5rem'}} onChange={e => setSort(e.target.value)} defaultValue={1}>
-                                    <option disabled={true}><Filter style={{backgroundSize: '10px'}} />Sort</option>
-                                    <option value={1}>Distance Ascending<ArrowUp /></option>
-                                    <option value={2}>Distance Descending<ArrowDown /></option>
-                              </Form.Select> */}
                         </Form>
-                  </Card.Header>
-                  <Card.Body style={{ paddingLeft: '2rem', paddingRight: '2rem', paddingTop: 0 }}>
+                  </div>
+                  <Card.Body ref={listRef} style={{ padding: 0 }}>
                         {loading || !locationsLoaded ? (
-                              <div
-                                    style={{
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          height: '100%',
-                                    }}
-                              >
+                              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '12rem' }}>
                                     <Spinner animation="border" role="status" />
-
                               </div>
                         ) : filterData.length === 0 ? (
-                              <Card key={'Primary'} bg={'light'} style={{ borderRadius: '1.5rem', position: "relative", width: 'auto', minHeight: '12rem', marginTop: '2rem' }}>
-                                    <div style={{
-                                          display: 'flex',
-                                          alignItems: 'center',
-                                          justifyContent: 'center',
-                                          height: '100%'
-                                    }}>
-                                          No Results
-                                    </div>
-                              </Card>
+                              <p className="spot-empty">
+                                    {query || chosenTags.length
+                                          ? 'No spots match. Try a different name or fewer tags.'
+                                          : 'No study spots yet.'}
+                              </p>
                         ) : (
-                              // console.log("FilterData: ", filterData),
-                              // console.log("favLocations", favLocationList),
-                              // didn't find locationId in locationList. Assume each building's name is unique
-                              filterData.map((location) => {
-                                    const isFavorite = favLocationList.some(fav => fav.name === location.name);
-                                    const favoriteId = favLocationList.find(fav => fav.name === location.name)?.favoriteId;
-
-                                    // console.log(isFavorite);
-                                    // console.log("----");
-                                    // console.log(favoriteId);
-                                    return <BadgerSearchResult key={location.name}
-                                          location={location}
-                                          isFavorite={isFavorite}
-                                          favoriteId={favoriteId}
-                                          onFavoriteChange={(name, shouldFavorite) => handleFavoriteChange(name, shouldFavorite, favoriteId)} />;
-                              })
-                        )
-                        }
+                              <ul className="spot-list" aria-label="Study spots">
+                                    {filterData.map((location) => {
+                                          const fav = favLocationList.find(f => f.name === location.name);
+                                          return <BadgerSearchResult key={location.name}
+                                                location={location}
+                                                isFavorite={!!fav}
+                                                favoriteId={fav && fav.favoriteId}
+                                                onFavoriteChange={(name, shouldFavorite) => handleFavoriteChange(name, shouldFavorite, fav && fav.favoriteId)} />;
+                                    })}
+                              </ul>
+                        )}
                   </Card.Body>
             </Card>
       </>;

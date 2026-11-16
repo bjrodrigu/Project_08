@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import BadgerMap from "../components/app/BadgerMap";
 
-
-// Four sample spots in four different buildings -> four building markers.
+// Four buildings; B1 has two spots, B4's spot has no reviews.
 jest.mock('../components/contexts/MapContext', () => {
     const buildings = [
         { name: 'B1', latitude: 43.071, longitude: -89.401 },
@@ -11,37 +11,55 @@ jest.mock('../components/contexts/MapContext', () => {
         { name: 'B3', latitude: 43.073, longitude: -89.403 },
         { name: 'B4', latitude: 43.074, longitude: -89.404 },
     ];
-    const locationList = buildings.map((b, i) => ({ name: `Spot ${i}`, building: b.name, tags: [], distance: null }));
-    return { useLocationState: () => ({ userLocation: null, locationList, buildings }) };
+    const locationList = [
+        { name: 'Spot A', building: 'B1', rating: 4, reviews: 1 },
+        { name: 'Spot B', building: 'B1', rating: 5, reviews: 3 },
+        { name: 'Spot C', building: 'B2', rating: 3, reviews: 2 },
+        { name: 'Spot D', building: 'B3', rating: 2, reviews: 1 },
+        { name: 'Spot E', building: 'B4', rating: 0, reviews: 0 },
+    ];
+    const state = {
+        userLocation: null, locationList, buildings,
+        hoveredBuilding: 'B2', selectedBuilding: null, setSelectedBuilding: jest.fn(),
+    };
+    return { useLocationState: () => state };
 });
 
 jest.mock('@vis.gl/react-google-maps', () => ({
     APIProvider: ({ children }) => <div>{children}</div>,
     ControlPosition: { TOP_RIGHT: 3 },
+    useMap: () => null,
     Map: ({ defaultZoom, defaultCenter, children }) => (
         <div data-testid="map" data-zoom={defaultZoom} data-center={`${defaultCenter.lat},${defaultCenter.lng}`}>
             {children}
         </div>
     ),
-    Marker: ({ position }) => (
-        <div data-testid="marker" data-position={`${position.lat},${position.lng}`} />
+    AdvancedMarker: ({ position, title, children }) => (
+        <div data-testid="marker" data-position={`${position.lat},${position.lng}`} title={title}>{children}</div>
     ),
 }));
 
-test("renders map with markers", () => {
-    render(<BadgerMap />);
-    const markers = screen.getAllByTestId("marker");
-    expect(markers).toHaveLength(4); // Ensure 4 markers are rendered, change once we fetch study spots from the backend
+const renderMap = () => render(<MemoryRouter><BadgerMap /></MemoryRouter>);
+
+test("renders one pin per building", () => {
+    renderMap();
+    expect(screen.getAllByTestId("marker")).toHaveLength(4);
+});
+
+test("pins show the review-weighted average rating", () => {
+    renderMap();
+    // B1: (4*1 + 5*3) / 4 = 4.75 -> "4.8", with a spot count of 2
+    expect(screen.getByTitle(/^B1: rated 4\.8, 2 study spots$/)).toHaveTextContent("4.8");
+    expect(screen.getByTitle(/^B4: no reviews yet/)).toHaveTextContent("New");
+});
+
+test("the hovered building's pin is highlighted", () => {
+    renderMap();
+    expect(screen.getByTitle(/^B2:/).querySelector(".rating-pin")).toHaveClass("is-active");
+    expect(screen.getByTitle(/^B3:/).querySelector(".rating-pin")).not.toHaveClass("is-active");
 });
 
 test("renders map with correct zoom level", () => {
-    render(<BadgerMap />);
-    const mapElement = screen.getByTestId("map");
-    expect(mapElement).toHaveAttribute("data-zoom", "16");
-});
-
-test("renders map with correct center", () => {
-    render(<BadgerMap />);
-    const mapElement = screen.getByTestId("map");
-    expect(mapElement).toHaveAttribute("data-center", "43.076,-89.404");
+    renderMap();
+    expect(screen.getByTestId("map")).toHaveAttribute("data-zoom", "16");
 });

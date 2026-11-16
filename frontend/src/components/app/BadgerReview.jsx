@@ -1,20 +1,17 @@
-import { Card } from 'react-bootstrap';
-import { useNavigate } from 'react-router';
-import { useEffect, useState, useContext } from 'react';
 import StarRatings from 'react-star-ratings';
 
-// Component to display details for a review. Has Title, description and rating
-// TODO: Needs to show user profile/name
-export default function BadgerSearchResult(review) {
-      let [color, setColor] = useState('Light');
-
-      return <>
-            <Card onMouseEnter={() => { setColor('Info'); }} onMouseLeave={() => { setColor('Light'); }} style={{ padding: '1rem', height: 'auto', borderRadius: '1.5rem', marginTop: '1rem' }}>
-                  <Card.Title>{review.name}</Card.Title>
-                  <StarRatings rating={review.rating} numberOfStars={5} starRatedColor='black' starDimension='1.5rem' />
-                  <br />
-                  <p>{review.review}</p>
-            </Card>
-      </>
-
+// One review in a spot's review list: title, rating and comment.
+// TODO (docs/UI_BACKLOG.md): show the reviewer's name and the date.
+export default function BadgerReview({ name, rating, review }) {
+      return (
+            <li className="review-row">
+                  <div className="review-top">
+                        <h3 className="review-title">{name}</h3>
+                        <StarRatings rating={Number(rating) || 0} numberOfStars={5}
+                              starRatedColor="#c5050c" starEmptyColor="#d9dee3"
+                              starDimension="0.95rem" starSpacing="0" />
+                  </div>
+                  {review && <p className="review-text">{review}</p>}
+            </li>
+      );
 }

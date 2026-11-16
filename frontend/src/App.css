@@ -31,7 +31,50 @@
 :root {
   --header-h: 56px;
   --brand-red: #c5050c;
-  --brand-ink: #1f3448;
+  --brand-red-dark: #9b0000;
+  --brand-ink: #12324a;
+  --slate: #5e6e7c;
+  --hairline: #e3e7eb;
+  --surface: #ffffff;
+  --page: #eef1f4;
+  --font-display: 'Red Hat Display', 'Red Hat Text', -apple-system, sans-serif;
+  --font-text: 'Red Hat Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* html:root outranks Bootstrap's :root, which loads after this file */
+html:root {
+  --bs-body-font-family: var(--font-text);
+  --bs-body-color: var(--brand-ink);
+  --bs-primary: var(--brand-ink);
+  --bs-primary-rgb: 18, 50, 74;
+  --bs-link-color: var(--brand-red);
+  --bs-link-hover-color: var(--brand-red-dark);
+  --bs-focus-ring-color: rgba(197, 5, 12, 0.3);
+}
+
+/* page background (outranks Bootstrap's body rule); cards and inputs stay white */
+html body {
+  background-color: var(--page);
+}
+
+h1, h2, h3, h4, .card-title {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* Primary buttons in the logo's navy instead of Bootstrap blue */
+.btn-primary {
+  --bs-btn-bg: var(--brand-ink);
+  --bs-btn-border-color: var(--brand-ink);
+  --bs-btn-hover-bg: #0b2335;
+  --bs-btn-hover-border-color: #0b2335;
+  --bs-btn-active-bg: #0b2335;
+  --bs-btn-active-border-color: #0b2335;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(197, 5, 12, 0.45);
+  outline-offset: 2px;
 }
 
 /* Top bar with the logo and the login / user menu */
@@ -56,6 +99,7 @@
   align-items: center;
   gap: 0.5rem;
   color: var(--brand-ink);
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.3rem;
   letter-spacing: -0.01em;
@@ -102,6 +146,286 @@
   overflow-y: auto;
 }
 
+/* ---------- Spot list ---------- */
+.panel-search {
+  padding: 1.25rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+}
+
+.panel-search .form-control {
+  height: 2.75rem;
+  border-radius: 0.6rem;
+}
+
+.spot-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.spot-row {
+  position: relative;
+  padding: 1.1rem 1.5rem 1.1rem 1.75rem;
+  border-bottom: 1px solid var(--hairline);
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.spot-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: transparent;
+}
+
+.spot-row:hover,
+.spot-row.is-highlighted {
+  background: #f6f8fa;
+}
+
+.spot-row.is-highlighted::before {
+  background: var(--brand-red);
+}
+
+.spot-row-top {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.spot-name {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* The name is the row's real button, so keyboard users can open a spot */
+.spot-name button {
+  all: unset;
+  cursor: pointer;
+  color: var(--brand-ink);
+}
+
+.spot-name button:focus-visible {
+  outline: 3px solid rgba(197, 5, 12, 0.45);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.spot-distance {
+  color: var(--slate);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.spot-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  margin-top: 0.3rem;
+  color: var(--slate);
+  font-size: 0.88rem;
+}
+
+.spot-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--brand-ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.spot-rating .count {
+  color: var(--slate);
+  font-weight: 400;
+}
+
+.spot-description {
+  margin: 0.45rem 0 0;
+  max-width: 60ch;
+  color: #33475a;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.spot-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.6rem;
+}
+
+.spot-tag {
+  padding: 0.1rem 0.55rem;
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  color: var(--slate);
+  font-size: 0.78rem;
+  font-weight: 500;
+  background: var(--surface);
+}
+
+.spot-fav {
+  flex-shrink: 0;
+}
+
+.spot-empty {
+  padding: 3rem 1.5rem;
+  color: var(--slate);
+  text-align: center;
+}
+
+/* ---------- Spot page ---------- */
+.spot-summary {
+  padding: 1rem 1.5rem 1.25rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.spot-summary .spot-rating {
+  font-size: 1rem;
+}
+
+.spot-description--full {
+  display: block;
+  -webkit-line-clamp: unset;
+  margin-top: 0.6rem;
+  font-size: 1rem;
+}
+
+.reviews-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem 0.5rem;
+}
+
+.reviews-head h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.review-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.review-row {
+  padding: 0.9rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.review-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.review-title {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 600;
+}
+
+.review-text {
+  margin: 0.35rem 0 0;
+  max-width: 60ch;
+  color: #33475a;
+  line-height: 1.5;
+}
+
+/* ---------- Map rating pins (the signature element) ---------- */
+.rating-pin {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.55rem;
+  border-radius: 0.55rem;
+  background: var(--brand-red);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  box-shadow: 0 2px 6px rgba(18, 50, 74, 0.35);
+  transform-origin: 50% 100%;
+  transition: transform 140ms ease, background-color 140ms ease;
+  cursor: pointer;
+}
+
+.rating-pin::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom: 0;
+  border-top-color: inherit;
+  border-top-color: var(--pin-color, var(--brand-red));
+}
+
+.rating-pin .star {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.rating-pin .spots {
+  margin-left: 0.15rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.rating-pin.is-unrated {
+  --pin-color: var(--slate);
+  background: var(--slate);
+}
+
+.rating-pin.is-active {
+  --pin-color: var(--brand-ink);
+  background: var(--brand-ink);
+  transform: scale(1.18);
+}
+
+.you-pin {
+  width: 16px;
+  height: 16px;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  background: #1a73e8;
+  box-shadow: 0 0 0 4px rgba(26, 115, 232, 0.25);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rating-pin,
+  .spot-row {
+    transition: none;
+  }
+}
+
 .page-back-button {
   top: calc(var(--header-h) + 1rem) !important;
 }
@@ -140,6 +464,21 @@
 
   .side-panel > .card-header {
     padding-top: 1rem !important;
+  }
+
+  .panel-search {
+    padding: 1rem;
+  }
+
+  .spot-row {
+    padding: 0.95rem 1rem 0.95rem 1.25rem;
+  }
+
+  .spot-summary,
+  .reviews-head,
+  .review-row {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
 

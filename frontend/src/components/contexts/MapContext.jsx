@@ -120,6 +120,11 @@ const MapContextProvider = ({ children }) => {
 
       const [userLocation, setUserLocation] = useState(null);
 
+      // Links the map and the list: hovering a spot highlights its building's pin,
+      // clicking a pin selects that building and the list scrolls to its spots.
+      const [hoveredBuilding, setHoveredBuilding] = useState(null);
+      const [selectedBuilding, setSelectedBuilding] = useState(null);
+
       // Attach a straight-line (haversine) distance in miles from the user to each
       // spot's building. distance is null when location or building coords are missing.
       const locationList = useMemo(() => rawLocationList.map((loc) => {
@@ -131,7 +136,7 @@ const MapContextProvider = ({ children }) => {
       }), [rawLocationList, buildings, userLocation]);
 
       return (
-            <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, fetchLocations, locationsLoaded }}>
+            <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, fetchLocations, locationsLoaded, hoveredBuilding, setHoveredBuilding, selectedBuilding, setSelectedBuilding }}>
                   {children}
             </MapContext.Provider>
       );

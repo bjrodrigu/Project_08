@@ -16,7 +16,7 @@ jest.mock('../contexts/MapContext', () => {
             setLocationList: jest.fn(),
             buildings: [], setBuildings: jest.fn(), fetchLocations: jest.fn(),
       };
-      return { useLocationState: () => state };
+      return { useLocationState: () => state, MapContext: require('react').createContext(state) };
 });
 
 beforeEach(() => {

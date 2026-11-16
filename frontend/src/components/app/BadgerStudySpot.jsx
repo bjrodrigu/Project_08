@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Card, Button, ListGroup, Spinner } from 'react-bootstrap';
+import { Card, Button, Spinner } from 'react-bootstrap';
+import StarRatings from 'react-star-ratings';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BadgerReview from '../app/BadgerReview';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
+import { useLocationState } from '../contexts/MapContext';
 import ReactAddReviewButton from './ReactAddReviewButton';
 import { API_BASE } from "../../api";
 import { formatMiles } from "../../distance";
@@ -11,34 +13,6 @@ import { formatMiles } from "../../distance";
 
 // Component to display details, images and reviews for a particular location
 export default function BadgerStudySpot() {
-
-      // styles for no reviews message
-      const containerStyle = {
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '2rem',
-            border: '2px dashed #ccc',
-            borderRadius: '10px',
-            backgroundColor: '#f9f9f9',
-            color: '#555',
-            textAlign: 'center',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-            margin: '2rem auto',
-            width: '80%',
-            maxWidth: '600px',
-      };
-      const headingStyle = {
-            fontSize: '1.8rem',
-            color: '#333',
-            marginBottom: '0.5rem',
-      };
-      const paragraphStyle = {
-            fontSize: '1rem',
-            color: '#777',
-      };
-
 
       // retrieve the currently selected location via useLocation and save to a state object
       // retrieve and unpack user state
@@ -69,6 +43,12 @@ export default function BadgerStudySpot() {
             fetchReviews();
       }, []);
 
+      // highlight this spot's building pin on the map while the page is open
+      const { setSelectedBuilding } = useLocationState();
+      useEffect(() => {
+            if (state && state.building) setSelectedBuilding(state.building);
+      }, [state && state.building]);
+
       // function to fetch reviews from the API for a specific location
       const [reviews, setReviews] = useState([]);
       const [loading, setLoading] = useState(false);
@@ -95,7 +75,7 @@ export default function BadgerStudySpot() {
             if (login) {
                   const userReview = reviews.find((review) => review.user.username === user);
                   return (
-                        <div style={{ margin: '1rem', textAlign: 'right' }}>
+                        <div>
                               <ReactAddReviewButton
                                     location={state}
                                     existingReview={userReview || null}
@@ -123,45 +103,50 @@ export default function BadgerStudySpot() {
 
 
 
-                  <Card.Body style={{ padding: '1rem' }}>
-                        <ListGroup variant='flush'>
-                              <ListGroup.Item>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                          <h2 style={{ margin: 0 }}>Reviews</h2>
-                                          {renderAddReviewButton()}
-                                    </div>
-                              </ListGroup.Item>
-                              {loading ? (
-                                    <div
-                                          style={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                height: '100%',
-                                                paddingTop: '50px'
-                                          }}
-                                    >
-                                          <Spinner animation="border" role="status" />
-
-                                    </div>
-                              ) : (
-                                    reviews.length > 0 ? (
-                                          reviews.map((review) => (
-                                                <BadgerReview
-                                                      key={review.reviewId}
-                                                      name={review.title}
-                                                      review={review.comment}
-                                                      rating={review.rating}
-                                                />
-                                          ))
-                                    ) : (
-                                          <div style={containerStyle}>
-                                                <h2 style={headingStyle}>No Reviews Yet</h2>
-                                                <p style={paragraphStyle}>Be the first to leave a review and share your experience!</p>
+                  <Card.Body style={{ padding: 0 }}>
+                        {(state.description || (state.tags && state.tags.length > 0)) && (
+                              <div className="spot-summary">
+                                    {state.reviews > 0 && (
+                                          <div className="spot-rating">
+                                                <StarRatings rating={Number(state.rating) || 0} numberOfStars={5}
+                                                      starRatedColor="#c5050c" starEmptyColor="#d9dee3"
+                                                      starDimension="1.05rem" starSpacing="0" />
+                                                {Number(state.rating || 0).toFixed(1)}
+                                                <span className="count">({state.reviews} review{state.reviews === 1 ? '' : 's'})</span>
                                           </div>
-                                    )
-                              )}
-                        </ListGroup>
+                                    )}
+                                    {state.description && <p className="spot-description spot-description--full">{state.description}</p>}
+                                    {state.tags && state.tags.length > 0 && (
+                                          <div className="spot-tags">
+                                                {state.tags.map((tag) => <span className="spot-tag" key={tag}>{tag}</span>)}
+                                          </div>
+                                    )}
+                              </div>
+                        )}
+                        <div className="reviews-head">
+                              <h2>Reviews</h2>
+                              {renderAddReviewButton()}
+                        </div>
+                        {loading ? (
+                              <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem 0' }}>
+                                    <Spinner animation="border" role="status" />
+                              </div>
+                        ) : reviews.length > 0 ? (
+                              <ul className="review-list">
+                                    {reviews.map((review) => (
+                                          <BadgerReview
+                                                key={review.reviewId}
+                                                name={review.title}
+                                                review={review.comment}
+                                                rating={review.rating}
+                                          />
+                                    ))}
+                              </ul>
+                        ) : (
+                              <p className="spot-empty">
+                                    {login ? 'No reviews yet. Add the first one.' : 'No reviews yet. Log in to add the first one.'}
+                              </p>
+                        )}
                   </Card.Body>
             </Card>
       </>
