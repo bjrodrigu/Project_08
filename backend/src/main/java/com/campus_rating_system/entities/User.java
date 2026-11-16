@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -13,7 +14,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "User")
-@JsonIgnoreProperties({ "reviews" })
+@JsonIgnoreProperties({ "reviews", "password", "authorities", "accountNonExpired",
+    "accountNonLocked", "credentialsNonExpired", "enabled" })
 // Added to prevent infinite recursive calls between user and reviews
 public class User implements UserDetails {
 
@@ -25,6 +27,7 @@ public class User implements UserDetails {
     @Column(name = "name")
     private String fullName;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -65,6 +68,7 @@ public class User implements UserDetails {
         this.fullName = name;
     }
 
+    @JsonIgnore
     @Override
     public String getPassword() {
         return password;
@@ -119,26 +123,31 @@ public class User implements UserDetails {
         this.favorites = favorites;
     }
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;

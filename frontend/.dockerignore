@@ -1,4 +1,8 @@
 /node_modules
 build
+coverage
 .gitignore
 Dockerfile
+# Never bake local env files (they hold the real Maps key) into the image.
+.env
+.env.*

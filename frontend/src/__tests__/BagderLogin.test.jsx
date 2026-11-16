@@ -57,7 +57,7 @@ describe("BadgerLogin Component", () => {
                 setTimeout(() => {
                     resolve({
                         ok: true,
-                        json: () => Promise.resolve({}),
+                        json: () => Promise.resolve({ token: "test-token", expiresIn: 3600000 }),
                     });
                 }, 100); // 100ms delay to simulate loading
             })

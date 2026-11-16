@@ -35,11 +35,47 @@ Backend layout: `controllers → services → repositories (JPA) → entities`, 
 
 ## Running locally
 
+Requires Docker. One command starts MySQL, the Spring Boot API and the React app:
+
 ```sh
-# set your Google Maps API key in frontend/src/components/app/BadgerMap.jsx
-# and frontend/src/components/contexts/MapContext.jsx (left blank in this repo)
+cp frontend/.env.example frontend/.env.local   # then add your Google Maps key
 docker compose up --build
-# frontend: http://localhost:3000  ·  backend: http://localhost:8080
+# frontend: http://localhost:3000  ·  backend: http://localhost:8080  ·  MySQL: localhost:3306
+```
+
+On first start the backend creates the tables and loads **sample data** from
+[`backend/src/main/resources/data.sql`](backend/src/main/resources/data.sql). The buildings are
+real UW–Madison places, but **the users and reviews are made up** for demos. Loading it again is
+safe because rows use fixed ids, so restarts don't duplicate anything. Data lives in the
+`mysql-data` volume; `docker compose down -v` resets it.
+
+Demo logins (local only): `bucky@example.test` / `demo-bucky-pass`,
+`alex@example.test` / `demo-alex-pass`, `sam@example.test` / `demo-sam-pass`.
+
+### Configuration
+
+| Variable | Where | Default | Purpose |
+| --- | --- | --- | --- |
+| `REACT_APP_GOOGLE_MAPS_API_KEY` | `frontend/.env.local` | — | Maps JavaScript API key (only that API is needed) |
+| `REACT_APP_API_URL` | `frontend/.env.local` or shell | `http://localhost:8080` | Backend base URL (see `frontend/src/api.js`) |
+| `DB_URL` | shell / `.env` | `jdbc:mysql://localhost:3306/campus_rating_system` | JDBC URL (compose points it at the `mysql` service) |
+| `DB_USERNAME` / `DB_PASSWORD` | shell / `.env` | `root` / `temppassword` | Database login, dev defaults only |
+| `JWT_SECRET` | shell / `.env` | dev-only placeholder | Base64 signing key; set your own, e.g. `openssl rand -base64 48` |
+| `DDL_AUTO` | shell / `.env` | `update` | Hibernate schema mode |
+| `SQL_INIT_MODE` | shell / `.env` | `always` | Set to `never` to skip loading sample data |
+
+`frontend/.env.local` is gitignored and is never copied into the Docker image; compose passes it to
+the container at runtime.
+
+Distances on the study-spot cards are straight-line (haversine) distances from your browser's
+location. They are hidden if you don't share your location.
+
+### Without Docker for the app
+
+```sh
+docker compose up -d mysql                     # or any MySQL 8 on :3306
+cd backend && ./gradlew bootRun                # uses the defaults above
+cd frontend && yarn install && yarn start
 ```
 
 ## Team

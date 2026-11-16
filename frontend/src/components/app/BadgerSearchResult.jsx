@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import StarRatings from 'react-star-ratings';
 import { useEffect, useState } from 'react';
 import { useLoginState } from '../contexts/LoginContext';
+import { formatMiles } from "../../distance";
 // Component for individual locations in the search result page
 export default function BadgerSearchResult({ location, isFavorite, favoriteId, onFavoriteChange }) {
       // navigate to a particular location, saves location data which is served in the `state` variable
@@ -60,7 +61,7 @@ export default function BadgerSearchResult({ location, isFavorite, favoriteId, o
                               <p style={{ display: 'inline-block', height: '1.5rem', textAlign: 'center', justifyContent: 'center', lineHeight: '1.5rem' }}>({location.reviews})</p>
                         </Col>
                         <Col>
-                              <Card.Text style={{ textAlign: 'right' }}>{location.distance}mi</Card.Text>
+                              {formatMiles(location.distance) && <Card.Text style={{ textAlign: 'right' }}>{formatMiles(location.distance)}</Card.Text>}
                         </Col>
                   </Row>
                   {location.tags.map((tag, index) => {

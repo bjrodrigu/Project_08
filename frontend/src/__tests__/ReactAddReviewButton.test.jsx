@@ -34,7 +34,7 @@ describe('ReactAddReviewButton Component', () => {
 
         // Check the navigation
         expect(history.location.pathname).toBe('/addReview');
-        expect(history.location.state).toEqual({ location: locationMock });
+        expect(history.location.state).toEqual({ location: locationMock, review: null });
     });
 
     it('applies correct styles to the button', () => {

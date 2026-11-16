@@ -5,6 +5,7 @@ import BadgerSearchResult from './BadgerSearchResult';
 import { useLocationState } from '../contexts/MapContext';
 import { Filter, ArrowDown, ArrowUp } from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
+import { API_BASE } from "../../api";
 
 // dummy values for testing
 // const testData = [
@@ -57,7 +58,7 @@ export default function BadgerStudySearch() {
       const { user, setUser, login, setLogin } = useLoginState();
 
       const fetchTags = async () => {
-            const response = await fetch('http://localhost:8080/task/getTasks');
+            const response = await fetch(`${API_BASE}/task/getTasks`);
             if (response.ok) {
                   const data = await response.json();
                   console.log('tags', data);
@@ -80,7 +81,7 @@ export default function BadgerStudySearch() {
       const fetchFavLocations = async () => {
             const token = localStorage.getItem('token');
             try {
-                  const response = await fetch('http://localhost:8080/favorite/getFavorites', {
+                  const response = await fetch(`${API_BASE}/favorite/getFavorites`, {
                         method: 'GET',
                         headers: {
                               'Content-Type': 'application/json',
@@ -118,13 +119,13 @@ export default function BadgerStudySearch() {
 
 
       const handleFavoriteChange = async (locationName, shouldFavorite, favoriteId = null) => {
-            const API_BASE_URL = "http://localhost:8080/favorite"; 
+            const API_BASE_URL = `${API_BASE}/favorite`; 
             const token = localStorage.getItem("token");
 
             try {
                   if (shouldFavorite) {
                         
-                        const response = await fetch(`${API_BASE_URL}/addFavorite?locationName=${locationName}`, {
+                        const response = await fetch(`${API_BASE_URL}/addFavorite?locationName=${encodeURIComponent(locationName)}`, {
                               method: "POST",
                               headers: {
                                     "Content-Type": "application/json",
@@ -189,7 +190,7 @@ export default function BadgerStudySearch() {
                   temp = temp.filter((entry) => {
                         return params.some(param => {
                               // console.log(entry[param].toString().includes(query));
-                              return entry[param].toString().toLowerCase().includes(query.toLowerCase());
+                              return String(entry[param] ?? '').toLowerCase().includes(query.toLowerCase());
                         })
                   })
             }

@@ -13,6 +13,10 @@ jest.mock('../components/contexts/LoginContext', () => ({
     }),
 }));
 
+jest.mock('../components/contexts/MapContext', () => ({
+    useLocationState: () => ({ fetchLocations: jest.fn(), locationList: [], buildings: [] }),
+}));
+
 // Mock localStorage
 Object.defineProperty(window, 'localStorage', {
     value: {

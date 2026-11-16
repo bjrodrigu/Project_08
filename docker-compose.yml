@@ -1,8 +1,42 @@
+# One-command local stack: `docker compose up --build`
+#   MySQL  -> localhost:3306 (data kept in the `mysql-data` volume)
+#   API    -> http://localhost:8080 (loads sample data from data.sql once)
+#   Web    -> http://localhost:3000
+# Override any ${VAR:-default} below from your shell or a root `.env` file.
 services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-temppassword}
+      MYSQL_DATABASE: campus_rating_system
+    ports:
+      - "${MYSQL_HOST_PORT:-3306}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+    networks:
+      - app-network
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    environment:
+      DB_URL: jdbc:mysql://mysql:3306/campus_rating_system
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-temppassword}
+      DDL_AUTO: ${DDL_AUTO:-update}
+      # Passed through only if set in your shell / .env; otherwise the
+      # clearly-marked dev-only default in application.properties is used.
+      JWT_SECRET:
+    depends_on:
+      mysql:
+        condition: service_healthy
     ports:
       - "8080:8080"
     networks:
@@ -10,12 +44,26 @@ services:
 
   frontend:
     build:
-      context: ./frontend 
+      context: ./frontend
       dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8080}
+    # Your Maps key: put REACT_APP_GOOGLE_MAPS_API_KEY in frontend/.env.local
+    # (see frontend/.env.example). It is read at runtime, never copied into the image.
+    env_file:
+      - path: ./frontend/.env.local
+        required: false
+    environment:
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-http://localhost:8080}
+    depends_on:
+      - backend
     ports:
       - "3000:3000"
     networks:
       - app-network
+
+volumes:
+  mysql-data:
 
 networks:
   app-network:

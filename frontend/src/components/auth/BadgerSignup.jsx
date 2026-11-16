@@ -3,6 +3,7 @@ import { Form, Button, Row, Col, Card, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
+import { API_BASE } from "../../api";
 
 export default function BadgerSignup() {
     const { user, setUser, login, setLogin } = useLoginState();
@@ -45,7 +46,7 @@ export default function BadgerSignup() {
         setLoading(true);
 
         try {
-            const res = await fetch("http://localhost:8080/user/signup", {
+            const res = await fetch(`${API_BASE}/user/signup`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

@@ -3,8 +3,12 @@ import { BrowserRouter } from 'react-router-dom';
 import BadgerSearchResult from './BadgerSearchResult.jsx';
 import '@testing-library/jest-dom';
 
+jest.mock('../contexts/LoginContext', () => ({
+      useLoginState: () => ({ user: null, setUser: jest.fn(), login: false, setLogin: jest.fn() }),
+}));
 
-const testResult = {name: 'Lorem', distance: 0.1, description: 'Ipsum', rating: 5.0}
+
+const testResult = {location: {name: 'Lorem', distance: 0.1, description: 'Ipsum', rating: 5.0, reviews: 1, tags: []}}
 
 describe('My search result', () => {
       expect(document).toBeDefined(); // Check if document is available
@@ -26,6 +30,14 @@ describe('My search result', () => {
             expect(el).toBeInTheDocument();
       })
       
+      // distance is hidden (not "0mi") when the user's location is unknown
+      test('hides distance when it is unavailable', async () => {
+            render(<BrowserRouter>
+                  <BadgerSearchResult location={{ ...testResult.location, distance: null }}/>
+            </BrowserRouter>);
+            expect(screen.queryByText(/mi$/)).not.toBeInTheDocument();
+      })
+
       // test if Search Result Description renders
       test('should render location description', async () => {
             render(<BrowserRouter>

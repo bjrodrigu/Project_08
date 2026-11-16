@@ -3,6 +3,7 @@ import { Form, Button, Row, Col, Card, Spinner } from 'react-bootstrap';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useLoginState } from '../contexts/LoginContext';
 import { ArrowLeft } from 'react-bootstrap-icons';
+import { API_BASE } from "../../api";
 
 
 export default function BadgerLogin() {
@@ -57,7 +58,7 @@ export default function BadgerLogin() {
     setLoading(true);
     setError(null);
 
-    fetch('http://localhost:8080/user/login', {
+    fetch(`${API_BASE}/user/login`, {
       method: "POST",
       credentials: "include",
       headers: {

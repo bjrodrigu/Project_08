@@ -7,6 +7,7 @@ import useLogout from '../auth/useLogout';
 import BadgerMessage from './BadgerMessage';
 import BadgerFavoriteLocations from './BadgerFavoriteLocations';
 import BadgerInfo from './BadgerInfo';
+import { API_BASE } from "../../api";
 //style
 const backButtonStyle = {
     display: 'flex',
@@ -66,7 +67,7 @@ export default function UserComments() {
     const fetchUserInfo = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch('http://localhost:8080/user/info', {
+            const response = await fetch(`${API_BASE}/user/info`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -98,7 +99,7 @@ export default function UserComments() {
         setLoading(true); // Start loading
         try {
             console.log(user);
-            const response = await fetch(`http://localhost:8080/review/getReviewsForUser?userName=${user}`, {
+            const response = await fetch(`${API_BASE}/review/getReviewsForUser?userName=${encodeURIComponent(user)}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -125,7 +126,7 @@ export default function UserComments() {
     const fetchFavLocations = async () => {
         const token = localStorage.getItem('token');
         try {
-            const response = await fetch('http://localhost:8080/favorite/getFavorites', {
+            const response = await fetch(`${API_BASE}/favorite/getFavorites`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -272,7 +273,7 @@ export default function UserComments() {
         });
         console.log(queryParams.toString());
 
-        fetch(`http://localhost:8080/review/editReview?${queryParams.toString()}`, {
+        fetch(`${API_BASE}/review/editReview?${queryParams.toString()}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -313,7 +314,7 @@ export default function UserComments() {
         const token = localStorage.getItem("token");
 
 
-        fetch(`http://localhost:8080/review/deleteReview?${queryParams.toString()}`, {
+        fetch(`${API_BASE}/review/deleteReview?${queryParams.toString()}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -336,7 +337,7 @@ export default function UserComments() {
 
 
     const handleRemoveFavorite = async (favoriteId) => {
-        const API_BASE_URL = "http://localhost:8080/favorite";
+        const API_BASE_URL = `${API_BASE}/favorite`;
         const token = localStorage.getItem("token");
 
         try {

@@ -6,6 +6,8 @@ import BadgerReview from '../app/BadgerReview';
 import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLoginState } from '../contexts/LoginContext';
 import ReactAddReviewButton from './ReactAddReviewButton';
+import { API_BASE } from "../../api";
+import { formatMiles } from "../../distance";
 // async function loadHolder() {
 //       // if(typeof window !== undefined) {
 //             const mod = await import('holderjs/holder');
@@ -86,7 +88,7 @@ export default function BadgerStudySpot() {
       const fetchReviews = async () => {
             setLoading(true);
             try {
-                  const response = await fetch(`http://localhost:8080/review/getReviewsForLocation?locationName=${locationName}`);
+                  const response = await fetch(`${API_BASE}/review/getReviewsForLocation?locationName=${encodeURIComponent(locationName)}`);
                   if (response.ok) {
                         setLoading(false);
                         const reviewsData = await response.json();
@@ -129,7 +131,7 @@ export default function BadgerStudySpot() {
                                     <Card.Title style={{ fontSize: '2rem', marginLeft: '-1.5rem', paddingTop: '0.25rem', paddingBottom: '0.25rem', height: '2.rem' }}>{state.name}</Card.Title>
                               </Col>
                               <Col sm="3">
-                                    <Card.Subtitle style={{ fontSize: '1.5rem', textAlign: 'right', paddingTop: '0.75rem' }}>{state.distance}mi</Card.Subtitle>
+                                    <Card.Subtitle style={{ fontSize: '1.5rem', textAlign: 'right', paddingTop: '0.75rem' }}>{formatMiles(state.distance)}</Card.Subtitle>
                               </Col>
                               <Col sm="3">
                                     <Button variant='primary' style={{ marginTop: '0.25rem', height: '2.5rem' }}> Navigate</Button>

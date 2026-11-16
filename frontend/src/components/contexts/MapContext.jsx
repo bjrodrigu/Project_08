@@ -1,6 +1,8 @@
-import React, { useContext, createContext, useState, useEffect, useCallback } from "react";
+import React, { useContext, createContext, useState, useEffect, useCallback, useMemo } from "react";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { useRef } from "react";
+import { API_BASE } from "../../api";
+import { haversineMiles } from "../../distance";
 
 const MapContext = createContext();
 const MapContextProvider = ({ children }) => {
@@ -16,7 +18,8 @@ const MapContextProvider = ({ children }) => {
       // ]
 
       // initialize states
-      const [locationList, setLocationList] = useState([]);
+      // raw list from the API; distances are derived below
+      const [rawLocationList, setLocationList] = useState([]);
       const [buildings, setBuildings] = useState([]);
 
 
@@ -31,19 +34,19 @@ const MapContextProvider = ({ children }) => {
       ]
 
       useEffect(() => {
+            // Straight-line distances need the browser's location. If it is
+            // unavailable or denied, userLocation stays null and cards hide distance.
             if (navigator.geolocation) {
-                  // get location if available
-                  // TODO: implement context
-                  navigator.geolocation.getCurrentPosition((position) => {
-                        // get coordinates
-                        let lat = position.coords.latitude.toFixed(5);
-                        let long = position.coords.longitude.toFixed(5);
-                        let lobj = { lat: lat, lng: long };
-                        // pass to map context
-                        setUserLocation(lobj);
-                  });
-            } else {
-                  // TODO: pop up for locations
+                  navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                              setUserLocation({
+                                    lat: position.coords.latitude,
+                                    lng: position.coords.longitude,
+                              });
+                        },
+                        (err) => console.warn('Location unavailable:', err && err.message),
+                        { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 }
+                  );
             }
             fetchLocations();
             fetchBuildings();
@@ -60,12 +63,11 @@ const MapContextProvider = ({ children }) => {
 
       const fetchLocations = async () => {
             try {
-                  const response = await fetch('http://localhost:8080/location/getLocations');
+                  const response = await fetch(`${API_BASE}/location/getLocations`);
                   if (response.ok) {
                         const locationsData = await response.json();
                         const formattedLocations = locationsData.map((loc) => ({
                               name: loc.name,
-                              distance: loc.distance || 0,
                               description: loc.description,
                               rating: loc.rating || 0,
                               reviews: loc.reviews || 0,
@@ -73,7 +75,7 @@ const MapContextProvider = ({ children }) => {
                               tags: loc.taskNames || []
                         }));
                         setLocationList(formattedLocations);
-                        const reviewResponse = await fetch('http://localhost:8080/review/getAllReviews');
+                        const reviewResponse = await fetch(`${API_BASE}/review/getAllReviews`);
                         if (reviewResponse.ok) {
                               const reviewData = await reviewResponse.json();
                               // Iterate through locations and update with review data
@@ -109,7 +111,7 @@ const MapContextProvider = ({ children }) => {
       // create API call for buildings
       const fetchBuildings = async () => {
             try {
-                  const response = await fetch('http://localhost:8080/building/getBuildings');
+                  const response = await fetch(`${API_BASE}/building/getBuildings`);
                   if (response.ok) {
                         const buildingsData = await response.json();
                         const formattedBuildings = buildingsData.map((building) => ({
@@ -127,15 +129,18 @@ const MapContextProvider = ({ children }) => {
       };
 
 
-      // initialize states
       const [userLocation, setUserLocation] = useState(null);
-      const [distMatrix, setDistMatrix] = useState([]);
-      const apiKey = 'REDACTED_GOOGLE_MAPS_KEY';
 
-      // TODO: integrate location retrieval from backend API
-      // TODO: fallback Haversine Formula
+      // Attach a straight-line (haversine) distance in miles from the user to each
+      // spot's building. distance is null when location or building coords are missing.
+      const locationList = useMemo(() => rawLocationList.map((loc) => {
+            const b = buildings.find((building) => building.name === loc.building);
+            const distance = userLocation && b && b.latitude != null && b.longitude != null
+                  ? Math.round(haversineMiles(userLocation.lat, userLocation.lng, b.latitude, b.longitude) * 100) / 100
+                  : null;
+            return { ...loc, distance };
+      }), [rawLocationList, buildings, userLocation]);
 
-      // store user location
       return (
             <MapContext.Provider value={{ userLocation, setUserLocation, locationList, setLocationList, buildings, setBuildings, fetchLocations}}>
                   {children}

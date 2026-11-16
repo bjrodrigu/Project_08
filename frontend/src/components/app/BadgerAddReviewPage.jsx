@@ -5,6 +5,7 @@ import { ArrowLeft } from 'react-bootstrap-icons';
 import { useLocation, useNavigate } from 'react-router';
 import { useLoginState } from '../contexts/LoginContext';
 import { useLocationState } from '../contexts/MapContext';
+import { API_BASE } from "../../api";
 
 const BadgerAddReviewPage = () => {
     const [review, setReview] = useState('');
@@ -69,8 +70,8 @@ const BadgerAddReviewPage = () => {
         // Determine whether it's an add or edit request
         const method = existingReview ? 'PUT' : 'POST';
         const url = existingReview
-            ? `http://localhost:8080/review/editReview?${queryParams.toString()}`
-            : `http://localhost:8080/review/addReview?${queryParams.toString()}`;
+            ? `${API_BASE}/review/editReview?${queryParams.toString()}`
+            : `${API_BASE}/review/addReview?${queryParams.toString()}`;
 
         fetch(url, {
             method: method,
@@ -112,7 +113,7 @@ const BadgerAddReviewPage = () => {
 
         const token = localStorage.getItem("token");
 
-        fetch(`http://localhost:8080/review/deleteReview?${queryParams.toString()}`, {
+        fetch(`${API_BASE}/review/deleteReview?${queryParams.toString()}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
