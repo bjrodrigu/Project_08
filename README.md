@@ -1,4 +1,4 @@
-# Campus Rating System (BadgerStudy)
+# StudyBadger (Campus Rating System)
 
 A full-stack web app for UW–Madison students to find, rate and review spots on campus for studying, napping, group work or hanging out. Users browse locations on an interactive campus map, filter by activity tags, read and write reviews, and save favorites.
 
