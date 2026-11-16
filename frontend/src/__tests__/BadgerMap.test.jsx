@@ -17,6 +17,7 @@ jest.mock('../components/contexts/MapContext', () => {
 
 jest.mock('@vis.gl/react-google-maps', () => ({
     APIProvider: ({ children }) => <div>{children}</div>,
+    ControlPosition: { TOP_RIGHT: 3 },
     Map: ({ defaultZoom, defaultCenter, children }) => (
         <div data-testid="map" data-zoom={defaultZoom} data-center={`${defaultCenter.lat},${defaultCenter.lng}`}>
             {children}

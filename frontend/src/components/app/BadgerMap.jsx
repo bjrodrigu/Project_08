@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { APIProvider, Map, Marker } from '@vis.gl/react-google-maps';
+import { APIProvider, ControlPosition, Map, Marker } from '@vis.gl/react-google-maps';
 import { useLocationState } from '../contexts/MapContext';
 import { Spinner } from 'react-bootstrap';
 
@@ -52,6 +52,8 @@ export default function BadgerMap() {
                             defaultZoom={16}
                             defaultCenter={{ lat: 43.076, lng: -89.404 }}
                             reuseMaps={true}
+                            // Map/Satellite toggle on the right: the left side is covered by the side panel
+                            mapTypeControlOptions={{ position: ControlPosition.TOP_RIGHT }}
                         >
                         </Map>
                         {userLocation && <Marker
